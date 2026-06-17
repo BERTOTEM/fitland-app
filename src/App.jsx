@@ -118,7 +118,7 @@ const ZONES = [
       { name:"Caballero Oscuro",type:"mob1",     hp:2000, atk:162, def:80,  xpR:120, goldR:70,  level:13, stamCost:160 },
       { name:"Caballero Jefe",    type:"mob2",     hp:1080,  atk:198, def:62,  xpR:145, goldR:85,  level:14, stamCost:180 },
       { name:"Golem Jefe",  type:"miniboss", hp:1740, atk:225, def:102, xpR:220, goldR:130, level:15, stamCost:230 },
-      { name:"Golem tocado por el abismo ",   type:"boss",     hp:2800, atk:266, def:128, xpR:400, goldR:240, level:17, stamCost:300, isBoss:true },
+      { name:"Golem tocado por el abismo",   type:"boss",     hp:2800, atk:266, def:128, xpR:400, goldR:240, level:17, stamCost:300, isBoss:true },
     ]
   },
   { id:"abyss",   name:"El Abismo",          emoji:"🌑", unlockXP:36400, bg:"#050508", accent:"#3a0a5a",
