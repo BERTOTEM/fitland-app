@@ -85,7 +85,7 @@ const CLASSES = [
 // Month 8-11: Castillo (16800 → 26400 XP)
 // Month 12+: Abismo (26400 XP)
 const ZONES = [
-  { id:"valley",  name:"Valle del Inicio",   emoji:"🌄", unlockXP:0,     bg:"#0a1a08", accent:"#3a7a20",
+  { id:"valley",  name:"Valle del Inicio",   emoji:"🌄", unlockXP:1000,     bg:"#0a1a08", accent:"#3a7a20",
     desc:"Primeras 2 semanas. Aprende el sistema.", stamBase:40,
     monsters:[
       { name:"Elemental joven",    type:"mob1",     hp:80,   atk:10,  def:2,   xpR:10,  goldR:5,   level:1,  stamCost:40  },
