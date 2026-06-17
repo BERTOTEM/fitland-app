@@ -436,7 +436,7 @@ function BattleScreen({ hero, hStats, zone, stamina, onBack, onReward, onStamina
           ))}
           {/* enemy sprite — natural size, facing left (flip=true) */}
           <div style={{animation:outcome==="victory"?undefined:"enemyIdle 2.4s ease-in-out infinite",filter:outcome==="victory"?"grayscale(1) opacity(0.3)":"none",transition:"filter 0.4s"}}>
-            <EnemyImg zone={zone} monsterType={monster.type} size={monster.isBoss?220:170} shake={shakeM} flash={flashM} defeated={false}/>
+            <EnemyImg zone={zone} monsterType={monster.type} size={monster.isBoss?380:270} shake={shakeM} flash={flashM} defeated={false}/>
           </div>
           <div style={{marginTop:4,background:"rgba(0,0,0,0.6)",borderRadius:6,padding:"2px 8px",fontSize:9,color:monster.isBoss?"#f39c12":"rgba(255,255,255,0.6)",fontWeight:800,letterSpacing:1,backdropFilter:"blur(4px)"}}>{monster.name}</div>
         </div>
