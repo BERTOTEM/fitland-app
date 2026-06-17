@@ -28,7 +28,7 @@ const ZONE_IMG = {
 //  Daily avg: 120 XP → 2400 XP/month at 5x/week
 //  Zone unlocks: 0 / 4800 / 9600 / 16800 / 26400 XP
 // ═══════════════════════════════════════════════════
-const XP_PER_LEVEL   = 200;   // harder to level up
+const XP_PER_LEVEL   = 300;   // harder to level up
 const STAMINA_PER_XP = 1;     // less stamina per XP (was 2)
 const MAX_STAMINA    = 300;   // lower cap
 const SPEC_LEVEL     = 15;    // need more training to specialize
@@ -88,46 +88,46 @@ const ZONES = [
   { id:"valley",  name:"Valle del Inicio",   emoji:"🌄", unlockXP:0,     bg:"#0a1a08", accent:"#3a7a20",
     desc:"Primeras 2 semanas. Aprende el sistema.", stamBase:40,
     monsters:[
-      { name:"Rata Gigante",    type:"mob1",     hp:50,   atk:10,  def:2,   xpR:10,  goldR:5,   level:1,  stamCost:40  },
-      { name:"Goblin Salvaje",  type:"mob2",     hp:80,   atk:16,  def:4,   xpR:18,  goldR:9,   level:1,  stamCost:50  },
-      { name:"Orco Brutal",     type:"miniboss", hp:160,  atk:26,  def:8,   xpR:35,  goldR:18,  level:2,  stamCost:70  },
-      { name:"Señor del Valle", type:"boss",     hp:300,  atk:38,  def:14,  xpR:70,  goldR:40,  level:3,  stamCost:100, isBoss:true },
+      { name:"Elemental joven",    type:"mob1",     hp:80,   atk:10,  def:2,   xpR:10,  goldR:5,   level:1,  stamCost:40  },
+      { name:"Espiritu del bosque",  type:"mob2",     hp:160,   atk:16,  def:4,   xpR:18,  goldR:9,   level:1,  stamCost:50  },
+      { name:"Mantis real",     type:"miniboss", hp:300,  atk:26,  def:8,   xpR:35,  goldR:18,  level:2,  stamCost:70  },
+      { name:"Señor del Valle", type:"boss",     hp:500,  atk:38,  def:14,  xpR:70,  goldR:40,  level:3,  stamCost:100, isBoss:true },
     ]
   },
-  { id:"forest",  name:"Bosque Sombrío",     emoji:"🌲", unlockXP:4800,  bg:"#080f08", accent:"#1a5a10",
+  { id:"forest",  name:"Bosque Sombrío",     emoji:"🌲", unlockXP:6800,  bg:"#080f08", accent:"#1a5a10",
     desc:"2 meses de entreno constante requeridos.", stamBase:70,
     monsters:[
-      { name:"Lobo Sombrío",    type:"mob1",     hp:320,  atk:52,  def:18,  xpR:40,  goldR:20,  level:4,  stamCost:70  },
-      { name:"Jabalí Rabioso",  type:"mob2",     hp:420,  atk:66,  def:24,  xpR:58,  goldR:30,  level:5,  stamCost:85  },
-      { name:"Troll Menor",     type:"miniboss", hp:640,  atk:82,  def:34,  xpR:90,  goldR:50,  level:6,  stamCost:120 },
-      { name:"Troll del Bosque",type:"boss",     hp:1100, atk:108, def:48,  xpR:180, goldR:100, level:7,  stamCost:180, isBoss:true },
+      { name:"Araña Sombría",    type:"mob1",     hp:520,  atk:52,  def:18,  xpR:40,  goldR:20,  level:4,  stamCost:70  },
+      { name:"Monstruo de espinas",  type:"mob2",     hp:620,  atk:66,  def:24,  xpR:58,  goldR:30,  level:5,  stamCost:85  },
+      { name:"Troll arboleo",     type:"miniboss", hp:740,  atk:82,  def:34,  xpR:90,  goldR:50,  level:6,  stamCost:120 },
+      { name:"Reina de espinas",type:"boss",     hp:1200, atk:108, def:48,  xpR:180, goldR:100, level:7,  stamCost:180, isBoss:true },
     ]
   },
-  { id:"cave",    name:"Cueva de Cristal",   emoji:"💎", unlockXP:9600,  bg:"#080814", accent:"#2a2a8a",
+  { id:"cave",    name:"Cueva de Cristal",   emoji:"💎", unlockXP:12600,  bg:"#080814", accent:"#2a2a8a",
     desc:"4 meses acumulados. Solo los dedicados.", stamBase:110,
     monsters:[
-      { name:"Murciélago",      type:"mob1",     hp:560,  atk:90,  def:36,  xpR:70,  goldR:38,  level:8,  stamCost:110 },
-      { name:"Araña Venenosa",  type:"mob2",     hp:680,  atk:112, def:46,  xpR:90,  goldR:50,  level:9,  stamCost:130 },
-      { name:"Mini Gólem",      type:"miniboss", hp:1000, atk:135, def:62,  xpR:140, goldR:80,  level:10, stamCost:170 },
-      { name:"Gólem de Cristal",type:"boss",     hp:1760, atk:170, def:85,  xpR:280, goldR:160, level:12, stamCost:250, isBoss:true },
+      { name:"Medusa",      type:"mob1",     hp:760,  atk:90,  def:36,  xpR:70,  goldR:38,  level:8,  stamCost:110 },
+      { name:"Ojo de cristal",  type:"mob2",     hp:880,  atk:112, def:46,  xpR:90,  goldR:50,  level:9,  stamCost:130 },
+      { name:"Troll fungico",      type:"miniboss", hp:1200, atk:135, def:62,  xpR:140, goldR:80,  level:10, stamCost:170 },
+      { name:"Armadillo de Cristal",type:"boss",     hp:2060, atk:170, def:85,  xpR:280, goldR:160, level:12, stamCost:250, isBoss:true },
     ]
   },
-  { id:"castle",  name:"Castillo Maldito",   emoji:"🏰", unlockXP:16800, bg:"#100810", accent:"#5a1a6a",
+  { id:"castle",  name:"Castillo Maldito",   emoji:"🏰", unlockXP:26800, bg:"#100810", accent:"#5a1a6a",
     desc:"7 meses acumulados. Las fuerzas oscuras reinan.", stamBase:160,
     monsters:[
-      { name:"Caballero Oscuro",type:"mob1",     hp:1000, atk:162, def:80,  xpR:120, goldR:70,  level:13, stamCost:160 },
-      { name:"Mago Sombrío",    type:"mob2",     hp:880,  atk:198, def:62,  xpR:145, goldR:85,  level:14, stamCost:180 },
-      { name:"Caballero Jefe",  type:"miniboss", hp:1440, atk:225, def:102, xpR:220, goldR:130, level:15, stamCost:230 },
-      { name:"Liche Supremo",   type:"boss",     hp:2400, atk:266, def:128, xpR:400, goldR:240, level:17, stamCost:300, isBoss:true },
+      { name:"Caballero Oscuro",type:"mob1",     hp:2000, atk:162, def:80,  xpR:120, goldR:70,  level:13, stamCost:160 },
+      { name:"Caballero Jefe",    type:"mob2",     hp:1080,  atk:198, def:62,  xpR:145, goldR:85,  level:14, stamCost:180 },
+      { name:"Golem Jefe",  type:"miniboss", hp:1740, atk:225, def:102, xpR:220, goldR:130, level:15, stamCost:230 },
+      { name:"Golem tocado por el abismo ",   type:"boss",     hp:2800, atk:266, def:128, xpR:400, goldR:240, level:17, stamCost:300, isBoss:true },
     ]
   },
-  { id:"abyss",   name:"El Abismo",          emoji:"🌑", unlockXP:26400, bg:"#050508", accent:"#3a0a5a",
+  { id:"abyss",   name:"El Abismo",          emoji:"🌑", unlockXP:36400, bg:"#050508", accent:"#3a0a5a",
     desc:"11 meses+ Solo los legendarios llegan aquí.", stamBase:220,
     monsters:[
-      { name:"Demonio Guardián",type:"mob1",     hp:1600, atk:270, def:135, xpR:200, goldR:120, level:18, stamCost:220 },
-      { name:"Ángel Caído",     type:"mob2",     hp:1500, atk:306, def:148, xpR:230, goldR:140, level:19, stamCost:250 },
-      { name:"Señor Demoníaco", type:"miniboss", hp:2200, atk:342, def:170, xpR:340, goldR:200, level:20, stamCost:300 },
-      { name:"Dragón Eterno",   type:"boss",     hp:4000, atk:396, def:198, xpR:600, goldR:400, level:22, stamCost:400, isBoss:true, isFinal:true },
+      { name:"Demonio Guardián",type:"mob1",     hp:2000, atk:270, def:135, xpR:200, goldR:120, level:18, stamCost:220 },
+      { name:"Ángel Caído",     type:"mob2",     hp:2500, atk:306, def:148, xpR:230, goldR:140, level:19, stamCost:250 },
+      { name:"Señor Demoníaco", type:"miniboss", hp:3200, atk:342, def:170, xpR:340, goldR:200, level:20, stamCost:300 },
+      { name:"Rey Eterno",   type:"boss",     hp:8000, atk:496, def:298, xpR:600, goldR:400, level:22, stamCost:400, isBoss:true, isFinal:true },
     ]
   },
 ];
