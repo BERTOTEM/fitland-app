@@ -423,7 +423,7 @@ function BattleScreen({ hero, hStats, zone, stamina, onBack, onReward, onStamina
             <div key={f.id} style={{position:"absolute",top:-30,left:"50%",transform:"translateX(-50%)",color:f.color,fontWeight:900,fontSize:16,animation:"floatDmg 0.9s ease forwards",pointerEvents:"none",textShadow:"0 0 12px currentColor",whiteSpace:"nowrap",zIndex:10}}>{f.txt}</div>
           ))}
           <div style={{animation:"heroIdle 2s ease-in-out infinite"}}>
-            <HeroImg hero={hero} size={110} flip={false} shake={shakeH} flash={flashH}/>
+            <HeroImg hero={hero} size={130} flip={false} shake={shakeH} flash={flashH}/>
           </div>
           {/* hero name tag */}
           <div style={{marginTop:4,background:"rgba(0,0,0,0.6)",borderRadius:6,padding:"2px 8px",fontSize:9,color:cls.color,fontWeight:800,letterSpacing:1,backdropFilter:"blur(4px)"}}>{hero.name}</div>
@@ -436,7 +436,7 @@ function BattleScreen({ hero, hStats, zone, stamina, onBack, onReward, onStamina
           ))}
           {/* enemy sprite — natural size, facing left (flip=true) */}
           <div style={{animation:outcome==="victory"?undefined:"enemyIdle 2.4s ease-in-out infinite",filter:outcome==="victory"?"grayscale(1) opacity(0.3)":"none",transition:"filter 0.4s"}}>
-            <EnemyImg zone={zone} monsterType={monster.type} size={monster.isBoss?150:120} shake={shakeM} flash={flashM} defeated={false}/>
+            <EnemyImg zone={zone} monsterType={monster.type} size={monster.isBoss?220:170} shake={shakeM} flash={flashM} defeated={false}/>
           </div>
           <div style={{marginTop:4,background:"rgba(0,0,0,0.6)",borderRadius:6,padding:"2px 8px",fontSize:9,color:monster.isBoss?"#f39c12":"rgba(255,255,255,0.6)",fontWeight:800,letterSpacing:1,backdropFilter:"blur(4px)"}}>{monster.name}</div>
         </div>
