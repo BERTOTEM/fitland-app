@@ -384,109 +384,135 @@ function BattleScreen({ hero, hStats, zone, stamina, onBack, onReward, onStamina
   const bgImg  = ZONE_IMG[zone.id]?.map;
 
   return (
-    <div style={{minHeight:"100vh",color:"#e8e0ff",fontFamily:"'Courier New',monospace",display:"flex",flexDirection:"column",position:"relative",overflow:"hidden"}}>
-      {/* Zone BG — img tag with crossOrigin handles CORS correctly */}
-      {bgImg&&<img src={bgImg} crossOrigin="anonymous" alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center",filter:"brightness(0.32) saturate(0.6)",zIndex:0,pointerEvents:"none"}}/>}
-      <div style={{position:"absolute",inset:0,background:`linear-gradient(to bottom,${zone.bg}${bgImg?"99":"ff"},${zone.bg}ff)`,zIndex:1}}/>
-
+    <div style={{height:"100vh",maxHeight:"100vh",color:"#e8e0ff",fontFamily:"'Courier New',monospace",display:"flex",flexDirection:"column",position:"relative",overflow:"hidden"}}>
       <style>{`
-        @keyframes floatDmg{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-52px) scale(1.4)}}
-        @keyframes skillPulse{0%,100%{box-shadow:0 0 8px #f39c1244}50%{box-shadow:0 0 24px #f39c1299}}
+        @keyframes floatDmg{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-70px) scale(1.5)}}
+        @keyframes skillPulse{0%,100%{box-shadow:0 0 8px #f39c1244}50%{box-shadow:0 0 28px #f39c1299}}
+        @keyframes heroIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+        @keyframes enemyIdle{0%,100%{transform:translateY(0) scaleX(-1)}50%{transform:translateY(-6px) scaleX(-1)}}
       `}</style>
 
-      {/* Header */}
-      <div style={{position:"relative",zIndex:2,background:"#00000055",borderBottom:"1px solid #ffffff11",padding:"8px 14px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-        <button onClick={onBack} style={{background:"none",border:"1px solid #ffffff22",color:"#9ca3af",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:9,letterSpacing:1}}>← SALIR</button>
-        <div style={{fontSize:10,color:"#a78bfa",letterSpacing:2}}>{zone.emoji} {zone.name.toUpperCase()}</div>
-        <div style={{fontSize:9,color:"#6b7280"}}>⚡{stamina}</div>
+      {/* ── FULL BG SCENE ── */}
+      {bgImg && <img src={bgImg} crossOrigin="anonymous" alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center",zIndex:0,pointerEvents:"none"}}/>}
+      {/* subtle darkening only at bottom for UI readability */}
+      <div style={{position:"absolute",bottom:0,left:0,right:0,height:"55%",background:"linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%)",zIndex:1,pointerEvents:"none"}}/>
+      {!bgImg && <div style={{position:"absolute",inset:0,background:zone.bg,zIndex:0}}/>}
+
+      {/* ── TOP HUD — zone name + enemy info ── */}
+      <div style={{position:"relative",zIndex:3,padding:"10px 16px 0",display:"flex",alignItems:"flex-start",justifyContent:"space-between"}}>
+        <button onClick={onBack} style={{background:"rgba(0,0,0,0.5)",backdropFilter:"blur(4px)",border:"1px solid #ffffff22",color:"#e8e0ff",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:9,letterSpacing:1}}>← SALIR</button>
+        {/* Enemy HP floating top-center */}
+        <div style={{flex:1,textAlign:"center",padding:"0 12px"}}>
+          <div style={{fontSize:9,color:monster.isBoss?"#f39c12":"rgba(255,255,255,0.6)",letterSpacing:2,marginBottom:2}}>{monster.isBoss?"👑 JEFE":"ENEMIGO"} · LV.{monster.level}</div>
+          <div style={{fontSize:15,fontWeight:800,color:monster.isBoss?"#f39c12":"#fff",marginBottom:6,textShadow:"0 2px 8px rgba(0,0,0,0.8)"}}>{monster.name}</div>
+          <div style={{background:"rgba(0,0,0,0.5)",borderRadius:999,height:8,overflow:"hidden",border:`1px solid ${monster.isBoss?"#f39c1266":"#e74c3c44"}`,maxWidth:220,margin:"0 auto"}}>
+            <div style={{width:`${mHpPct}%`,height:"100%",background:mHpPct>50?"linear-gradient(90deg,#c0392b,#e74c3c)":mHpPct>25?"linear-gradient(90deg,#e67e22,#f39c12)":"linear-gradient(90deg,#8B0000,#e74c3c)",borderRadius:999,transition:"width 0.35s",boxShadow:`0 0 6px ${mHpPct>50?"#e74c3c":"#f39c12"}88`}}/>
+          </div>
+          <div style={{fontSize:8,color:"rgba(255,255,255,0.5)",marginTop:3}}>{Math.max(0,monHP)}/{monster.hp} HP</div>
+        </div>
+        <div style={{fontSize:9,color:"rgba(255,255,255,0.5)",background:"rgba(0,0,0,0.4)",borderRadius:8,padding:"6px 10px"}}>⚡{stamina}</div>
       </div>
 
-      <div style={{position:"relative",zIndex:2,flex:1,display:"flex",flexDirection:"column",padding:"12px 14px",gap:10,maxWidth:480,margin:"0 auto",width:"100%",boxSizing:"border-box"}}>
+      {/* ── BATTLE SCENE — hero left, enemy right, both on ground ── */}
+      <div style={{position:"relative",zIndex:2,flex:1,display:"flex",alignItems:"flex-end",justifyContent:"space-between",padding:"0 8% 20px"}}>
 
-        {/* MONSTER AREA */}
-        <div style={{textAlign:"center",position:"relative",minHeight:160}}>
-          <div style={{fontSize:9,color:monster.isBoss?"#f39c12":"#6b7280",letterSpacing:2,marginBottom:4}}>
-            {monster.isBoss?"👑 JEFE":"ENEMIGO"} · LV.{monster.level}
+        {/* HERO — left side, standing on ground */}
+        <div style={{display:"flex",flexDirection:"column",alignItems:"center",position:"relative"}}>
+          {/* damage floats */}
+          {floats.filter(f=>f.side==="hero").map(f=>(
+            <div key={f.id} style={{position:"absolute",top:-30,left:"50%",transform:"translateX(-50%)",color:f.color,fontWeight:900,fontSize:16,animation:"floatDmg 0.9s ease forwards",pointerEvents:"none",textShadow:"0 0 12px currentColor",whiteSpace:"nowrap",zIndex:10}}>{f.txt}</div>
+          ))}
+          <div style={{animation:"heroIdle 2s ease-in-out infinite"}}>
+            <HeroImg hero={hero} size={110} flip={false} shake={shakeH} flash={flashH}/>
           </div>
-          <div style={{fontSize:14,color:monster.isBoss?"#f39c12":"#e8e0ff",fontWeight:800,marginBottom:6}}>{monster.name}</div>
-          {/* Monster HP bar */}
-          <div style={{background:"#111122",borderRadius:999,height:10,overflow:"hidden",border:"1px solid #e74c3c33",marginBottom:4,maxWidth:300,margin:"0 auto 8px"}}>
-            <div style={{width:`${mHpPct}%`,height:"100%",background:mHpPct>50?"linear-gradient(90deg,#c0392b,#e74c3c)":mHpPct>25?"linear-gradient(90deg,#e67e22,#f39c12)":"linear-gradient(90deg,#8B0000,#e74c3c)",borderRadius:999,transition:"width 0.35s"}}/>
-          </div>
-          <div style={{fontSize:9,color:"#e74c3c",marginBottom:10}}>{Math.max(0,monHP)}/{monster.hp} HP</div>
-
-          {/* Monster sprite */}
-          <div style={{display:"flex",justifyContent:"center",position:"relative"}}>
-            <EnemyImg zone={zone} monsterType={monster.type} size={130} shake={shakeM} flash={flashM} defeated={outcome==="victory"}/>
-            {floats.filter(f=>f.side==="monster").map(f=>(
-              <div key={f.id} style={{position:"absolute",top:0,left:"50%",transform:"translateX(-50%)",color:f.color,fontWeight:900,fontSize:16,animation:"floatDmg 0.9s ease forwards",pointerEvents:"none",textShadow:"0 0 10px currentColor",whiteSpace:"nowrap",zIndex:10}}>{f.txt}</div>
-            ))}
-          </div>
-
-          {/* Outcome overlays */}
-          {outcome==="zone_clear"&&(
-            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"#00000099",borderRadius:12,zIndex:5}}>
-              <div style={{textAlign:"center",padding:20}}>
-                <div style={{fontSize:32,marginBottom:8}}>🏆</div>
-                <div style={{color:"#f39c12",fontSize:13,fontWeight:800,letterSpacing:2}}>¡ZONA COMPLETADA!</div>
-                <button onClick={onBack} style={{marginTop:12,background:"linear-gradient(90deg,#f39c12,#ffeaa7)",border:"none",color:"#000",borderRadius:8,padding:"8px 20px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:11,fontWeight:800}}>VOLVER AL MAPA</button>
-              </div>
-            </div>
-          )}
-          {outcome==="defeat"&&(
-            <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"#000000cc",borderRadius:12,zIndex:5}}>
-              <div style={{textAlign:"center",padding:20}}>
-                <div style={{fontSize:32,marginBottom:8}}>💀</div>
-                <div style={{color:"#e74c3c",fontSize:13,fontWeight:800}}>HAS CAÍDO</div>
-                <div style={{color:"#9ca3af",fontSize:10,marginTop:4}}>Entrena más y vuelve</div>
-                <button onClick={onBack} style={{marginTop:12,background:"#e74c3c",border:"none",color:"#fff",borderRadius:8,padding:"8px 20px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:11,fontWeight:800}}>RETIRARSE</button>
-              </div>
-            </div>
-          )}
+          {/* hero name tag */}
+          <div style={{marginTop:4,background:"rgba(0,0,0,0.6)",borderRadius:6,padding:"2px 8px",fontSize:9,color:cls.color,fontWeight:800,letterSpacing:1,backdropFilter:"blur(4px)"}}>{hero.name}</div>
         </div>
 
-        {/* VS */}
-        <div style={{textAlign:"center",fontSize:9,color:"#2d2d4e",letterSpacing:4}}>⎯⎯ VS ⎯⎯</div>
+        {/* ENEMY — right side, standing on ground */}
+        <div style={{display:"flex",flexDirection:"column",alignItems:"center",position:"relative"}}>
+          {floats.filter(f=>f.side==="monster").map(f=>(
+            <div key={f.id} style={{position:"absolute",top:-30,left:"50%",transform:"translateX(-50%)",color:f.color,fontWeight:900,fontSize:18,animation:"floatDmg 0.9s ease forwards",pointerEvents:"none",textShadow:"0 0 12px currentColor",whiteSpace:"nowrap",zIndex:10}}>{f.txt}</div>
+          ))}
+          {/* enemy sprite — natural size, facing left (flip=true) */}
+          <div style={{animation:outcome==="victory"?undefined:"enemyIdle 2.4s ease-in-out infinite",filter:outcome==="victory"?"grayscale(1) opacity(0.3)":"none",transition:"filter 0.4s"}}>
+            <EnemyImg zone={zone} monsterType={monster.type} size={monster.isBoss?150:120} shake={shakeM} flash={flashM} defeated={false}/>
+          </div>
+          <div style={{marginTop:4,background:"rgba(0,0,0,0.6)",borderRadius:6,padding:"2px 8px",fontSize:9,color:monster.isBoss?"#f39c12":"rgba(255,255,255,0.6)",fontWeight:800,letterSpacing:1,backdropFilter:"blur(4px)"}}>{monster.name}</div>
+        </div>
 
-        {/* HERO AREA */}
-        <div style={{display:"flex",gap:12,alignItems:"center"}}>
-          <div style={{position:"relative",flexShrink:0}}>
-            {/* Hero faces right normally, flip so faces left (toward enemy on right) */}
-            <HeroImg hero={hero} size={90} flip={true} shake={shakeH} flash={flashH}/>
-            {floats.filter(f=>f.side==="hero").map(f=>(
-              <div key={f.id} style={{position:"absolute",top:-10,left:"50%",transform:"translateX(-50%)",color:f.color,fontWeight:900,fontSize:14,animation:"floatDmg 0.9s ease forwards",pointerEvents:"none",whiteSpace:"nowrap",zIndex:10}}>{f.txt}</div>
-            ))}
+        {/* OUTCOME OVERLAYS */}
+        {outcome==="zone_clear"&&(
+          <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.7)",zIndex:10}}>
+            <div style={{textAlign:"center",padding:24,background:"rgba(0,0,0,0.6)",borderRadius:16,border:"1px solid #f39c1244",backdropFilter:"blur(8px)"}}>
+              <div style={{fontSize:40,marginBottom:10}}>🏆</div>
+              <div style={{color:"#f39c12",fontSize:14,fontWeight:800,letterSpacing:2,marginBottom:16}}>¡ZONA COMPLETADA!</div>
+              <button onClick={onBack} style={{background:"linear-gradient(90deg,#f39c12,#ffeaa7)",border:"none",color:"#000",borderRadius:10,padding:"10px 24px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:12,fontWeight:800,letterSpacing:1}}>VOLVER AL MAPA</button>
+            </div>
+          </div>
+        )}
+        {outcome==="defeat"&&(
+          <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.8)",zIndex:10}}>
+            <div style={{textAlign:"center",padding:24,background:"rgba(0,0,0,0.6)",borderRadius:16,border:"1px solid #e74c3c44",backdropFilter:"blur(8px)"}}>
+              <div style={{fontSize:40,marginBottom:10}}>💀</div>
+              <div style={{color:"#e74c3c",fontSize:14,fontWeight:800,marginBottom:6}}>HAS CAÍDO</div>
+              <div style={{color:"rgba(255,255,255,0.5)",fontSize:10,marginBottom:16}}>Entrena más y vuelve más fuerte</div>
+              <button onClick={onBack} style={{background:"#e74c3c",border:"none",color:"#fff",borderRadius:10,padding:"10px 24px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:12,fontWeight:800}}>RETIRARSE</button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── BOTTOM UI PANEL ── */}
+      <div style={{position:"relative",zIndex:3,background:"rgba(6,6,18,0.88)",backdropFilter:"blur(12px)",borderTop:"1px solid rgba(255,255,255,0.08)",padding:"12px 14px 14px"}}>
+
+        {/* Hero HP + Gauge */}
+        <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:10}}>
+          <div style={{width:38,height:38,borderRadius:8,overflow:"hidden",flexShrink:0,border:`1px solid ${cls.color}44`}}>
+            <HeroImg hero={hero} size={38} flip={false}/>
           </div>
           <div style={{flex:1}}>
-            <div style={{fontSize:11,fontWeight:800,color:cls.color}}>{hero.name}</div>
-            <div style={{fontSize:8,color:"#6b7280",marginBottom:3}}>HP {Math.max(0,heroHP)}/{hStats.hp}</div>
-            <div style={{background:"#111122",borderRadius:999,height:8,overflow:"hidden",border:"1px solid #2ecc7133",marginBottom:8}}>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
+              <span style={{fontSize:10,fontWeight:800,color:cls.color}}>{hero.name}</span>
+              <span style={{fontSize:9,color:"rgba(255,255,255,0.4)"}}>HP {Math.max(0,heroHP)}/{hStats.hp}</span>
+            </div>
+            <div style={{background:"rgba(255,255,255,0.06)",borderRadius:999,height:7,overflow:"hidden",marginBottom:4}}>
               <div style={{width:`${hpPct}%`,height:"100%",background:hpPct>50?"linear-gradient(90deg,#27ae60,#2ecc71)":hpPct>25?"linear-gradient(90deg,#e67e22,#f39c12)":"linear-gradient(90deg,#c0392b,#e74c3c)",borderRadius:999,transition:"width 0.35s"}}/>
             </div>
-            <div style={{fontSize:8,color:"#f39c12",marginBottom:3}}>GAUGE {Math.round(gauge)}/100</div>
-            <div style={{background:"#111122",borderRadius:999,height:6,overflow:"hidden",border:"1px solid #f39c1222"}}>
-              <div style={{width:`${gauge}%`,height:"100%",background:"linear-gradient(90deg,#e67e22,#f39c12)",borderRadius:999,transition:"width 0.4s",boxShadow:gauge>=cls.skills[0].cost?"0 0 6px #f39c12aa":"none"}}/>
+            <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}>
+              <span style={{fontSize:8,color:"#f39c12"}}>GAUGE</span>
+              <span style={{fontSize:8,color:"rgba(255,255,255,0.3)"}}>{Math.round(gauge)}/100</span>
+            </div>
+            <div style={{background:"rgba(255,255,255,0.06)",borderRadius:999,height:5,overflow:"hidden"}}>
+              <div style={{width:`${gauge}%`,height:"100%",background:"linear-gradient(90deg,#e67e22,#f39c12)",borderRadius:999,transition:"width 0.4s",boxShadow:gauge>=cls.skills[0].cost?"0 0 8px #f39c12":"none"}}/>
             </div>
           </div>
         </div>
 
         {/* Skills */}
-        <div style={{display:"flex",gap:8}}>
+        <div style={{display:"flex",gap:8,marginBottom:10}}>
           {cls.skills.map((sk,i)=>{
             const ready=gauge>=sk.cost&&phase==="idle"&&!outcome;
             return (
-              <button key={sk.id} onClick={()=>castSkill(i)}
-                style={{flex:1,padding:"9px 4px",borderRadius:10,cursor:ready?"pointer":"not-allowed",border:`2px solid ${ready?"#f39c12":"#1e1e3a"}`,background:ready?"#1a0f00":"#080808",color:ready?"#f39c12":"#2d2d4e",fontFamily:"'Courier New',monospace",fontSize:9,fontWeight:800,letterSpacing:0.5,animation:ready?"skillPulse 1.5s ease-in-out infinite":undefined,transition:"all 0.2s",display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
-                <span style={{fontSize:16}}>{sk.icon}</span>
+              <button key={sk.id} onClick={()=>castSkill(i)} style={{
+                flex:1, padding:"8px 4px", borderRadius:10, cursor:ready?"pointer":"not-allowed",
+                border:`2px solid ${ready?"#f39c12":"rgba(255,255,255,0.06)"}`,
+                background:ready?"rgba(240,140,0,0.12)":"rgba(255,255,255,0.03)",
+                color:ready?"#f39c12":"rgba(255,255,255,0.2)",
+                fontFamily:"'Courier New',monospace", fontSize:9, fontWeight:800,
+                animation:ready?"skillPulse 1.5s ease-in-out infinite":undefined,
+                transition:"all 0.2s", display:"flex", flexDirection:"column", alignItems:"center", gap:2,
+              }}>
+                <span style={{fontSize:18}}>{sk.icon}</span>
                 <span>{sk.name}</span>
-                <span style={{fontSize:7,color:ready?"#e67e22":"#1e1e3a"}}>{sk.cost} GAUGE</span>
+                <span style={{fontSize:7,color:ready?"#e67e22":"rgba(255,255,255,0.15)"}}>{sk.cost} GAUGE</span>
               </button>
             );
           })}
         </div>
 
         {/* Battle log */}
-        <div style={{background:"#00000055",border:"1px solid #ffffff08",borderRadius:8,padding:"8px 12px",maxHeight:80,overflowY:"auto",fontSize:9,lineHeight:1.6}}>
+        <div style={{background:"rgba(0,0,0,0.3)",borderRadius:8,padding:"6px 10px",maxHeight:56,overflowY:"auto",fontSize:9,lineHeight:1.6,border:"1px solid rgba(255,255,255,0.04)"}}>
           {log.map(l=><div key={l.id} style={{color:l.color}}>{l.msg}</div>)}
         </div>
       </div>
