@@ -24,68 +24,110 @@ const ZONE_IMG = {
 
 // ═══════════════════════════════════════════════════
 //  GAME DATA
+//  Difficulty: ~2 months per zone at 5x/week training
+//  Daily avg: 120 XP → 2400 XP/month at 5x/week
+//  Zone unlocks: 0 / 4800 / 9600 / 16800 / 26400 XP
 // ═══════════════════════════════════════════════════
-const XP_PER_LEVEL   = 100;
-const STAMINA_PER_XP = 2;
-const MAX_STAMINA    = 500;
-const SPEC_LEVEL     = 10;
+const XP_PER_LEVEL   = 200;   // harder to level up
+const STAMINA_PER_XP = 1;     // less stamina per XP (was 2)
+const MAX_STAMINA    = 300;   // lower cap
+const SPEC_LEVEL     = 15;    // need more training to specialize
 
-const LEVEL_TITLES = ["Novato","Aprendiz","Iniciado","Aventurero","Veterano","Experto","Maestro","Gran Maestro","Élite","Legendario"];
+const LEVEL_TITLES = ["Novato","Aprendiz","Iniciado","Aventurero","Veterano","Experto","Maestro","Gran Maestro","Élite","Legendario","Héroe","Campeón","Leyenda Viva","Inmortal","Dios del Gym"];
 
+// ── STAT CONFIG — more exercises, realistic units ──
 const STAT_CFG = {
-  fuerza:    { label:"Fuerza",    icon:"⚔️", color:"#e74c3c", glow:"#ff6b6b", exercises:["Pesas libres","Press banca","Sentadillas","Peso muerto","Dominadas","Press militar","Remo con barra"], xpPerUnit:10, unit:"kg"  },
-  velocidad: { label:"Velocidad", icon:"💨", color:"#3498db", glow:"#74b9ff", exercises:["Correr","Bicicleta","Saltar cuerda","Sprints","HIIT","Elíptica","Natación"],                          xpPerUnit:5,  unit:"min" },
-  vitalidad: { label:"Vitalidad", icon:"💚", color:"#2ecc71", glow:"#55efc4", exercises:["Yoga","Pilates","Natación","Plancha","Estiramientos","Meditación","Wim Hof"],                          xpPerUnit:8,  unit:"min" },
+  fuerza: {
+    label:"Fuerza", icon:"⚔️", color:"#e74c3c", glow:"#ff6b6b",
+    exercises:[
+      "Press banca","Sentadillas","Peso muerto","Press militar",
+      "Remo con barra","Dominadas","Curl de bíceps","Fondos",
+      "Hip thrust","Prensa de piernas","Jalón al pecho","Aperturas",
+    ],
+    xpPerUnit:10, unit:"kg",
+    hint:"Registra el peso total levantado (ej: 4 series × 80kg = 320kg)"
+  },
+  velocidad: {
+    label:"Velocidad", icon:"💨", color:"#3498db", glow:"#74b9ff",
+    exercises:[
+      "Correr","Bicicleta","Saltar cuerda","HIIT","Sprints",
+      "Natación","Elíptica","Remo ergómetro","Escaladora",
+      "Kickboxing","Jump rope intervals","Tabata",
+    ],
+    xpPerUnit:5, unit:"min",
+    hint:"Registra minutos de cardio continuo o en intervalos"
+  },
+  vitalidad: {
+    label:"Vitalidad", icon:"💚", color:"#2ecc71", glow:"#55efc4",
+    exercises:[
+      "Yoga","Pilates","Plancha","Estiramientos","Meditación",
+      "Natación lenta","Caminata","Wim Hof","Respiración 4-7-8",
+      "Foam roller","Movilidad articular","Tai chi",
+    ],
+    xpPerUnit:8, unit:"min",
+    hint:"Registra minutos de recuperación activa o movilidad"
+  },
 };
 
 const CLASSES = [
   { id:"warrior",  label:"Guerrero",   icon:"⚔️", primary:"fuerza",    color:"#e74c3c", accent:"#ff6b6b", desc:"Maestro del acero. Cada rep forja su leyenda.",        statBonus:{atk:1.5,def:1.2,spd:0.9,hp:1.3}, skills:[{id:"slash",   name:"Tajo Profundo",   icon:"⚔️", cost:30, dmgMult:2.0, desc:"Golpe preciso"},{id:"berserk", name:"Furia Berserker",  icon:"🔥", cost:80, dmgMult:4.0, desc:"Daño devastador"}], specs:[{id:"campeon",  label:"Campeón",       icon:"🏆", desc:"+50% XP en Fuerza. Golpe definitivo más potente."},{id:"berserker",label:"Berserker",      icon:"🔥", desc:"Ataque doble en combo. Sin piedad."}] },
-  { id:"ranger",   label:"Explorador", icon:"🏹", primary:"velocidad", color:"#3498db", accent:"#74b9ff", desc:"Veloz como el viento. Ninguna distancia lo detiene.",   statBonus:{atk:1.2,def:0.9,spd:1.6,hp:1.0}, skills:[{id:"arrow",   name:"Flecha Rápida",   icon:"🏹", cost:25, dmgMult:1.8, desc:"Ataque veloz"},{id:"barrage",  name:"Lluvia de Flechas",icon:"🌧️", cost:70, dmgMult:3.2, desc:"Múltiples impactos"}], specs:[{id:"cazador",  label:"Cazador",       icon:"🦅", desc:"+60% XP en cardio. Crítico en sprints."},{id:"sombra",   label:"Sombra",        icon:"🌑", desc:"Velocidad se convierte en evasión."}] },
-  { id:"monk",     label:"Monje",      icon:"🌿", primary:"vitalidad", color:"#2ecc71", accent:"#55efc4", desc:"Equilibrio perfecto entre cuerpo y mente.",             statBonus:{atk:1.0,def:1.1,spd:1.2,hp:1.6}, skills:[{id:"chi",     name:"Golpe de Chi",    icon:"💫", cost:28, dmgMult:1.7, heal:15, desc:"Cura + daño"},{id:"zen",      name:"Zen Nova",         icon:"☯️",  cost:65, dmgMult:2.8, heal:30, desc:"Onda curativa"}], specs:[{id:"sanador",  label:"Sanador",       icon:"💊", desc:"Curación doble. Nunca te cansas."},{id:"asceta",   label:"Asceta",        icon:"☯️",  desc:"+30% a todos los stats."}] },
-  { id:"paladin",  label:"Paladín",    icon:"🛡️", primary:"fuerza",    color:"#f39c12", accent:"#ffeaa7", desc:"Fuerza y honor. Un bastión inquebrantable.",           statBonus:{atk:1.2,def:1.8,spd:0.8,hp:1.5}, skills:[{id:"smite",   name:"Castigo Sagrado", icon:"✨", cost:35, dmgMult:1.9, desc:"Daño sagrado"},{id:"holy",     name:"Ira Divina",        icon:"👼", cost:90, dmgMult:3.8, desc:"Golpe celestial"}], specs:[{id:"templario",label:"Templario",     icon:"✝️", desc:"Fuerza y Vitalidad juntas."},{id:"cruzado",  label:"Cruzado",       icon:"⚔️", desc:"+60% XP en peso muerto."}] },
-  { id:"assassin", label:"Asesino",    icon:"🗡️", primary:"velocidad", color:"#9b59b6", accent:"#d2a8ff", desc:"Sombra y rapidez. Golpea antes de que te vean.",       statBonus:{atk:1.8,def:0.7,spd:1.5,hp:0.9}, skills:[{id:"backstab",name:"Puñalada Crítica",icon:"🗡️", cost:22, dmgMult:2.5, desc:"Siempre crítico"},{id:"death",    name:"Sombra Mortal",    icon:"💀", cost:65, dmgMult:4.5, desc:"Daño extremo"}], specs:[{id:"sombra_letal",label:"Sombra Letal",icon:"💀", desc:"+70% XP en HIIT. Crítico garantizado."},{id:"dualista",  label:"Dualista Veloz", icon:"⚡", desc:"Velocidad se transfiere a ATK."}] },
-  { id:"druid",    label:"Druida",     icon:"🍃", primary:"vitalidad", color:"#1abc9c", accent:"#81ecec", desc:"La naturaleza fluye por sus venas.",                    statBonus:{atk:1.0,def:1.3,spd:1.1,hp:1.4}, skills:[{id:"thorns",  name:"Espinas",         icon:"🌿", cost:28, dmgMult:1.7, desc:"Daño natural"},{id:"storm",    name:"Tormenta",          icon:"⚡", cost:70, dmgMult:3.0, desc:"Furia elemental"}], specs:[{id:"chaman",   label:"Chamán",        icon:"🌊", desc:"+50% XP en yoga y natación."},{id:"archon",   label:"Archon",        icon:"⚡", desc:"Todos los stats +20%."}] },
+  { id:"ranger",   label:"Explorador", icon:"🏹", primary:"velocidad", color:"#3498db", accent:"#74b9ff", desc:"Veloz como el viento. Ninguna distancia lo detiene.",   statBonus:{atk:1.2,def:0.9,spd:1.6,hp:1.0}, skills:[{id:"arrow",   name:"Flecha Rápida",   icon:"🏹", cost:25, dmgMult:1.8, desc:"Ataque veloz"},{id:"barrage",  name:"Lluvia de Flechas",icon:"🌧️", cost:70, dmgMult:3.2, desc:"Múltiples impactos"}], specs:[{id:"cazador",  label:"Cazador",       icon:"🦅", desc:"+60% XP en cardio."},{id:"sombra", label:"Sombra", icon:"🌑", desc:"Velocidad se convierte en evasión."}] },
+  { id:"monk",     label:"Monje",      icon:"🌿", primary:"vitalidad", color:"#2ecc71", accent:"#55efc4", desc:"Equilibrio perfecto entre cuerpo y mente.",             statBonus:{atk:1.0,def:1.1,spd:1.2,hp:1.6}, skills:[{id:"chi",     name:"Golpe de Chi",    icon:"💫", cost:28, dmgMult:1.7, heal:15, desc:"Cura + daño"},{id:"zen",      name:"Zen Nova",         icon:"☯️",  cost:65, dmgMult:2.8, heal:30, desc:"Onda curativa"}], specs:[{id:"sanador",  label:"Sanador",       icon:"💊", desc:"Curación doble."},{id:"asceta", label:"Asceta", icon:"☯️", desc:"+30% a todos los stats."}] },
+  { id:"paladin",  label:"Paladín",    icon:"🛡️", primary:"fuerza",    color:"#f39c12", accent:"#ffeaa7", desc:"Fuerza y honor. Un bastión inquebrantable.",           statBonus:{atk:1.2,def:1.8,spd:0.8,hp:1.5}, skills:[{id:"smite",   name:"Castigo Sagrado", icon:"✨", cost:35, dmgMult:1.9, desc:"Daño sagrado"},{id:"holy",     name:"Ira Divina",        icon:"👼", cost:90, dmgMult:3.8, desc:"Golpe celestial"}], specs:[{id:"templario",label:"Templario", icon:"✝️", desc:"Fuerza y Vitalidad juntas."},{id:"cruzado", label:"Cruzado", icon:"⚔️", desc:"+60% XP en peso muerto."}] },
+  { id:"assassin", label:"Asesino",    icon:"🗡️", primary:"velocidad", color:"#9b59b6", accent:"#d2a8ff", desc:"Sombra y rapidez. Golpea antes de que te vean.",       statBonus:{atk:1.8,def:0.7,spd:1.5,hp:0.9}, skills:[{id:"backstab",name:"Puñalada Crítica",icon:"🗡️", cost:22, dmgMult:2.5, desc:"Siempre crítico"},{id:"death",    name:"Sombra Mortal",    icon:"💀", cost:65, dmgMult:4.5, desc:"Daño extremo"}], specs:[{id:"sombra_letal",label:"Sombra Letal", icon:"💀", desc:"+70% XP en HIIT."},{id:"dualista", label:"Dualista Veloz", icon:"⚡", desc:"Velocidad → ATK."}] },
+  { id:"druid",    label:"Druida",     icon:"🍃", primary:"vitalidad", color:"#1abc9c", accent:"#81ecec", desc:"La naturaleza fluye por sus venas.",                    statBonus:{atk:1.0,def:1.3,spd:1.1,hp:1.4}, skills:[{id:"thorns",  name:"Espinas",         icon:"🌿", cost:28, dmgMult:1.7, desc:"Daño natural"},{id:"storm",    name:"Tormenta",          icon:"⚡", cost:70, dmgMult:3.0, desc:"Furia elemental"}], specs:[{id:"chaman",   label:"Chamán",        icon:"🌊", desc:"+50% XP en yoga."},{id:"archon", label:"Archon", icon:"⚡", desc:"Todos los stats +20%."}] },
 ];
 
+// ── ZONES — 2 months per zone at 5x/week (~120 XP/day) ──
+// Month 1-2: Valle  (0 → 4800 XP)
+// Month 3-4: Bosque (4800 → 9600 XP)
+// Month 5-7: Cueva  (9600 → 16800 XP)
+// Month 8-11: Castillo (16800 → 26400 XP)
+// Month 12+: Abismo (26400 XP)
 const ZONES = [
-  { id:"valley",  name:"Valle del Inicio",   emoji:"🌄", unlockXP:0,    bg:"#0a1a08", accent:"#3a7a20", desc:"Tus primeros pasos.", stamBase:20,
+  { id:"valley",  name:"Valle del Inicio",   emoji:"🌄", unlockXP:0,     bg:"#0a1a08", accent:"#3a7a20",
+    desc:"Primeras 2 semanas. Aprende el sistema.", stamBase:40,
     monsters:[
-      { name:"Rata Gigante",    type:"mob1",     hp:25,  atk:4,  def:1,  xpR:8,   goldR:4,   level:1,  stamCost:20 },
-      { name:"Goblin Salvaje",  type:"mob2",     hp:40,  atk:7,  def:2,  xpR:14,  goldR:7,   level:1,  stamCost:25 },
-      { name:"Orco Brutal",     type:"miniboss", hp:70,  atk:12, def:4,  xpR:28,  goldR:15,  level:2,  stamCost:35 },
-      { name:"Señor del Valle", type:"boss",     hp:120, atk:18, def:7,  xpR:55,  goldR:30,  level:3,  stamCost:55, isBoss:true },
+      { name:"Rata Gigante",    type:"mob1",     hp:30,   atk:5,   def:1,   xpR:10,  goldR:5,   level:1,  stamCost:40  },
+      { name:"Goblin Salvaje",  type:"mob2",     hp:50,   atk:9,   def:2,   xpR:18,  goldR:9,   level:1,  stamCost:50  },
+      { name:"Orco Brutal",     type:"miniboss", hp:90,   atk:15,  def:5,   xpR:35,  goldR:18,  level:2,  stamCost:70  },
+      { name:"Señor del Valle", type:"boss",     hp:160,  atk:22,  def:9,   xpR:70,  goldR:40,  level:3,  stamCost:100, isBoss:true },
     ]
   },
-  { id:"forest",  name:"Bosque Sombrío",     emoji:"🌲", unlockXP:400,  bg:"#080f08", accent:"#1a5a10", desc:"La oscuridad crece.", stamBase:35,
+  { id:"forest",  name:"Bosque Sombrío",     emoji:"🌲", unlockXP:4800,  bg:"#080f08", accent:"#1a5a10",
+    desc:"2 meses de entreno constante requeridos.", stamBase:70,
     monsters:[
-      { name:"Lobo Sombrío",    type:"mob1",     hp:80,  atk:16, def:6,  xpR:25,  goldR:13,  level:3,  stamCost:35 },
-      { name:"Jabalí Rabioso",  type:"mob2",     hp:110, atk:22, def:9,  xpR:38,  goldR:20,  level:3,  stamCost:45 },
-      { name:"Troll Menor",     type:"miniboss", hp:160, atk:28, def:13, xpR:60,  goldR:35,  level:4,  stamCost:65 },
-      { name:"Troll del Bosque",type:"boss",     hp:280, atk:38, def:18, xpR:120, goldR:70,  level:5,  stamCost:100, isBoss:true },
+      { name:"Lobo Sombrío",    type:"mob1",     hp:160,  atk:28,  def:10,  xpR:40,  goldR:20,  level:4,  stamCost:70  },
+      { name:"Jabalí Rabioso",  type:"mob2",     hp:210,  atk:36,  def:14,  xpR:58,  goldR:30,  level:5,  stamCost:85  },
+      { name:"Troll Menor",     type:"miniboss", hp:320,  atk:45,  def:20,  xpR:90,  goldR:50,  level:6,  stamCost:120 },
+      { name:"Troll del Bosque",type:"boss",     hp:550,  atk:60,  def:28,  xpR:180, goldR:100, level:7,  stamCost:180, isBoss:true },
     ]
   },
-  { id:"cave",    name:"Cueva de Cristal",   emoji:"💎", unlockXP:1200, bg:"#080814", accent:"#2a2a8a", desc:"Criaturas cristalizadas.", stamBase:55,
+  { id:"cave",    name:"Cueva de Cristal",   emoji:"💎", unlockXP:9600,  bg:"#080814", accent:"#2a2a8a",
+    desc:"4 meses acumulados. Solo los dedicados.", stamBase:110,
     monsters:[
-      { name:"Murciélago",      type:"mob1",     hp:150, atk:30, def:12, xpR:45,  goldR:25,  level:5,  stamCost:55 },
-      { name:"Araña Venenosa",  type:"mob2",     hp:180, atk:38, def:16, xpR:60,  goldR:35,  level:6,  stamCost:65 },
-      { name:"Mini Gólem",      type:"miniboss", hp:260, atk:44, def:22, xpR:90,  goldR:55,  level:7,  stamCost:90 },
-      { name:"Gólem de Cristal",type:"boss",     hp:450, atk:58, def:32, xpR:180, goldR:110, level:8,  stamCost:140, isBoss:true },
+      { name:"Murciélago",      type:"mob1",     hp:280,  atk:50,  def:20,  xpR:70,  goldR:38,  level:8,  stamCost:110 },
+      { name:"Araña Venenosa",  type:"mob2",     hp:340,  atk:62,  def:26,  xpR:90,  goldR:50,  level:9,  stamCost:130 },
+      { name:"Mini Gólem",      type:"miniboss", hp:500,  atk:75,  def:36,  xpR:140, goldR:80,  level:10, stamCost:170 },
+      { name:"Gólem de Cristal",type:"boss",     hp:880,  atk:95,  def:50,  xpR:280, goldR:160, level:12, stamCost:250, isBoss:true },
     ]
   },
-  { id:"castle",  name:"Castillo Maldito",   emoji:"🏰", unlockXP:3500, bg:"#100810", accent:"#5a1a6a", desc:"Las fuerzas oscuras reinan.", stamBase:80,
+  { id:"castle",  name:"Castillo Maldito",   emoji:"🏰", unlockXP:16800, bg:"#100810", accent:"#5a1a6a",
+    desc:"7 meses acumulados. Las fuerzas oscuras reinan.", stamBase:160,
     monsters:[
-      { name:"Caballero Oscuro",type:"mob1",     hp:260, atk:55, def:28, xpR:80,  goldR:50,  level:8,  stamCost:80 },
-      { name:"Mago Sombrío",    type:"mob2",     hp:220, atk:68, def:20, xpR:95,  goldR:60,  level:9,  stamCost:90 },
-      { name:"Caballero Jefe",  type:"miniboss", hp:380, atk:75, def:36, xpR:140, goldR:90,  level:10, stamCost:120 },
-      { name:"Liche Supremo",   type:"boss",     hp:650, atk:90, def:46, xpR:260, goldR:160, level:11, stamCost:180, isBoss:true },
+      { name:"Caballero Oscuro",type:"mob1",     hp:500,  atk:90,  def:45,  xpR:120, goldR:70,  level:13, stamCost:160 },
+      { name:"Mago Sombrío",    type:"mob2",     hp:440,  atk:110, def:35,  xpR:145, goldR:85,  level:14, stamCost:180 },
+      { name:"Caballero Jefe",  type:"miniboss", hp:720,  atk:125, def:58,  xpR:220, goldR:130, level:15, stamCost:230 },
+      { name:"Liche Supremo",   type:"boss",     hp:1200, atk:148, def:72,  xpR:400, goldR:240, level:17, stamCost:300, isBoss:true },
     ]
   },
-  { id:"abyss",   name:"El Abismo",          emoji:"🌑", unlockXP:8000, bg:"#050508", accent:"#3a0a5a", desc:"Solo los legendarios llegan aquí.", stamBase:110,
+  { id:"abyss",   name:"El Abismo",          emoji:"🌑", unlockXP:26400, bg:"#050508", accent:"#3a0a5a",
+    desc:"11 meses+ Solo los legendarios llegan aquí.", stamBase:220,
     monsters:[
-      { name:"Demonio Guardián",type:"mob1",     hp:400, atk:90, def:45, xpR:130, goldR:80,  level:12, stamCost:110 },
-      { name:"Ángel Caído",     type:"mob2",     hp:380, atk:100,def:50, xpR:150, goldR:95,  level:13, stamCost:120 },
-      { name:"Señor Demoníaco", type:"miniboss", hp:580, atk:110,def:58, xpR:220, goldR:140, level:14, stamCost:160 },
-      { name:"Dragón Eterno",   type:"boss",     hp:1000,atk:130,def:65, xpR:400, goldR:250, level:15, stamCost:220, isBoss:true, isFinal:true },
+      { name:"Demonio Guardián",type:"mob1",     hp:800,  atk:150, def:75,  xpR:200, goldR:120, level:18, stamCost:220 },
+      { name:"Ángel Caído",     type:"mob2",     hp:750,  atk:170, def:82,  xpR:230, goldR:140, level:19, stamCost:250 },
+      { name:"Señor Demoníaco", type:"miniboss", hp:1100, atk:190, def:95,  xpR:340, goldR:200, level:20, stamCost:300 },
+      { name:"Dragón Eterno",   type:"boss",     hp:2000, atk:220, def:110, xpR:600, goldR:400, level:22, stamCost:400, isBoss:true, isFinal:true },
     ]
   },
 ];
@@ -436,7 +478,7 @@ function BattleScreen({ hero, hStats, zone, stamina, onBack, onReward, onStamina
           ))}
           {/* enemy sprite — natural size, facing left (flip=true) */}
           <div style={{animation:outcome==="victory"?undefined:"enemyIdle 2.4s ease-in-out infinite",filter:outcome==="victory"?"grayscale(1) opacity(0.3)":"none",transition:"filter 0.4s"}}>
-            <EnemyImg zone={zone} monsterType={monster.type} size={monster.isBoss?380:270} shake={shakeM} flash={flashM} defeated={false}/>
+            <EnemyImg zone={zone} monsterType={monster.type} size={monster.isBoss?220:170} shake={shakeM} flash={flashM} defeated={false}/>
           </div>
           <div style={{marginTop:4,background:"rgba(0,0,0,0.6)",borderRadius:6,padding:"2px 8px",fontSize:9,color:monster.isBoss?"#f39c12":"rgba(255,255,255,0.6)",fontWeight:800,letterSpacing:1,backdropFilter:"blur(4px)"}}>{monster.name}</div>
         </div>
@@ -757,8 +799,8 @@ export default function App() {
 
       {/* TABS */}
       <div style={{borderBottom:"1px solid #1e1e3a",marginTop:12}}>
-        <div style={{display:"flex",padding:"0 12px",gap:14,maxWidth:480,margin:"0 auto"}}>
-          {[["hero","⚔ HÉROE"],["train","💪 ENTRENAR"],["log","📜 LOG"]].map(([t,l])=>(
+        <div style={{display:"flex",padding:"0 12px",gap:10,maxWidth:480,margin:"0 auto"}}>
+          {[["hero","⚔ HÉROE"],["train","💪 ENTRENAR"],["stats","📊 STATS"],["log","📜 LOG"]].map(([t,l])=>(
             <button key={t} className={`tab ${tab===t?"on":""}`} onClick={()=>setTab(t)}>{l}</button>
           ))}
         </div>
@@ -784,14 +826,22 @@ export default function App() {
               <div style={{fontSize:8,color:"#7c3aed",letterSpacing:3,marginBottom:10}}>PROGRESIÓN DE ZONAS</div>
               {ZONES.map(z=>{
                 const unlocked=txp>=z.unlockXP;
+                const pct=z.unlockXP===0?100:Math.min(100,(txp/z.unlockXP)*100);
                 return(
-                  <div key={z.id} style={{display:"flex",alignItems:"center",gap:8,marginBottom:6,opacity:unlocked?1:0.5}}>
-                    <span style={{fontSize:14}}>{unlocked?"✅":txp>0&&txp<z.unlockXP?"🔄":"🔒"}</span>
-                    <div style={{flex:1}}>
-                      <div style={{fontSize:10,color:unlocked?"#e8e0ff":"#4b5563",fontWeight:700}}>{z.emoji} {z.name}</div>
-                      <div style={{fontSize:8,color:"#4b5563"}}>{z.unlockXP===0?"Inicio":`${z.unlockXP} XP (~${Math.round(z.unlockXP/150)} días)`}</div>
+                  <div key={z.id} style={{marginBottom:10,opacity:unlocked?1:0.6}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:3}}>
+                      <span style={{fontSize:14}}>{unlocked?"✅":txp>0&&txp<z.unlockXP?"🔄":"🔒"}</span>
+                      <div style={{flex:1}}>
+                        <div style={{fontSize:10,color:unlocked?"#e8e0ff":"#4b5563",fontWeight:700}}>{z.emoji} {z.name}</div>
+                        <div style={{fontSize:7,color:"#4b5563"}}>{z.desc}</div>
+                      </div>
+                      <div style={{fontSize:8,color:unlocked?cls.color:"#4b5563",fontWeight:800,whiteSpace:"nowrap"}}>{unlocked?"✓":`${txp}/${z.unlockXP}`}</div>
                     </div>
-                    <div style={{fontSize:8,color:unlocked?cls.color:"#4b5563",fontWeight:800}}>{unlocked?"✓":txp>0?`${txp}/${z.unlockXP}`:"🔒"}</div>
+                    {!unlocked&&z.unlockXP>0&&(
+                      <div style={{background:"#0a0a18",borderRadius:999,height:3,overflow:"hidden",marginLeft:22}}>
+                        <div style={{width:`${pct}%`,height:"100%",background:`linear-gradient(90deg,#4834d4,#7c3aed)`,borderRadius:999}}/>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -804,7 +854,7 @@ export default function App() {
           <div style={{background:"#0e0e1c",border:"1px solid #1e1e3a",borderRadius:12,padding:16}}>
             <div style={{fontSize:8,color:"#7c3aed",letterSpacing:3,marginBottom:12}}>REGISTRAR ENTRENAMIENTO</div>
             <div style={{background:"#060612",border:"1px solid #f39c1222",borderRadius:8,padding:"8px 12px",marginBottom:12,fontSize:9,color:"#f39c12"}}>
-              ⚡ Cada XP ganado = {STAMINA_PER_XP} STAMINA de combate
+              ⚡ Cada XP = {STAMINA_PER_XP} Stamina · Stat primario ×1.5 XP
             </div>
             <div style={{display:"flex",gap:8,marginBottom:12}}>
               {Object.entries(STAT_CFG).map(([key,cfg])=>(
@@ -814,6 +864,10 @@ export default function App() {
                   {cls.primary===key&&<span style={{fontSize:7,color:cfg.color}}>★ ×1.5</span>}
                 </button>
               ))}
+            </div>
+            {/* Hint */}
+            <div style={{background:"#060612",borderRadius:6,padding:"6px 10px",marginBottom:10,fontSize:8,color:"#4b5563",fontStyle:"italic"}}>
+              💡 {STAT_CFG[form.stat].hint}
             </div>
             <div style={{marginBottom:10}}>
               <label style={{fontSize:7,color:"#4b5563",letterSpacing:2,display:"block",marginBottom:5}}>EJERCICIO</label>
@@ -825,8 +879,10 @@ export default function App() {
               {form.exercise==="__otro"&&<input className="inp" style={{marginTop:6}} placeholder="Describe el ejercicio..." onChange={e=>setForm(f=>({...f,exercise:e.target.value}))}/>}
             </div>
             <div style={{marginBottom:10}}>
-              <label style={{fontSize:7,color:"#4b5563",letterSpacing:2,display:"block",marginBottom:5}}>CANTIDAD ({STAT_CFG[form.stat].unit})</label>
-              <input className="inp" type="number" min="0" value={form.amount} onChange={e=>setForm(f=>({...f,amount:e.target.value}))} placeholder={form.stat==="fuerza"?"Ej: 80":"Ej: 45"}/>
+              <label style={{fontSize:7,color:"#4b5563",letterSpacing:2,display:"block",marginBottom:5}}>
+                CANTIDAD ({STAT_CFG[form.stat].unit})
+              </label>
+              <input className="inp" type="number" min="0" value={form.amount} onChange={e=>setForm(f=>({...f,amount:e.target.value}))} placeholder={form.stat==="fuerza"?"Ej: 320 (4×80kg)":"Ej: 45"}/>
               {form.amount&&Number(form.amount)>0&&(()=>{
                 const xpG=Math.max(1,Math.round(Number(form.amount)*STAT_CFG[form.stat].xpPerUnit/10*(cls.primary===form.stat?1.5:1)));
                 const stG=Math.min(MAX_STAMINA-stamina,xpG*STAMINA_PER_XP);
@@ -835,13 +891,137 @@ export default function App() {
             </div>
             <div style={{marginBottom:14}}>
               <label style={{fontSize:7,color:"#4b5563",letterSpacing:2,display:"block",marginBottom:5}}>NOTA</label>
-              <input className="inp" placeholder="PR, sensaciones..." value={form.note} onChange={e=>setForm(f=>({...f,note:e.target.value}))}/>
+              <input className="inp" placeholder="PR, sensaciones, sets×reps..." value={form.note} onChange={e=>setForm(f=>({...f,note:e.target.value}))}/>
             </div>
             <button onClick={handleLog} style={{width:"100%",padding:12,borderRadius:10,cursor:"pointer",border:"none",background:`linear-gradient(90deg,${STAT_CFG[form.stat].color},${STAT_CFG[form.stat].glow})`,color:"#fff",fontWeight:800,fontSize:12,fontFamily:"'Courier New',monospace",letterSpacing:2}}>
               ⚡ REGISTRAR
             </button>
           </div>
         )}
+
+        {/* TAB STATS — detailed statistics */}
+        {tab==="stats"&&(()=>{
+          // Calculate streak & best streak
+          const today = new Date().toDateString();
+          const daySet = new Set(wlog.map(e=>new Date(e.id).toDateString()));
+          let streak=0, bestStreak=0, cur=0;
+          const sorted=[...daySet].sort((a,b)=>new Date(a)-new Date(b));
+          for(let i=0;i<sorted.length;i++){
+            if(i===0){ cur=1; }
+            else {
+              const diff=(new Date(sorted[i])-new Date(sorted[i-1]))/(1000*60*60*24);
+              if(diff<=1.5) cur++;
+              else cur=1;
+            }
+            if(cur>bestStreak) bestStreak=cur;
+          }
+          // Check if today was trained
+          streak = daySet.has(today) ? cur : (cur>0 && (new Date()-new Date(sorted[sorted.length-1]))/(1000*60*60*24)<1.5 ? cur : 0);
+          const totalByStr = Object.entries(STAT_CFG).reduce((a,[k,cfg])=>({...a,[k]:wlog.filter(e=>e.stat===k).reduce((s,e)=>s+e.xp,0)}),{});
+          const thisWeek = wlog.filter(e=>new Date()-new Date(e.id)<7*24*60*60*1000);
+          const weekXP = thisWeek.reduce((a,e)=>a+e.xp,0);
+          const weekDays = new Set(thisWeek.map(e=>new Date(e.id).toDateString())).size;
+          // Last 14 days calendar
+          const last14 = [...Array(14)].map((_,i)=>{
+            const d=new Date(); d.setDate(d.getDate()-13+i);
+            const ds=d.toDateString();
+            const xpDay=wlog.filter(e=>new Date(e.id).toDateString()===ds).reduce((a,e)=>a+e.xp,0);
+            return {ds,xpDay,day:d.toLocaleDateString("es",{weekday:"short"}).slice(0,2)};
+          });
+          return (
+            <div>
+              {/* Streak cards */}
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:12}}>
+                {[
+                  {label:"RACHA ACTUAL",value:`${streak}d`,color:streak>0?"#f39c12":"#4b5563",icon:streak>0?"🔥":"💤"},
+                  {label:"MEJOR RACHA", value:`${bestStreak}d`,color:"#9b59b6",icon:"🏆"},
+                  {label:"DÍAS ACTIVOS",value:daySet.size,color:"#3498db",icon:"📅"},
+                ].map(c=>(
+                  <div key={c.label} style={{background:"#0e0e1c",border:`1px solid ${c.color}33`,borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
+                    <div style={{fontSize:20,marginBottom:4}}>{c.icon}</div>
+                    <div style={{fontSize:18,fontWeight:800,color:c.color}}>{c.value}</div>
+                    <div style={{fontSize:7,color:"#4b5563",letterSpacing:1,marginTop:2}}>{c.label}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* This week */}
+              <div style={{background:"#0e0e1c",border:"1px solid #2d2060",borderRadius:12,padding:14,marginBottom:12}}>
+                <div style={{fontSize:8,color:"#7c3aed",letterSpacing:3,marginBottom:10}}>ESTA SEMANA</div>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}>
+                  <div style={{textAlign:"center"}}>
+                    <div style={{fontSize:18,fontWeight:800,color:"#e8e0ff"}}>{weekXP}</div>
+                    <div style={{fontSize:7,color:"#4b5563"}}>XP GANADOS</div>
+                  </div>
+                  <div style={{textAlign:"center"}}>
+                    <div style={{fontSize:18,fontWeight:800,color:"#e8e0ff"}}>{weekDays}</div>
+                    <div style={{fontSize:7,color:"#4b5563"}}>DÍAS ENTRENADOS</div>
+                  </div>
+                  <div style={{textAlign:"center"}}>
+                    <div style={{fontSize:18,fontWeight:800,color:"#e8e0ff"}}>{thisWeek.length}</div>
+                    <div style={{fontSize:7,color:"#4b5563"}}>SESIONES</div>
+                  </div>
+                  <div style={{textAlign:"center"}}>
+                    <div style={{fontSize:18,fontWeight:800,color:weekDays>=5?"#2ecc71":"#e74c3c"}}>{weekDays>=5?"✅":"⚠️"}</div>
+                    <div style={{fontSize:7,color:"#4b5563"}}>META 5/7</div>
+                  </div>
+                </div>
+                {/* Weekly progress bar */}
+                <div style={{background:"#0a0a18",borderRadius:999,height:6,overflow:"hidden"}}>
+                  <div style={{width:`${Math.min(100,(weekDays/5)*100)}%`,height:"100%",background:weekDays>=5?"linear-gradient(90deg,#27ae60,#2ecc71)":"linear-gradient(90deg,#e67e22,#f39c12)",borderRadius:999,transition:"width 0.5s"}}/>
+                </div>
+                <div style={{fontSize:7,color:"#4b5563",marginTop:3,textAlign:"right"}}>{weekDays}/5 días para meta semanal</div>
+              </div>
+
+              {/* Last 14 days calendar */}
+              <div style={{background:"#0e0e1c",border:"1px solid #1e1e3a",borderRadius:12,padding:14,marginBottom:12}}>
+                <div style={{fontSize:8,color:"#7c3aed",letterSpacing:3,marginBottom:10}}>ÚLTIMAS 2 SEMANAS</div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:4}}>
+                  {last14.map((d,i)=>{
+                    const intensity = d.xpDay===0?0:d.xpDay<50?1:d.xpDay<100?2:d.xpDay<150?3:4;
+                    const colors=["#0a0a18","#1a3a1a","#2a6a2a","#3aaa3a","#2ecc71"];
+                    return(
+                      <div key={i} style={{display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
+                        <div style={{width:"100%",aspectRatio:"1",borderRadius:4,background:colors[intensity],border:`1px solid ${intensity>0?"#2ecc7122":"#1a1a2a"}`,title:d.ds}}/>
+                        <div style={{fontSize:6,color:"#4b5563"}}>{d.day}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div style={{display:"flex",gap:6,marginTop:8,alignItems:"center"}}>
+                  <span style={{fontSize:7,color:"#4b5563"}}>Menos</span>
+                  {["#0a0a18","#1a3a1a","#2a6a2a","#3aaa3a","#2ecc71"].map((c,i)=>(
+                    <div key={i} style={{width:10,height:10,borderRadius:2,background:c,border:"1px solid #1a1a2a"}}/>
+                  ))}
+                  <span style={{fontSize:7,color:"#4b5563"}}>Más</span>
+                </div>
+              </div>
+
+              {/* XP by stat */}
+              <div style={{background:"#0e0e1c",border:"1px solid #1e1e3a",borderRadius:12,padding:14}}>
+                <div style={{fontSize:8,color:"#7c3aed",letterSpacing:3,marginBottom:10}}>XP TOTAL POR STAT</div>
+                {Object.entries(STAT_CFG).map(([key,cfg])=>{
+                  const xpSt=totalByStr[key]||0;
+                  const maxSt=Math.max(...Object.values(totalByStr),1);
+                  return(
+                    <div key={key} style={{marginBottom:10}}>
+                      <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
+                        <span style={{fontSize:10,color:cfg.color,fontWeight:800}}>{cfg.icon} {cfg.label}</span>
+                        <span style={{fontSize:9,color:"#6b7280"}}>{xpSt} XP · LV.{getLevel(stats[key].xp)}</span>
+                      </div>
+                      <div style={{background:"#0a0a18",borderRadius:999,height:8,overflow:"hidden",border:`1px solid ${cfg.color}18`}}>
+                        <div style={{width:`${(xpSt/maxSt)*100}%`,height:"100%",borderRadius:999,background:`linear-gradient(90deg,${cfg.color},${cfg.glow})`,transition:"width 0.7s",boxShadow:`0 0 6px ${cfg.color}55`}}/>
+                      </div>
+                      <div style={{fontSize:7,color:"#4b5563",marginTop:2}}>
+                        {wlog.filter(e=>e.stat===key).length} sesiones · Último: {wlog.find(e=>e.stat===key)?.date||"—"}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
 
         {/* TAB LOG */}
         {tab==="log"&&(
