@@ -88,48 +88,183 @@ const ZONES = [
   { id:"valley",  name:"Valle del Inicio",   emoji:"🌄", unlockXP:0,     bg:"#0a1a08", accent:"#3a7a20",
     desc:"Primeras 2 semanas. Aprende el sistema.", stamBase:40,
     monsters:[
-      { name:"Rata Gigante",    type:"mob1",     hp:30,   atk:5,   def:1,   xpR:10,  goldR:5,   level:1,  stamCost:40  },
-      { name:"Goblin Salvaje",  type:"mob2",     hp:50,   atk:9,   def:2,   xpR:18,  goldR:9,   level:1,  stamCost:50  },
-      { name:"Orco Brutal",     type:"miniboss", hp:90,   atk:15,  def:5,   xpR:35,  goldR:18,  level:2,  stamCost:70  },
-      { name:"Señor del Valle", type:"boss",     hp:160,  atk:22,  def:9,   xpR:70,  goldR:40,  level:3,  stamCost:100, isBoss:true },
+      { name:"Rata Gigante",    type:"mob1",     hp:50,   atk:10,  def:2,   xpR:10,  goldR:5,   level:1,  stamCost:40  },
+      { name:"Goblin Salvaje",  type:"mob2",     hp:80,   atk:16,  def:4,   xpR:18,  goldR:9,   level:1,  stamCost:50  },
+      { name:"Orco Brutal",     type:"miniboss", hp:160,  atk:26,  def:8,   xpR:35,  goldR:18,  level:2,  stamCost:70  },
+      { name:"Señor del Valle", type:"boss",     hp:300,  atk:38,  def:14,  xpR:70,  goldR:40,  level:3,  stamCost:100, isBoss:true },
     ]
   },
   { id:"forest",  name:"Bosque Sombrío",     emoji:"🌲", unlockXP:4800,  bg:"#080f08", accent:"#1a5a10",
     desc:"2 meses de entreno constante requeridos.", stamBase:70,
     monsters:[
-      { name:"Lobo Sombrío",    type:"mob1",     hp:160,  atk:28,  def:10,  xpR:40,  goldR:20,  level:4,  stamCost:70  },
-      { name:"Jabalí Rabioso",  type:"mob2",     hp:210,  atk:36,  def:14,  xpR:58,  goldR:30,  level:5,  stamCost:85  },
-      { name:"Troll Menor",     type:"miniboss", hp:320,  atk:45,  def:20,  xpR:90,  goldR:50,  level:6,  stamCost:120 },
-      { name:"Troll del Bosque",type:"boss",     hp:550,  atk:60,  def:28,  xpR:180, goldR:100, level:7,  stamCost:180, isBoss:true },
+      { name:"Lobo Sombrío",    type:"mob1",     hp:320,  atk:52,  def:18,  xpR:40,  goldR:20,  level:4,  stamCost:70  },
+      { name:"Jabalí Rabioso",  type:"mob2",     hp:420,  atk:66,  def:24,  xpR:58,  goldR:30,  level:5,  stamCost:85  },
+      { name:"Troll Menor",     type:"miniboss", hp:640,  atk:82,  def:34,  xpR:90,  goldR:50,  level:6,  stamCost:120 },
+      { name:"Troll del Bosque",type:"boss",     hp:1100, atk:108, def:48,  xpR:180, goldR:100, level:7,  stamCost:180, isBoss:true },
     ]
   },
   { id:"cave",    name:"Cueva de Cristal",   emoji:"💎", unlockXP:9600,  bg:"#080814", accent:"#2a2a8a",
     desc:"4 meses acumulados. Solo los dedicados.", stamBase:110,
     monsters:[
-      { name:"Murciélago",      type:"mob1",     hp:280,  atk:50,  def:20,  xpR:70,  goldR:38,  level:8,  stamCost:110 },
-      { name:"Araña Venenosa",  type:"mob2",     hp:340,  atk:62,  def:26,  xpR:90,  goldR:50,  level:9,  stamCost:130 },
-      { name:"Mini Gólem",      type:"miniboss", hp:500,  atk:75,  def:36,  xpR:140, goldR:80,  level:10, stamCost:170 },
-      { name:"Gólem de Cristal",type:"boss",     hp:880,  atk:95,  def:50,  xpR:280, goldR:160, level:12, stamCost:250, isBoss:true },
+      { name:"Murciélago",      type:"mob1",     hp:560,  atk:90,  def:36,  xpR:70,  goldR:38,  level:8,  stamCost:110 },
+      { name:"Araña Venenosa",  type:"mob2",     hp:680,  atk:112, def:46,  xpR:90,  goldR:50,  level:9,  stamCost:130 },
+      { name:"Mini Gólem",      type:"miniboss", hp:1000, atk:135, def:62,  xpR:140, goldR:80,  level:10, stamCost:170 },
+      { name:"Gólem de Cristal",type:"boss",     hp:1760, atk:170, def:85,  xpR:280, goldR:160, level:12, stamCost:250, isBoss:true },
     ]
   },
   { id:"castle",  name:"Castillo Maldito",   emoji:"🏰", unlockXP:16800, bg:"#100810", accent:"#5a1a6a",
     desc:"7 meses acumulados. Las fuerzas oscuras reinan.", stamBase:160,
     monsters:[
-      { name:"Caballero Oscuro",type:"mob1",     hp:500,  atk:90,  def:45,  xpR:120, goldR:70,  level:13, stamCost:160 },
-      { name:"Mago Sombrío",    type:"mob2",     hp:440,  atk:110, def:35,  xpR:145, goldR:85,  level:14, stamCost:180 },
-      { name:"Caballero Jefe",  type:"miniboss", hp:720,  atk:125, def:58,  xpR:220, goldR:130, level:15, stamCost:230 },
-      { name:"Liche Supremo",   type:"boss",     hp:1200, atk:148, def:72,  xpR:400, goldR:240, level:17, stamCost:300, isBoss:true },
+      { name:"Caballero Oscuro",type:"mob1",     hp:1000, atk:162, def:80,  xpR:120, goldR:70,  level:13, stamCost:160 },
+      { name:"Mago Sombrío",    type:"mob2",     hp:880,  atk:198, def:62,  xpR:145, goldR:85,  level:14, stamCost:180 },
+      { name:"Caballero Jefe",  type:"miniboss", hp:1440, atk:225, def:102, xpR:220, goldR:130, level:15, stamCost:230 },
+      { name:"Liche Supremo",   type:"boss",     hp:2400, atk:266, def:128, xpR:400, goldR:240, level:17, stamCost:300, isBoss:true },
     ]
   },
   { id:"abyss",   name:"El Abismo",          emoji:"🌑", unlockXP:26400, bg:"#050508", accent:"#3a0a5a",
     desc:"11 meses+ Solo los legendarios llegan aquí.", stamBase:220,
     monsters:[
-      { name:"Demonio Guardián",type:"mob1",     hp:800,  atk:150, def:75,  xpR:200, goldR:120, level:18, stamCost:220 },
-      { name:"Ángel Caído",     type:"mob2",     hp:750,  atk:170, def:82,  xpR:230, goldR:140, level:19, stamCost:250 },
-      { name:"Señor Demoníaco", type:"miniboss", hp:1100, atk:190, def:95,  xpR:340, goldR:200, level:20, stamCost:300 },
-      { name:"Dragón Eterno",   type:"boss",     hp:2000, atk:220, def:110, xpR:600, goldR:400, level:22, stamCost:400, isBoss:true, isFinal:true },
+      { name:"Demonio Guardián",type:"mob1",     hp:1600, atk:270, def:135, xpR:200, goldR:120, level:18, stamCost:220 },
+      { name:"Ángel Caído",     type:"mob2",     hp:1500, atk:306, def:148, xpR:230, goldR:140, level:19, stamCost:250 },
+      { name:"Señor Demoníaco", type:"miniboss", hp:2200, atk:342, def:170, xpR:340, goldR:200, level:20, stamCost:300 },
+      { name:"Dragón Eterno",   type:"boss",     hp:4000, atk:396, def:198, xpR:600, goldR:400, level:22, stamCost:400, isBoss:true, isFinal:true },
     ]
   },
+];
+
+// ═══════════════════════════════════════════════════
+//  WORKOUT SYSTEM
+// ═══════════════════════════════════════════════════
+// Exercise library
+const EXERCISE_LIB = {
+  fuerza: [
+    { id:"bench",    name:"Press Banca",       icon:"🏋️", defaultSets:4, defaultReps:10, defaultKg:60 },
+    { id:"squat",    name:"Sentadillas",        icon:"🦵", defaultSets:4, defaultReps:8,  defaultKg:80 },
+    { id:"deadlift", name:"Peso Muerto",        icon:"⚡", defaultSets:3, defaultReps:5,  defaultKg:100 },
+    { id:"ohp",      name:"Press Militar",      icon:"💪", defaultSets:4, defaultReps:10, defaultKg:40 },
+    { id:"row",      name:"Remo con Barra",     icon:"🚣", defaultSets:4, defaultReps:10, defaultKg:60 },
+    { id:"pullup",   name:"Dominadas",          icon:"🙌", defaultSets:4, defaultReps:8,  defaultKg:0  },
+    { id:"curl",     name:"Curl Bíceps",        icon:"💪", defaultSets:3, defaultReps:12, defaultKg:15 },
+    { id:"dip",      name:"Fondos",             icon:"🤸", defaultSets:3, defaultReps:12, defaultKg:0  },
+    { id:"lunges",   name:"Zancadas",           icon:"🦿", defaultSets:3, defaultReps:12, defaultKg:20 },
+    { id:"hipthrust",name:"Hip Thrust",         icon:"🍑", defaultSets:4, defaultReps:12, defaultKg:60 },
+  ],
+  velocidad: [
+    { id:"run",      name:"Correr",             icon:"🏃", defaultSets:1, defaultReps:30, defaultKg:0, isCardio:true, unit:"min" },
+    { id:"bike",     name:"Bicicleta",          icon:"🚴", defaultSets:1, defaultReps:45, defaultKg:0, isCardio:true, unit:"min" },
+    { id:"hiit",     name:"HIIT",               icon:"⚡", defaultSets:5, defaultReps:1,  defaultKg:0, isCardio:true, unit:"rondas" },
+    { id:"jump",     name:"Saltar Cuerda",      icon:"🪢", defaultSets:5, defaultReps:2,  defaultKg:0, isCardio:true, unit:"min" },
+    { id:"sprint",   name:"Sprints",            icon:"💨", defaultSets:8, defaultReps:1,  defaultKg:0, isCardio:true, unit:"x40m" },
+    { id:"swim",     name:"Natación",           icon:"🏊", defaultSets:1, defaultReps:30, defaultKg:0, isCardio:true, unit:"min" },
+    { id:"rowing",   name:"Remo Ergómetro",     icon:"🚣", defaultSets:1, defaultReps:20, defaultKg:0, isCardio:true, unit:"min" },
+  ],
+  vitalidad: [
+    { id:"yoga",     name:"Yoga",               icon:"🧘", defaultSets:1, defaultReps:45, defaultKg:0, isCardio:true, unit:"min" },
+    { id:"plank",    name:"Plancha",            icon:"🪨", defaultSets:4, defaultReps:60, defaultKg:0, isCardio:true, unit:"seg" },
+    { id:"stretch",  name:"Estiramientos",      icon:"🤸", defaultSets:1, defaultReps:30, defaultKg:0, isCardio:true, unit:"min" },
+    { id:"breath",   name:"Respiración 4-7-8",  icon:"💨", defaultSets:3, defaultReps:5,  defaultKg:0, isCardio:true, unit:"rondas" },
+    { id:"pilates",  name:"Pilates",            icon:"🌀", defaultSets:1, defaultReps:45, defaultKg:0, isCardio:true, unit:"min" },
+    { id:"walk",     name:"Caminata",           icon:"🚶", defaultSets:1, defaultReps:30, defaultKg:0, isCardio:true, unit:"min" },
+  ],
+};
+
+const ALL_EXERCISES = [...EXERCISE_LIB.fuerza,...EXERCISE_LIB.velocidad,...EXERCISE_LIB.vitalidad];
+
+// Workout templates
+const WORKOUT_TEMPLATES = [
+  {
+    id:"push",    name:"Push Day",    icon:"💥", color:"#e74c3c",
+    desc:"Pecho, hombros y tríceps",
+    exercises:["bench","ohp","dip","curl"],
+  },
+  {
+    id:"pull",    name:"Pull Day",    icon:"🔥", color:"#9b59b6",
+    desc:"Espalda y bíceps",
+    exercises:["row","pullup","deadlift","curl"],
+  },
+  {
+    id:"legs",    name:"Leg Day",     icon:"🦵", color:"#e67e22",
+    desc:"Piernas completo",
+    exercises:["squat","deadlift","lunges","hipthrust"],
+  },
+  {
+    id:"full",    name:"Full Body",   icon:"⚡", color:"#f39c12",
+    desc:"Todo el cuerpo",
+    exercises:["bench","squat","row","ohp"],
+  },
+  {
+    id:"cardio",  name:"Cardio",      icon:"🏃", color:"#3498db",
+    desc:"Resistencia y velocidad",
+    exercises:["run","hiit","jump","sprint"],
+  },
+  {
+    id:"recovery",name:"Recovery",   icon:"🌿", color:"#2ecc71",
+    desc:"Movilidad y vitalidad",
+    exercises:["yoga","stretch","plank","breath"],
+  },
+];
+
+// XP calculator for a completed workout exercise
+function calcExerciseXP(ex, sets) {
+  const lib = ALL_EXERCISES.find(e=>e.id===ex.id);
+  if(!lib) return 0;
+  const stat = EXERCISE_LIB.fuerza.find(e=>e.id===ex.id) ? "fuerza"
+    : EXERCISE_LIB.velocidad.find(e=>e.id===ex.id) ? "velocidad" : "vitalidad";
+  const cfg = STAT_CFG[stat];
+  if(lib.isCardio){
+    // total minutes/units × xpPerUnit / 10
+    const total = sets.filter(s=>s.done).reduce((a,s)=>a+Number(s.reps||0),0);
+    return Math.max(0, Math.round(total * cfg.xpPerUnit / 10));
+  } else {
+    // volume = sets × reps × kg, xpPerUnit/10 per 10kg of volume
+    const volume = sets.filter(s=>s.done).reduce((a,s)=>a+(Number(s.reps||0)*Number(s.kg||0)),0);
+    return Math.max(0, Math.round(volume * cfg.xpPerUnit / 100));
+  }
+}
+
+function getStatForExercise(exId) {
+  if(EXERCISE_LIB.fuerza.find(e=>e.id===exId))    return "fuerza";
+  if(EXERCISE_LIB.velocidad.find(e=>e.id===exId)) return "velocidad";
+  return "vitalidad";
+}
+
+// ═══════════════════════════════════════════════════
+//  SHOP — equipment, potions, permanent upgrades
+// ═══════════════════════════════════════════════════
+const SHOP_ITEMS = [
+  // ── WEAPONS (boost ATK) ──
+  { id:"sword_iron",    category:"weapon", name:"Espada de Hierro",    icon:"⚔️",  price:80,   bonus:{atk:8},              desc:"+8 ATK",                    reqZone:0 },
+  { id:"sword_steel",   category:"weapon", name:"Espada de Acero",     icon:"🗡️",  price:250,  bonus:{atk:20},             desc:"+20 ATK",                   reqZone:1 },
+  { id:"sword_magic",   category:"weapon", name:"Espada Mágica",       icon:"✨",   price:600,  bonus:{atk:45},             desc:"+45 ATK",                   reqZone:2 },
+  { id:"sword_dragon",  category:"weapon", name:"Espadón del Dragón",  icon:"🐉",  price:1400, bonus:{atk:100},            desc:"+100 ATK",                  reqZone:3 },
+  // ── ARMOR (boost DEF + HP) ──
+  { id:"armor_leather", category:"armor",  name:"Armadura de Cuero",   icon:"🥋",  price:60,   bonus:{def:6,hp:30},        desc:"+6 DEF +30 HP",             reqZone:0 },
+  { id:"armor_chain",   category:"armor",  name:"Cota de Malla",       icon:"🛡️",  price:200,  bonus:{def:18,hp:80},       desc:"+18 DEF +80 HP",            reqZone:1 },
+  { id:"armor_plate",   category:"armor",  name:"Armadura de Placas",  icon:"⚙️",  price:500,  bonus:{def:40,hp:180},      desc:"+40 DEF +180 HP",           reqZone:2 },
+  { id:"armor_divine",  category:"armor",  name:"Armadura Divina",     icon:"👼",  price:1200, bonus:{def:90,hp:400},      desc:"+90 DEF +400 HP",           reqZone:3 },
+  // ── ACCESSORIES (mixed) ──
+  { id:"ring_speed",    category:"access", name:"Anillo de Velocidad",  icon:"💍",  price:150,  bonus:{spd:0.1},            desc:"+0.1 velocidad combate",    reqZone:0 },
+  { id:"amulet_life",   category:"access", name:"Amuleto de Vida",      icon:"📿",  price:300,  bonus:{hp:120},             desc:"+120 HP máx",               reqZone:1 },
+  { id:"boots_swift",   category:"access", name:"Botas Veloces",        icon:"👟",  price:450,  bonus:{spd:0.2,def:10},     desc:"+0.2 velocidad +10 DEF",    reqZone:2 },
+  { id:"crown_power",   category:"access", name:"Corona del Poder",     icon:"👑",  price:1000, bonus:{atk:30,def:30,hp:150},desc:"+30ATK +30DEF +150HP",     reqZone:3 },
+  // ── POTIONS (consumables, used in battle) ──
+  { id:"potion_small",  category:"potion", name:"Poción Pequeña",       icon:"🧪",  price:25,   heal:80,  maxStack:5,       desc:"Restaura 80 HP en combate", reqZone:0 },
+  { id:"potion_medium", category:"potion", name:"Poción Media",         icon:"⚗️",  price:70,   heal:200, maxStack:5,       desc:"Restaura 200 HP en combate",reqZone:1 },
+  { id:"potion_large",  category:"potion", name:"Poción Grande",        icon:"🔮",  price:180,  heal:500, maxStack:3,       desc:"Restaura 500 HP en combate",reqZone:2 },
+  // ── PERMANENT UPGRADES ──
+  { id:"perm_atk1",  category:"perm", name:"Entrenamiento Ofensivo I",  icon:"💪",  price:400,  bonus:{atk:15},  desc:"+15 ATK permanente",  reqZone:0, maxBuy:3 },
+  { id:"perm_def1",  category:"perm", name:"Temple de Acero I",         icon:"🏋️",  price:400,  bonus:{def:12},  desc:"+12 DEF permanente",  reqZone:0, maxBuy:3 },
+  { id:"perm_hp1",   category:"perm", name:"Vitalidad Extrema I",       icon:"❤️",  price:400,  bonus:{hp:100},  desc:"+100 HP permanente",  reqZone:0, maxBuy:3 },
+  { id:"perm_atk2",  category:"perm", name:"Entrenamiento Ofensivo II", icon:"⚡",  price:900,  bonus:{atk:35},  desc:"+35 ATK permanente",  reqZone:2, maxBuy:2 },
+  { id:"perm_def2",  category:"perm", name:"Temple de Acero II",        icon:"🔰",  price:900,  bonus:{def:28},  desc:"+28 DEF permanente",  reqZone:2, maxBuy:2 },
+];
+
+const ITEM_CATEGORIES = [
+  { id:"weapon", label:"⚔️ Armas"    },
+  { id:"armor",  label:"🛡️ Armadura" },
+  { id:"access", label:"💍 Accesorios"},
+  { id:"potion", label:"🧪 Pociones" },
+  { id:"perm",   label:"📈 Mejoras"  },
 ];
 
 // ═══════════════════════════════════════════════════
@@ -141,15 +276,29 @@ const getLvTitle  = lv => LEVEL_TITLES[Math.min(lv-1,LEVEL_TITLES.length-1)];
 const rand        = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
 const totalXP     = s => Object.values(s).reduce((a,v)=>a+v.xp,0);
 
-function heroStats(hero, stats) {
+function heroStats(hero, stats, equipment=[]) {
   const cls = CLASSES.find(c=>c.id===hero.class)||CLASSES[0];
   const fLv=getLevel(stats.fuerza.xp), vLv=getLevel(stats.velocidad.xp), viLv=getLevel(stats.vitalidad.xp);
-  return {
+  // Base stats from training
+  const base = {
     atk: Math.round((12+fLv*3.5)*cls.statBonus.atk),
     def: Math.round((6+viLv*2.2)*cls.statBonus.def),
     spd: Math.min(3.0,(1.0+vLv*0.06)*cls.statBonus.spd),
     hp:  Math.round((70+viLv*9+fLv*4)*cls.statBonus.hp),
   };
+  // Add equipment bonuses
+  if (equipment && equipment.length > 0) {
+    equipment.forEach(itemId => {
+      const item = SHOP_ITEMS.find(i=>i.id===itemId);
+      if (item?.bonus) {
+        if (item.bonus.atk) base.atk += item.bonus.atk;
+        if (item.bonus.def) base.def += item.bonus.def;
+        if (item.bonus.hp)  base.hp  += item.bonus.hp;
+        if (item.bonus.spd) base.spd = Math.min(3.0, base.spd + item.bonus.spd);
+      }
+    });
+  }
+  return base;
 }
 
 function heroImgSrc(hero) {
@@ -328,7 +477,7 @@ function SpecModal({ hero, onChoose, onClose }) {
 // ═══════════════════════════════════════════════════
 //  BATTLE SCREEN
 // ═══════════════════════════════════════════════════
-function BattleScreen({ hero, hStats, zone, stamina, onBack, onReward, onStaminaUsed }) {
+function BattleScreen({ hero, hStats, zone, stamina, inventory={}, onBack, onReward, onStaminaUsed, onUsePotion }) {
   const cls      = CLASSES.find(c=>c.id===hero.class)||CLASSES[0];
   const [mIdx,   setMIdx]   = useState(0);
   const monster  = zone.monsters[mIdx];
@@ -531,7 +680,7 @@ function BattleScreen({ hero, hStats, zone, stamina, onBack, onReward, onStamina
           </div>
         </div>
 
-        {/* Skills */}
+        {/* Skills + Potion */}
         <div style={{display:"flex",gap:8,marginBottom:10}}>
           {cls.skills.map((sk,i)=>{
             const ready=gauge>=sk.cost&&phase==="idle"&&!outcome;
@@ -551,6 +700,23 @@ function BattleScreen({ hero, hStats, zone, stamina, onBack, onReward, onStamina
               </button>
             );
           })}
+          {/* Potion buttons */}
+          {SHOP_ITEMS.filter(i=>i.category==="potion"&&(inventory[i.id]||0)>0).slice(0,1).map(potion=>(
+            <button key={potion.id} onClick={()=>{
+              if(phase!=="idle"||outcome) return;
+              setHeroHP(h=>Math.min(hStats.hp,h+potion.heal));
+              onUsePotion(potion.id);
+              addLog(`${hero.name} usa ${potion.name} → +${potion.heal} HP`,"#2ecc71");
+            }} style={{
+              width:56, padding:"8px 4px", borderRadius:10, cursor:phase==="idle"&&!outcome?"pointer":"not-allowed",
+              border:"2px solid #2ecc7166", background:"rgba(46,204,113,0.1)",
+              color:"#2ecc71", fontFamily:"'Courier New',monospace", fontSize:9, fontWeight:800,
+              display:"flex", flexDirection:"column", alignItems:"center", gap:2, flexShrink:0,
+            }}>
+              <span style={{fontSize:18}}>{potion.icon}</span>
+              <span style={{fontSize:7}}>×{inventory[potion.id]}</span>
+            </button>
+          ))}
         </div>
 
         {/* Battle log */}
@@ -629,6 +795,546 @@ function WorldMap({ stats, stamina, onSelectZone, onBack }) {
 }
 
 // ═══════════════════════════════════════════════════
+//  WORKOUT SCREEN — Hevy-style interactive training
+// ═══════════════════════════════════════════════════
+function WorkoutScreen({ hero, stats, onFinish, onBack }) {
+  const cls = CLASSES.find(c=>c.id===hero.class)||CLASSES[0];
+
+  // Phase: "select" | "active" | "summary"
+  const [phase, setPhase]     = useState("select");
+  const [template, setTemplate] = useState(null);
+
+  // Active workout state
+  const [exercises, setExercises] = useState([]); // [{id, sets:[{reps,kg,done}]}]
+  const [activeEx,  setActiveEx]  = useState(0);
+  const [startTime, setStartTime] = useState(null);
+  const [elapsed,   setElapsed]   = useState(0);
+
+  // Rest timer
+  const [restActive, setRestActive]   = useState(false);
+  const [restTotal,  setRestTotal]    = useState(90);
+  const [restLeft,   setRestLeft]     = useState(90);
+  const restRef = useRef(null);
+
+  // Add exercise picker
+  const [showPicker, setShowPicker]   = useState(false);
+  const [pickerStat, setPickerStat]   = useState("fuerza");
+
+  // Summary
+  const [summary, setSummary] = useState(null);
+
+  // Elapsed timer
+  useEffect(()=>{
+    if(phase!=="active"||!startTime) return;
+    const t=setInterval(()=>setElapsed(Math.floor((Date.now()-startTime)/1000)),1000);
+    return()=>clearInterval(t);
+  },[phase,startTime]);
+
+  // Rest countdown
+  useEffect(()=>{
+    if(!restActive) return;
+    restRef.current=setInterval(()=>{
+      setRestLeft(l=>{
+        if(l<=1){
+          clearInterval(restRef.current);
+          setRestActive(false);
+          // Beep via AudioContext
+          try{
+            const ctx=new(window.AudioContext||window.webkitAudioContext)();
+            [0,200,400].forEach(d=>setTimeout(()=>{
+              const o=ctx.createOscillator(),g=ctx.createGain();
+              o.connect(g);g.connect(ctx.destination);
+              o.frequency.value=880;g.gain.setValueAtTime(0.3,ctx.currentTime);
+              g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.3);
+              o.start();o.stop(ctx.currentTime+0.3);
+            },d));
+          }catch(e){}
+          return 0;
+        }
+        return l-1;
+      });
+    },1000);
+    return()=>clearInterval(restRef.current);
+  },[restActive]);
+
+  function startFromTemplate(tmpl) {
+    const exs = tmpl.exercises.map(id=>{
+      const lib=ALL_EXERCISES.find(e=>e.id===id);
+      if(!lib) return null;
+      const sets=[...Array(lib.defaultSets)].map(()=>({
+        reps: lib.isCardio ? lib.defaultReps : lib.defaultReps,
+        kg:   lib.defaultKg,
+        done: false,
+      }));
+      return{id,sets};
+    }).filter(Boolean);
+    setExercises(exs);
+    setTemplate(tmpl);
+    setStartTime(Date.now());
+    setElapsed(0);
+    setPhase("active");
+    setActiveEx(0);
+  }
+
+  function startCustom() {
+    setExercises([]);
+    setTemplate({id:"custom",name:"Entreno Custom",icon:"✏️",color:cls.color,desc:"Tu rutina personalizada"});
+    setStartTime(Date.now());
+    setElapsed(0);
+    setPhase("active");
+    setActiveEx(0);
+    setShowPicker(true);
+  }
+
+  function toggleSet(exIdx, setIdx) {
+    setExercises(prev=>{
+      const next=[...prev];
+      const s={...next[exIdx].sets[setIdx]};
+      const wasDone=s.done;
+      s.done=!s.done;
+      next[exIdx]={...next[exIdx],sets:next[exIdx].sets.map((ss,i)=>i===setIdx?s:ss)};
+      // Start rest timer when marking done
+      if(!wasDone && s.done) {
+        setRestLeft(restTotal);
+        setRestActive(true);
+      }
+      return next;
+    });
+  }
+
+  function updateSet(exIdx, setIdx, field, val) {
+    setExercises(prev=>{
+      const next=[...prev];
+      const sets=[...next[exIdx].sets];
+      sets[setIdx]={...sets[setIdx],[field]:val};
+      next[exIdx]={...next[exIdx],sets};
+      return next;
+    });
+  }
+
+  function addSet(exIdx) {
+    setExercises(prev=>{
+      const next=[...prev];
+      const last=next[exIdx].sets[next[exIdx].sets.length-1]||{reps:10,kg:0,done:false};
+      next[exIdx]={...next[exIdx],sets:[...next[exIdx].sets,{reps:last.reps,kg:last.kg,done:false}]};
+      return next;
+    });
+  }
+
+  function removeSet(exIdx, setIdx) {
+    setExercises(prev=>{
+      const next=[...prev];
+      next[exIdx]={...next[exIdx],sets:next[exIdx].sets.filter((_,i)=>i!==setIdx)};
+      return next;
+    });
+  }
+
+  function addExercise(exId) {
+    const lib=ALL_EXERCISES.find(e=>e.id===exId);
+    if(!lib||exercises.find(e=>e.id===exId)) return;
+    const sets=[...Array(lib.defaultSets)].map(()=>({reps:lib.defaultReps,kg:lib.defaultKg,done:false}));
+    setExercises(prev=>[...prev,{id:exId,sets}]);
+    setShowPicker(false);
+  }
+
+  function finishWorkout() {
+    // Calculate XP per stat
+    const xpMap={fuerza:0,velocidad:0,vitalidad:0};
+    exercises.forEach(ex=>{
+      const stat=getStatForExercise(ex.id);
+      xpMap[stat]+=calcExerciseXP(ex,ex.sets);
+    });
+    const totalSets=exercises.reduce((a,e)=>a+e.sets.filter(s=>s.done).length,0);
+    const totalXpGained=Object.values(xpMap).reduce((a,v)=>a+v,0);
+    setSummary({xpMap,totalSets,duration:elapsed,totalXp:totalXpGained});
+    setPhase("summary");
+    onFinish(xpMap, elapsed);
+  }
+
+  const fmt=s=>`${Math.floor(s/60).toString().padStart(2,"0")}:${(s%60).toString().padStart(2,"0")}`;
+  const totalDoneSets=exercises.reduce((a,e)=>a+e.sets.filter(s=>s.done).length,0);
+  const totalSets=exercises.reduce((a,e)=>a+e.sets.length,0);
+  const liveXP=exercises.reduce((a,ex)=>a+calcExerciseXP(ex,ex.sets),0);
+
+  // ── SELECT TEMPLATE ──
+  if(phase==="select") return (
+    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:"'Courier New',monospace",paddingBottom:40}}>
+      <div style={{background:"linear-gradient(160deg,#0e0820,#0a1228)",borderBottom:`1px solid ${cls.color}22`,padding:"14px 16px"}}>
+        <div style={{maxWidth:480,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <button onClick={onBack} style={{background:"none",border:"1px solid #2d2060",color:"#6b7280",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:9}}>← VOLVER</button>
+          <div style={{fontSize:12,color:cls.color,letterSpacing:2,fontWeight:800}}>💪 INICIAR ENTRENO</div>
+          <div style={{width:60}}/>
+        </div>
+      </div>
+      <div style={{maxWidth:480,margin:"0 auto",padding:16}}>
+        <div style={{fontSize:9,color:"#6b7280",letterSpacing:2,marginBottom:12}}>PLANTILLAS</div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:20}}>
+          {WORKOUT_TEMPLATES.map(tmpl=>(
+            <button key={tmpl.id} onClick={()=>startFromTemplate(tmpl)}
+              style={{background:`${tmpl.color}11`,border:`1px solid ${tmpl.color}44`,borderRadius:12,padding:"16px 12px",cursor:"pointer",textAlign:"left",transition:"all 0.15s",fontFamily:"'Courier New',monospace"}}
+              onMouseEnter={e=>{e.currentTarget.style.background=`${tmpl.color}22`;e.currentTarget.style.border=`1px solid ${tmpl.color}88`;}}
+              onMouseLeave={e=>{e.currentTarget.style.background=`${tmpl.color}11`;e.currentTarget.style.border=`1px solid ${tmpl.color}44`;}}>
+              <div style={{fontSize:24,marginBottom:6}}>{tmpl.icon}</div>
+              <div style={{fontSize:12,fontWeight:800,color:tmpl.color,marginBottom:3}}>{tmpl.name}</div>
+              <div style={{fontSize:9,color:"#6b7280"}}>{tmpl.desc}</div>
+              <div style={{fontSize:8,color:"#4b5563",marginTop:6}}>
+                {tmpl.exercises.map(id=>ALL_EXERCISES.find(e=>e.id===id)?.name).filter(Boolean).slice(0,2).join(", ")}...
+              </div>
+            </button>
+          ))}
+        </div>
+        <button onClick={startCustom}
+          style={{width:"100%",padding:14,borderRadius:12,cursor:"pointer",border:`2px dashed ${cls.color}44`,background:"transparent",color:cls.color,fontFamily:"'Courier New',monospace",fontSize:12,fontWeight:800,letterSpacing:2}}>
+          ✏️ CREAR RUTINA PERSONALIZADA
+        </button>
+      </div>
+    </div>
+  );
+
+  // ── SUMMARY ──
+  if(phase==="summary"&&summary) return (
+    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:"'Courier New',monospace",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
+      <div style={{maxWidth:440,width:"100%",textAlign:"center"}}>
+        <div style={{fontSize:48,marginBottom:16}}>⚔️</div>
+        <div style={{fontSize:10,color:cls.color,letterSpacing:4,marginBottom:8}}>ENTRENAMIENTO COMPLETADO</div>
+        <div style={{fontSize:22,fontWeight:800,color:"#fff",marginBottom:4}}>{template?.name}</div>
+        <div style={{fontSize:11,color:"#6b7280",marginBottom:24}}>Duración: {fmt(summary.duration)} · {summary.totalSets} sets completados</div>
+
+        {/* XP earned per stat */}
+        <div style={{background:"#0e0e1c",border:"1px solid #2d2060",borderRadius:14,padding:16,marginBottom:16}}>
+          <div style={{fontSize:9,color:"#7c3aed",letterSpacing:3,marginBottom:12}}>XP GANADO</div>
+          {Object.entries(summary.xpMap).filter(([,v])=>v>0).map(([stat,xp])=>{
+            const cfg=STAT_CFG[stat];
+            return(
+              <div key={stat} style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
+                <span style={{fontSize:18}}>{cfg.icon}</span>
+                <span style={{flex:1,fontSize:12,color:cfg.color,fontWeight:800}}>{cfg.label}</span>
+                <span style={{fontSize:16,fontWeight:800,color:cfg.color}}>+{xp} XP</span>
+              </div>
+            );
+          })}
+          <div style={{borderTop:"1px solid #1e1e3a",marginTop:10,paddingTop:10,display:"flex",justifyContent:"space-between"}}>
+            <span style={{fontSize:11,color:"#9ca3af"}}>TOTAL</span>
+            <span style={{fontSize:18,fontWeight:800,color:"#f39c12"}}>+{summary.totalXp} XP ⚡+{summary.totalXp} STAMINA</span>
+          </div>
+        </div>
+
+        <button onClick={onBack} style={{width:"100%",padding:14,borderRadius:12,cursor:"pointer",border:"none",background:`linear-gradient(90deg,${cls.color},${cls.accent})`,color:"#fff",fontWeight:800,fontSize:14,fontFamily:"'Courier New',monospace",letterSpacing:2,boxShadow:`0 4px 20px ${cls.color}55`}}>
+          ¡ÉPICO! VOLVER AL MAPA →
+        </button>
+      </div>
+    </div>
+  );
+
+  // ── ACTIVE WORKOUT ──
+  const currentEx = exercises[activeEx];
+  const currentLib = currentEx ? ALL_EXERCISES.find(e=>e.id===currentEx.id) : null;
+
+  return (
+    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:"'Courier New',monospace",paddingBottom:100}}>
+      <style>{`
+        @keyframes restPulse{0%,100%{opacity:1}50%{opacity:0.6}}
+        @keyframes xpFloat{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
+        .set-row:hover{background:#0e0e1c!important;}
+      `}</style>
+
+      {/* Header */}
+      <div style={{background:"#0a0818",borderBottom:`1px solid ${cls.color}22`,padding:"10px 16px",position:"sticky",top:0,zIndex:10}}>
+        <div style={{maxWidth:480,margin:"0 auto"}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
+            <button onClick={()=>{if(window.confirm("¿Terminar entrenamiento?"))finishWorkout();}} style={{background:"none",border:"1px solid #2d2060",color:"#6b7280",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:9}}>TERMINAR</button>
+            <div style={{textAlign:"center"}}>
+              <div style={{fontSize:11,color:cls.color,fontWeight:800}}>{template?.icon} {template?.name}</div>
+              <div style={{fontSize:10,color:"#6b7280"}}>⏱ {fmt(elapsed)}</div>
+            </div>
+            <div style={{textAlign:"right"}}>
+              <div style={{fontSize:11,color:"#f39c12",fontWeight:800}}>+{liveXP} XP</div>
+              <div style={{fontSize:9,color:"#6b7280"}}>{totalDoneSets}/{totalSets} sets</div>
+            </div>
+          </div>
+          {/* Overall progress bar */}
+          <div style={{background:"#1a1a2e",borderRadius:999,height:4,overflow:"hidden"}}>
+            <div style={{width:`${totalSets>0?(totalDoneSets/totalSets)*100:0}%`,height:"100%",background:`linear-gradient(90deg,${cls.color},${cls.accent})`,borderRadius:999,transition:"width 0.4s"}}/>
+          </div>
+        </div>
+      </div>
+
+      {/* Rest Timer Overlay */}
+      {restActive&&(
+        <div style={{position:"fixed",bottom:80,left:"50%",transform:"translateX(-50%)",zIndex:50,background:"#0a0818",border:"2px solid #3498db",borderRadius:16,padding:"12px 20px",display:"flex",alignItems:"center",gap:12,boxShadow:"0 8px 32px #3498db44",animation:"restPulse 1s ease-in-out infinite"}}>
+          {/* Circle timer SVG */}
+          <svg width={48} height={48}>
+            <circle cx={24} cy={24} r={20} fill="none" stroke="#1e1e3a" strokeWidth={4}/>
+            <circle cx={24} cy={24} r={20} fill="none" stroke="#3498db" strokeWidth={4}
+              strokeDasharray={`${2*Math.PI*20}`}
+              strokeDashoffset={`${2*Math.PI*20*(1-restLeft/restTotal)}`}
+              strokeLinecap="round"
+              style={{transform:"rotate(-90deg)",transformOrigin:"center",transition:"stroke-dashoffset 1s linear"}}/>
+            <text x={24} y={28} textAnchor="middle" fill="#fff" fontSize={13} fontWeight="bold" fontFamily="'Courier New',monospace">{restLeft}</text>
+          </svg>
+          <div>
+            <div style={{fontSize:11,color:"#3498db",fontWeight:800,letterSpacing:1}}>DESCANSANDO</div>
+            <div style={{fontSize:9,color:"#6b7280"}}>Próximo set en {restLeft}s</div>
+          </div>
+          <button onClick={()=>{clearInterval(restRef.current);setRestActive(false);}}
+            style={{background:"#3498db22",border:"1px solid #3498db44",color:"#3498db",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:9,fontFamily:"'Courier New',monospace"}}>
+            SALTAR
+          </button>
+          {/* Rest time selector */}
+          <div style={{display:"flex",gap:4}}>
+            {[60,90,120].map(t=>(
+              <button key={t} onClick={()=>{setRestTotal(t);setRestLeft(t);}}
+                style={{background:restTotal===t?"#3498db22":"none",border:`1px solid ${restTotal===t?"#3498db":"#2d2060"}`,color:restTotal===t?"#3498db":"#4b5563",borderRadius:4,padding:"2px 6px",cursor:"pointer",fontSize:8,fontFamily:"'Courier New',monospace"}}>
+                {t}s
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div style={{maxWidth:480,margin:"0 auto",padding:"12px 16px"}}>
+        {/* Exercise tabs */}
+        <div style={{display:"flex",gap:6,overflowX:"auto",paddingBottom:8,marginBottom:12,scrollbarWidth:"none"}}>
+          {exercises.map((ex,i)=>{
+            const lib=ALL_EXERCISES.find(e=>e.id===ex.id);
+            const done=ex.sets.every(s=>s.done)&&ex.sets.length>0;
+            const partial=ex.sets.some(s=>s.done)&&!done;
+            return(
+              <button key={ex.id} onClick={()=>setActiveEx(i)}
+                style={{flexShrink:0,padding:"6px 12px",borderRadius:8,cursor:"pointer",border:`2px solid ${activeEx===i?cls.color:done?"#2ecc7166":"#1e1e3a"}`,background:activeEx===i?`${cls.color}22`:done?"#0a1a0a":"#0e0e1c",color:activeEx===i?cls.color:done?"#2ecc71":"#6b7280",fontSize:9,fontWeight:800,fontFamily:"'Courier New',monospace",whiteSpace:"nowrap"}}>
+                {done?"✅":partial?"🔄":lib?.icon||"💪"} {lib?.name||ex.id}
+              </button>
+            );
+          })}
+          <button onClick={()=>setShowPicker(true)}
+            style={{flexShrink:0,padding:"6px 12px",borderRadius:8,cursor:"pointer",border:"2px dashed #2d2060",background:"transparent",color:"#4b5563",fontSize:9,fontWeight:800,fontFamily:"'Courier New',monospace",whiteSpace:"nowrap"}}>
+            + ADD
+          </button>
+        </div>
+
+        {/* Exercise picker modal */}
+        {showPicker&&(
+          <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.9)",zIndex:100,display:"flex",flexDirection:"column",padding:16}}>
+            <div style={{maxWidth:480,margin:"0 auto",width:"100%",flex:1,display:"flex",flexDirection:"column"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+                <div style={{fontSize:12,color:"#e8e0ff",fontWeight:800}}>Agregar ejercicio</div>
+                <button onClick={()=>setShowPicker(false)} style={{background:"none",border:"1px solid #2d2060",color:"#6b7280",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:10}}>✕</button>
+              </div>
+              <div style={{display:"flex",gap:8,marginBottom:12}}>
+                {["fuerza","velocidad","vitalidad"].map(s=>(
+                  <button key={s} onClick={()=>setPickerStat(s)}
+                    style={{flex:1,padding:"8px 4px",borderRadius:8,cursor:"pointer",border:`2px solid ${pickerStat===s?STAT_CFG[s].color:"#1e1e3a"}`,background:pickerStat===s?`${STAT_CFG[s].color}22`:"#0e0e1c",color:pickerStat===s?STAT_CFG[s].color:"#6b7280",fontSize:9,fontWeight:800,fontFamily:"'Courier New',monospace"}}>
+                    {STAT_CFG[s].icon} {STAT_CFG[s].label.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+              <div style={{overflowY:"auto",flex:1}}>
+                {EXERCISE_LIB[pickerStat].map(ex=>{
+                  const alreadyAdded=exercises.find(e=>e.id===ex.id);
+                  return(
+                    <button key={ex.id} onClick={()=>!alreadyAdded&&addExercise(ex.id)}
+                      style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"12px 14px",borderRadius:10,marginBottom:6,background:alreadyAdded?"#0a0a0a":"#0e0e1c",border:`1px solid ${alreadyAdded?"#1e1e3a":STAT_CFG[pickerStat].color+"33"}`,cursor:alreadyAdded?"not-allowed":"pointer",textAlign:"left",fontFamily:"'Courier New',monospace",opacity:alreadyAdded?0.4:1}}>
+                      <span style={{fontSize:24}}>{ex.icon}</span>
+                      <div style={{flex:1}}>
+                        <div style={{fontSize:12,fontWeight:800,color:"#e8e0ff"}}>{ex.name}</div>
+                        <div style={{fontSize:9,color:"#6b7280"}}>{ex.defaultSets} sets · {ex.isCardio?`${ex.defaultReps} ${ex.unit||"min"}`:`${ex.defaultReps} reps · ${ex.defaultKg}kg`}</div>
+                      </div>
+                      {alreadyAdded?<span style={{fontSize:9,color:"#4b5563"}}>YA AGREGADO</span>:<span style={{fontSize:18,color:STAT_CFG[pickerStat].color}}>+</span>}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Current exercise */}
+        {currentEx&&currentLib&&(
+          <div style={{background:"#0e0e1c",border:`1px solid ${cls.color}22`,borderRadius:14,padding:16}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+              <span style={{fontSize:28}}>{currentLib.icon}</span>
+              <div>
+                <div style={{fontSize:14,fontWeight:800,color:"#e8e0ff"}}>{currentLib.name}</div>
+                <div style={{fontSize:9,color:"#6b7280"}}>{getStatForExercise(currentEx.id)==="fuerza"?"⚔️ Fuerza":getStatForExercise(currentEx.id)==="velocidad"?"💨 Velocidad":"💚 Vitalidad"}</div>
+              </div>
+              <div style={{marginLeft:"auto",fontSize:11,color:"#f39c12",fontWeight:800}}>
+                +{calcExerciseXP(currentEx,currentEx.sets)} XP
+              </div>
+            </div>
+
+            {/* Sets table header */}
+            <div style={{display:"grid",gridTemplateColumns:"32px 1fr 1fr 40px 32px",gap:6,marginBottom:6,padding:"0 4px"}}>
+              <div style={{fontSize:8,color:"#4b5563",textAlign:"center"}}>SET</div>
+              <div style={{fontSize:8,color:"#4b5563",textAlign:"center"}}>{currentLib.isCardio?(currentLib.unit||"MIN"):"REPS"}</div>
+              {!currentLib.isCardio&&<div style={{fontSize:8,color:"#4b5563",textAlign:"center"}}>KG</div>}
+              {currentLib.isCardio&&<div style={{fontSize:8,color:"#4b5563"}}/>}
+              <div style={{fontSize:8,color:"#4b5563",textAlign:"center"}}>✓</div>
+              <div/>
+            </div>
+
+            {/* Sets rows */}
+            {currentEx.sets.map((set,si)=>(
+              <div key={si} className="set-row" style={{display:"grid",gridTemplateColumns:"32px 1fr 1fr 40px 32px",gap:6,marginBottom:6,background:set.done?"#0a180a":"#060612",borderRadius:8,padding:"6px 4px",border:`1px solid ${set.done?"#2ecc7144":"#1e1e3a"}`,transition:"all 0.2s"}}>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,color:"#6b7280",fontWeight:800}}>{si+1}</div>
+                <input
+                  type="number" min="0"
+                  value={set.reps}
+                  onChange={e=>updateSet(activeEx,si,"reps",e.target.value)}
+                  style={{background:"#0a0a18",border:"1px solid #2d2060",color:"#e8e0ff",borderRadius:6,padding:"6px 4px",fontSize:13,fontWeight:800,textAlign:"center",fontFamily:"'Courier New',monospace",width:"100%",boxSizing:"border-box"}}
+                />
+                {!currentLib.isCardio?(
+                  <input
+                    type="number" min="0" step="2.5"
+                    value={set.kg}
+                    onChange={e=>updateSet(activeEx,si,"kg",e.target.value)}
+                    style={{background:"#0a0a18",border:"1px solid #2d2060",color:"#e8e0ff",borderRadius:6,padding:"6px 4px",fontSize:13,fontWeight:800,textAlign:"center",fontFamily:"'Courier New',monospace",width:"100%",boxSizing:"border-box"}}
+                  />
+                ):<div/>}
+                <button onClick={()=>toggleSet(activeEx,si)}
+                  style={{background:set.done?"#2ecc71":"#1a1a2e",border:`2px solid ${set.done?"#2ecc71":"#2d2060"}`,borderRadius:6,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,transition:"all 0.15s"}}>
+                  {set.done?"✅":"○"}
+                </button>
+                <button onClick={()=>removeSet(activeEx,si)}
+                  style={{background:"none",border:"none",color:"#e74c3c",cursor:"pointer",fontSize:14,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                  ×
+                </button>
+              </div>
+            ))}
+
+            <button onClick={()=>addSet(activeEx)}
+              style={{width:"100%",padding:"8px",borderRadius:8,cursor:"pointer",border:`1px dashed ${cls.color}44`,background:"transparent",color:cls.color,fontFamily:"'Courier New',monospace",fontSize:10,fontWeight:800,marginTop:4}}>
+              + AGREGAR SET
+            </button>
+          </div>
+        )}
+
+        {exercises.length===0&&(
+          <div style={{textAlign:"center",padding:"40px 0",color:"#4b5563",fontSize:11}}>
+            Agrega ejercicios con el botón + ADD
+          </div>
+        )}
+
+        {/* Finish button */}
+        {exercises.length>0&&(
+          <button onClick={finishWorkout}
+            style={{width:"100%",padding:14,borderRadius:12,cursor:"pointer",border:"none",background:`linear-gradient(90deg,${cls.color},${cls.accent})`,color:"#fff",fontWeight:800,fontSize:13,fontFamily:"'Courier New',monospace",letterSpacing:2,marginTop:16,boxShadow:`0 4px 20px ${cls.color}44`}}>
+            ⚔️ FINALIZAR ENTRENO (+{liveXP} XP)
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+//  SHOP SCREEN
+// ═══════════════════════════════════════════════════
+function ShopScreen({ gold, equipment, inventory, stats, shopCat, setShopCat, onBuy, onBack }) {
+  const txp = totalXP(stats);
+  const filteredItems = SHOP_ITEMS.filter(i=>i.category===shopCat);
+
+  function isOwned(item) {
+    if(item.category==="potion") return false;
+    if(item.category==="perm") return equipment.filter(id=>id===item.id).length>=(item.maxBuy||1);
+    const catItems = SHOP_ITEMS.filter(i=>i.category===item.category).map(i=>i.id);
+    return equipment.some(id=>id===item.id);
+  }
+  function isEquipped(item) {
+    if(item.category==="potion"||item.category==="perm") return false;
+    return equipment.includes(item.id);
+  }
+
+  return (
+    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:"'Courier New',monospace",paddingBottom:40}}>
+      {/* Header */}
+      <div style={{background:"linear-gradient(160deg,#0e0820,#0a1228)",borderBottom:"1px solid #f39c1222",padding:"14px 16px"}}>
+        <div style={{maxWidth:480,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <button onClick={onBack} style={{background:"none",border:"1px solid #2d2060",color:"#6b7280",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:9}}>← VOLVER</button>
+          <div style={{fontSize:12,color:"#f39c12",letterSpacing:2,fontWeight:800}}>🏪 TIENDA</div>
+          <div style={{fontSize:12,color:"#f39c12",fontWeight:800}}>🪙 {gold}</div>
+        </div>
+      </div>
+
+      <div style={{maxWidth:480,margin:"0 auto",padding:16}}>
+        {/* Equipped panel */}
+        <div style={{background:"#0e0e1c",border:"1px solid #f39c1222",borderRadius:12,padding:14,marginBottom:14}}>
+          <div style={{fontSize:8,color:"#f39c12",letterSpacing:3,marginBottom:10}}>TU EQUIPAMIENTO ACTUAL</div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+            {["weapon","armor","access"].map(cat=>{
+              const catLabel={"weapon":"⚔️ Arma","armor":"🛡️ Armadura","access":"💍 Accesorio"}[cat];
+              const equipped=SHOP_ITEMS.find(i=>i.category===cat&&equipment.includes(i.id));
+              return(
+                <div key={cat} style={{background:"#060612",borderRadius:8,padding:"8px 10px",border:`1px solid ${equipped?"#f39c1244":"#1e1e3a"}`}}>
+                  <div style={{fontSize:7,color:"#4b5563",letterSpacing:2,marginBottom:3}}>{catLabel}</div>
+                  {equipped?(
+                    <div>
+                      <div style={{fontSize:11,color:"#f39c12",fontWeight:800}}>{equipped.icon} {equipped.name}</div>
+                      <div style={{fontSize:8,color:"#6b7280",marginTop:2}}>{equipped.desc}</div>
+                    </div>
+                  ):<div style={{fontSize:10,color:"#2d2d4e"}}>— Sin equipo —</div>}
+                </div>
+              );
+            })}
+            {/* Potions in inventory */}
+            <div style={{background:"#060612",borderRadius:8,padding:"8px 10px",border:"1px solid #1e1e3a"}}>
+              <div style={{fontSize:7,color:"#4b5563",letterSpacing:2,marginBottom:3}}>🧪 POCIONES</div>
+              {SHOP_ITEMS.filter(i=>i.category==="potion"&&(inventory[i.id]||0)>0).length===0
+                ?<div style={{fontSize:10,color:"#2d2d4e"}}>— Sin pociones —</div>
+                :SHOP_ITEMS.filter(i=>i.category==="potion"&&(inventory[i.id]||0)>0).map(i=>(
+                  <div key={i.id} style={{fontSize:10,color:"#2ecc71"}}>{i.icon} {i.name} ×{inventory[i.id]}</div>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+
+        {/* Category tabs */}
+        <div style={{display:"flex",gap:6,marginBottom:14,flexWrap:"wrap"}}>
+          {ITEM_CATEGORIES.map(cat=>(
+            <button key={cat.id} onClick={()=>setShopCat(cat.id)}
+              style={{padding:"6px 10px",borderRadius:8,cursor:"pointer",border:`1px solid ${shopCat===cat.id?"#f39c12":"#1e1e3a"}`,background:shopCat===cat.id?"#1a0f00":"#0e0e1c",color:shopCat===cat.id?"#f39c12":"#6b7280",fontFamily:"'Courier New',monospace",fontSize:9,fontWeight:800,transition:"all 0.15s"}}>
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Items */}
+        {filteredItems.map(item=>{
+          const unlocked=txp>=ZONES[item.reqZone].unlockXP;
+          const owned=isOwned(item);
+          const equipped=isEquipped(item);
+          const qty=inventory[item.id]||0;
+          const canBuy=unlocked&&!owned&&gold>=item.price;
+          return(
+            <div key={item.id} style={{background:"#0e0e1c",border:`1px solid ${equipped?"#f39c1266":owned&&item.category!=="potion"?"#2ecc7133":"#1e1e3a"}`,borderRadius:10,padding:"12px 14px",marginBottom:8,display:"flex",alignItems:"center",gap:12,opacity:unlocked?1:0.5}}>
+              <div style={{fontSize:28,flexShrink:0}}>{item.icon}</div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}>
+                  <span style={{fontSize:12,fontWeight:800,color:equipped?"#f39c12":owned&&item.category!=="potion"?"#2ecc71":"#e8e0ff"}}>{item.name}</span>
+                  {equipped&&<span style={{fontSize:7,background:"#f39c1222",color:"#f39c12",borderRadius:4,padding:"1px 5px",letterSpacing:1}>EQUIPADO</span>}
+                  {owned&&!equipped&&item.category!=="perm"&&item.category!=="potion"&&<span style={{fontSize:7,background:"#2ecc7122",color:"#2ecc71",borderRadius:4,padding:"1px 5px",letterSpacing:1}>TIENES</span>}
+                  {item.category==="potion"&&qty>0&&<span style={{fontSize:7,background:"#3498db22",color:"#3498db",borderRadius:4,padding:"1px 5px",letterSpacing:1}>×{qty}/{item.maxStack}</span>}
+                </div>
+                <div style={{fontSize:9,color:"#6b7280"}}>{item.desc}</div>
+                {!unlocked&&<div style={{fontSize:8,color:"#e74c3c",marginTop:2}}>🔒 Requiere {ZONES[item.reqZone].name}</div>}
+                {item.maxBuy&&<div style={{fontSize:8,color:"#9ca3af",marginTop:1}}>Comprable {equipment.filter(id=>id===item.id).length}/{item.maxBuy} veces</div>}
+              </div>
+              <div style={{textAlign:"center",flexShrink:0}}>
+                <div style={{fontSize:11,color:"#f39c12",fontWeight:800,marginBottom:4}}>🪙{item.price}</div>
+                <button onClick={()=>onBuy(item)} disabled={!canBuy}
+                  style={{padding:"6px 12px",borderRadius:8,cursor:canBuy?"pointer":"not-allowed",border:"none",background:canBuy?"linear-gradient(90deg,#f39c12,#ffeaa7)":owned&&item.category!=="potion"?"#1a2a1a":"#1a1a2e",color:canBuy?"#000":owned&&item.category!=="potion"?"#2ecc71":"#4b5563",fontFamily:"'Courier New',monospace",fontSize:9,fontWeight:800,letterSpacing:1,whiteSpace:"nowrap"}}>
+                  {!unlocked?"🔒":owned&&item.category!=="potion"?"✓ LISTO":"COMPRAR"}
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════
 //  MAIN APP
 // ═══════════════════════════════════════════════════
 export default function App() {
@@ -644,6 +1350,11 @@ export default function App() {
   const [editMode, setEditMode] = useState(false);
   const [battleZI, setBattleZI] = useState(0);
   const [showSpec, setShowSpec] = useState(false);
+  // Equipment: list of owned item IDs (equipped = passive always active)
+  const [equipment, setEquipment] = useState([]);
+  // Inventory: { itemId: qty } for consumables
+  const [inventory, setInventory] = useState({});
+  const [shopCat,   setShopCat]   = useState("weapon");
 
   useEffect(()=>{
     try{
@@ -652,22 +1363,58 @@ export default function App() {
         const l=localStorage.getItem("rpgv6_log");
         const g=localStorage.getItem("rpgv6_gold");
         const st=localStorage.getItem("rpgv6_stamina");
+        const eq=localStorage.getItem("rpgv6_equipment");
+        const inv=localStorage.getItem("rpgv6_inventory");
         if(h){setHero(JSON.parse(h));setScreen("main");}else setScreen("create");
         if(s)setStats(JSON.parse(s));
         if(l)setWlog(JSON.parse(l));
         if(g)setGold(Number(g));
         if(st)setStamina(Math.min(MAX_STAMINA,Number(st)));
+        if(eq)setEquipment(JSON.parse(eq));
+        if(inv)setInventory(JSON.parse(inv));
       }catch{setScreen("create");}
   },[]);
 
   useEffect(()=>{
-    if(!hero||!["main","map","battle"].includes(screen)) return;
+    if(!hero||!["main","map","battle","shop"].includes(screen)) return;
     localStorage.setItem("rpgv6_hero",JSON.stringify(hero));
     localStorage.setItem("rpgv6_stats",JSON.stringify(stats));
     localStorage.setItem("rpgv6_log",JSON.stringify(wlog));
     localStorage.setItem("rpgv6_gold",String(gold));
     localStorage.setItem("rpgv6_stamina",String(stamina));
-  },[hero,stats,wlog,gold,stamina,screen]);
+    localStorage.setItem("rpgv6_equipment",JSON.stringify(equipment));
+    localStorage.setItem("rpgv6_inventory",JSON.stringify(inventory));
+  },[hero,stats,wlog,gold,stamina,equipment,inventory,screen]);
+
+  function toast(msg,color,icon="⚡"){setNotif({msg,color,icon});setTimeout(()=>setNotif(null),3000);}
+
+  function handleBuyItem(item) {
+    if(gold < item.price){ toast("Oro insuficiente","#e74c3c","💰"); return; }
+    const txp = totalXP(stats);
+    const zoneUnlocked = ZONES[item.reqZone].unlockXP <= txp;
+    if(!zoneUnlocked){ toast(`Requiere zona ${ZONES[item.reqZone].name}`,"#e74c3c","🔒"); return; }
+    if(item.category==="potion"){
+      const cur=inventory[item.id]||0;
+      if(cur>=(item.maxStack||5)){ toast("Inventario lleno para esta poción","#e74c3c","⚠️"); return; }
+      setInventory(inv=>({...inv,[item.id]:(inv[item.id]||0)+1}));
+      setGold(g=>g-item.price);
+      toast(`Compraste ${item.name}!`,  "#2ecc71","🧪");
+    } else if(item.category==="perm"){
+      const timesOwned = equipment.filter(id=>id===item.id).length;
+      if(timesOwned>=(item.maxBuy||1)){ toast("Ya tienes el máximo de esta mejora","#e74c3c","⚠️"); return; }
+      setEquipment(eq=>[...eq,item.id]);
+      setGold(g=>g-item.price);
+      toast(`¡${item.name} activado!`,"#9b59b6","📈");
+    } else {
+      // weapon/armor/access — only one per category
+      const catItems = SHOP_ITEMS.filter(i=>i.category===item.category).map(i=>i.id);
+      const newEq = equipment.filter(id=>!catItems.includes(id));
+      newEq.push(item.id);
+      setEquipment(newEq);
+      setGold(g=>g-item.price);
+      toast(`¡${item.name} equipado!`,"#f39c12","⚔️");
+    }
+  }
 
   function toast(msg,color,icon="⚡"){setNotif({msg,color,icon});setTimeout(()=>setNotif(null),3000);}
 
@@ -714,15 +1461,39 @@ export default function App() {
   if(screen==="create"||editMode) return <CharacterCreator onDone={handleCreateDone} initial={editMode?hero:null}/>;
   if(screen==="map") return <WorldMap stats={stats} stamina={stamina} onSelectZone={i=>{setBattleZI(i);setStamina(s=>Math.max(0,s-ZONES[i].monsters[0].stamCost));setScreen("battle");}} onBack={()=>setScreen("main")}/>;
   if(screen==="battle"){
-    const hs=heroStats(hero,stats);
-    return <BattleScreen hero={hero} hStats={hs} zone={ZONES[battleZI]} stamina={stamina} onBack={()=>setScreen("main")} onReward={(xp,g,stat)=>{setStats(s=>({...s,[stat]:{xp:s[stat].xp+xp}}));setGold(prev=>prev+g);}} onStaminaUsed={cost=>setStamina(s=>Math.max(0,s-cost))}/>;
+    const hs=heroStats(hero,stats,equipment);
+    return <BattleScreen hero={hero} hStats={hs} zone={ZONES[battleZI]} stamina={stamina} inventory={inventory}
+      onBack={()=>setScreen("main")}
+      onReward={(xp,g,stat)=>{setStats(s=>({...s,[stat]:{xp:s[stat].xp+xp}}));setGold(prev=>prev+g);}}
+      onStaminaUsed={cost=>setStamina(s=>Math.max(0,s-cost))}
+      onUsePotion={(itemId)=>setInventory(inv=>({...inv,[itemId]:Math.max(0,(inv[itemId]||0)-1)}))}
+    />;
   }
+  if(screen==="workout") return <WorkoutScreen hero={hero} stats={stats}
+    onFinish={(xpMap, dur)=>{
+      setStats(s=>({
+        fuerza:   {xp:s.fuerza.xp   +(xpMap.fuerza||0)},
+        velocidad:{xp:s.velocidad.xp +(xpMap.velocidad||0)},
+        vitalidad:{xp:s.vitalidad.xp +(xpMap.vitalidad||0)},
+      }));
+      const totalGained=Object.values(xpMap).reduce((a,v)=>a+v,0);
+      setStamina(st=>Math.min(MAX_STAMINA,st+totalGained*STAMINA_PER_XP));
+      // Log single entry
+      const entry={id:Date.now(),stat:"fuerza",exercise:"Entrenamiento completo",
+        amount:dur,xp:totalGained,stamina:Math.min(MAX_STAMINA-stamina,totalGained*STAMINA_PER_XP),
+        date:new Date().toLocaleDateString("es-CO",{day:"2-digit",month:"short"}),
+        time:new Date().toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit"}),
+        note:`Fuerza:+${xpMap.fuerza||0} Velocidad:+${xpMap.velocidad||0} Vitalidad:+${xpMap.vitalidad||0}`};
+      setWlog(p=>[entry,...p].slice(0,60));
+    }}
+    onBack={()=>setScreen("main")}/>;
+  if(screen==="shop") return <ShopScreen gold={gold} equipment={equipment} inventory={inventory} stats={stats} shopCat={shopCat} setShopCat={setShopCat} onBuy={handleBuyItem} onBack={()=>setScreen("main")}/>;
 
   const cls=CLASSES.find(c=>c.id===hero.class)||CLASSES[0];
   const spec=cls.specs.find(s=>s.id===hero.specialization);
   const txp=totalXP(stats);
   const heroLv=Math.max(1,Math.round(Object.values(stats).reduce((a,s)=>a+getLevel(s.xp),0)/3));
-  const hs=heroStats(hero,stats);
+  const hs=heroStats(hero,stats,equipment);
   const nextZone=ZONES.find(z=>txp<z.unlockXP);
   const specUnlocked=getLevel(stats[cls.primary].xp)>=SPEC_LEVEL;
 
@@ -790,10 +1561,13 @@ export default function App() {
         </div>
       </div>
 
-      {/* COMBAT CTA */}
-      <div style={{maxWidth:480,margin:"12px auto 0",padding:"0 16px"}}>
-        <button onClick={()=>setScreen("map")} style={{width:"100%",padding:13,borderRadius:12,cursor:"pointer",border:"none",background:`linear-gradient(90deg,${cls.color}cc,${cls.accent}cc)`,color:"#fff",fontWeight:800,fontSize:12,fontFamily:"'Courier New',monospace",letterSpacing:2,boxShadow:`0 4px 20px ${cls.color}44`,transition:"all 0.2s"}}>
-          ⚔️ IR AL MAPA DE COMBATE
+      {/* COMBAT + SHOP CTAs */}
+      <div style={{maxWidth:480,margin:"12px auto 0",padding:"0 16px",display:"flex",gap:8}}>
+        <button onClick={()=>setScreen("map")} style={{flex:3,padding:13,borderRadius:12,cursor:"pointer",border:"none",background:`linear-gradient(90deg,${cls.color}cc,${cls.accent}cc)`,color:"#fff",fontWeight:800,fontSize:12,fontFamily:"'Courier New',monospace",letterSpacing:2,boxShadow:`0 4px 20px ${cls.color}44`,transition:"all 0.2s"}}>
+          ⚔️ COMBATE
+        </button>
+        <button onClick={()=>setScreen("shop")} style={{flex:2,padding:13,borderRadius:12,cursor:"pointer",border:"1px solid #f39c1244",background:"#0e0820",color:"#f39c12",fontWeight:800,fontSize:12,fontFamily:"'Courier New',monospace",letterSpacing:1,transition:"all 0.2s"}}>
+          🏪 TIENDA
         </button>
       </div>
 
@@ -851,51 +1625,54 @@ export default function App() {
 
         {/* TAB TRAIN */}
         {tab==="train"&&(
-          <div style={{background:"#0e0e1c",border:"1px solid #1e1e3a",borderRadius:12,padding:16}}>
-            <div style={{fontSize:8,color:"#7c3aed",letterSpacing:3,marginBottom:12}}>REGISTRAR ENTRENAMIENTO</div>
-            <div style={{background:"#060612",border:"1px solid #f39c1222",borderRadius:8,padding:"8px 12px",marginBottom:12,fontSize:9,color:"#f39c12"}}>
-              ⚡ Cada XP = {STAMINA_PER_XP} Stamina · Stat primario ×1.5 XP
-            </div>
-            <div style={{display:"flex",gap:8,marginBottom:12}}>
-              {Object.entries(STAT_CFG).map(([key,cfg])=>(
-                <button key={key} onClick={()=>setForm(f=>({...f,stat:key,exercise:""}))}
-                  style={{flex:1,padding:"9px 4px",borderRadius:10,cursor:"pointer",border:`2px solid ${form.stat===key?cfg.color:"#1e1e3a"}`,background:form.stat===key?`${cfg.color}22`:"#060612",color:form.stat===key?cfg.color:"#4b5563",fontFamily:"'Courier New',monospace",fontSize:8,fontWeight:800,display:"flex",flexDirection:"column",alignItems:"center",gap:2,boxShadow:form.stat===key?`0 0 10px ${cfg.color}44`:"none",transition:"all 0.15s"}}>
-                  <span style={{fontSize:16}}>{cfg.icon}</span>{cfg.label.toUpperCase()}
-                  {cls.primary===key&&<span style={{fontSize:7,color:cfg.color}}>★ ×1.5</span>}
+          <div>
+            {/* Big workout CTA */}
+            <button onClick={()=>setScreen("workout")}
+              style={{width:"100%",padding:20,borderRadius:14,cursor:"pointer",border:`2px solid ${cls.color}44`,background:`linear-gradient(135deg,${cls.color}18,#0e0820)`,color:"#fff",fontFamily:"'Courier New',monospace",marginBottom:14,textAlign:"left",transition:"all 0.2s",boxShadow:`0 4px 24px ${cls.color}22`}}>
+              <div style={{display:"flex",alignItems:"center",gap:14}}>
+                <div style={{fontSize:40}}>💪</div>
+                <div>
+                  <div style={{fontSize:16,fontWeight:800,color:cls.color,letterSpacing:1,marginBottom:4}}>INICIAR ENTRENAMIENTO</div>
+                  <div style={{fontSize:10,color:"#9ca3af"}}>Sets × Reps × Peso · Timer de descanso · XP en tiempo real</div>
+                  <div style={{fontSize:9,color:"#6b7280",marginTop:4}}>6 plantillas + rutina personalizada</div>
+                </div>
+              </div>
+            </button>
+
+            {/* Quick templates preview */}
+            <div style={{fontSize:8,color:"#4b5563",letterSpacing:2,marginBottom:10}}>PLANTILLAS RÁPIDAS</div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:14}}>
+              {WORKOUT_TEMPLATES.map(tmpl=>(
+                <button key={tmpl.id} onClick={()=>setScreen("workout")}
+                  style={{padding:"12px 8px",borderRadius:10,cursor:"pointer",border:`1px solid ${tmpl.color}33`,background:`${tmpl.color}0a`,color:tmpl.color,fontFamily:"'Courier New',monospace",fontSize:9,fontWeight:800,textAlign:"center",transition:"all 0.15s",display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
+                  <span style={{fontSize:20}}>{tmpl.icon}</span>
+                  <span>{tmpl.name}</span>
                 </button>
               ))}
             </div>
-            {/* Hint */}
-            <div style={{background:"#060612",borderRadius:6,padding:"6px 10px",marginBottom:10,fontSize:8,color:"#4b5563",fontStyle:"italic"}}>
-              💡 {STAT_CFG[form.stat].hint}
-            </div>
-            <div style={{marginBottom:10}}>
-              <label style={{fontSize:7,color:"#4b5563",letterSpacing:2,display:"block",marginBottom:5}}>EJERCICIO</label>
-              <select className="inp" value={form.exercise} onChange={e=>setForm(f=>({...f,exercise:e.target.value}))}>
-                <option value="">-- Seleccionar --</option>
+
+            {/* Quick log — for manual entry */}
+            <div style={{background:"#0e0e1c",border:"1px solid #1e1e3a",borderRadius:12,padding:14}}>
+              <div style={{fontSize:8,color:"#4b5563",letterSpacing:2,marginBottom:10}}>REGISTRO RÁPIDO MANUAL</div>
+              <div style={{display:"flex",gap:8,marginBottom:10}}>
+                {Object.entries(STAT_CFG).map(([key,cfg])=>(
+                  <button key={key} onClick={()=>setForm(f=>({...f,stat:key,exercise:""}))}
+                    style={{flex:1,padding:"8px 4px",borderRadius:8,cursor:"pointer",border:`2px solid ${form.stat===key?cfg.color:"#1e1e3a"}`,background:form.stat===key?`${cfg.color}22`:"#060612",color:form.stat===key?cfg.color:"#4b5563",fontFamily:"'Courier New',monospace",fontSize:8,fontWeight:800,display:"flex",flexDirection:"column",alignItems:"center",gap:2,transition:"all 0.15s"}}>
+                    <span style={{fontSize:14}}>{cfg.icon}</span>{cfg.label.toUpperCase()}
+                  </button>
+                ))}
+              </div>
+              <select className="inp" value={form.exercise} onChange={e=>setForm(f=>({...f,exercise:e.target.value}))} style={{marginBottom:8}}>
+                <option value="">-- Ejercicio --</option>
                 {STAT_CFG[form.stat].exercises.map(ex=><option key={ex} value={ex}>{ex}</option>)}
                 <option value="__otro">Otro...</option>
               </select>
-              {form.exercise==="__otro"&&<input className="inp" style={{marginTop:6}} placeholder="Describe el ejercicio..." onChange={e=>setForm(f=>({...f,exercise:e.target.value}))}/>}
+              {form.exercise==="__otro"&&<input className="inp" style={{marginBottom:8}} placeholder="Ejercicio..." onChange={e=>setForm(f=>({...f,exercise:e.target.value}))}/>}
+              <input className="inp" type="number" min="0" value={form.amount} onChange={e=>setForm(f=>({...f,amount:e.target.value}))} placeholder={`Cantidad (${STAT_CFG[form.stat].unit})`} style={{marginBottom:8}}/>
+              <button onClick={handleLog} style={{width:"100%",padding:10,borderRadius:8,cursor:"pointer",border:"none",background:`linear-gradient(90deg,${STAT_CFG[form.stat].color},${STAT_CFG[form.stat].glow})`,color:"#fff",fontWeight:800,fontSize:11,fontFamily:"'Courier New',monospace",letterSpacing:1}}>
+                ⚡ REGISTRAR
+              </button>
             </div>
-            <div style={{marginBottom:10}}>
-              <label style={{fontSize:7,color:"#4b5563",letterSpacing:2,display:"block",marginBottom:5}}>
-                CANTIDAD ({STAT_CFG[form.stat].unit})
-              </label>
-              <input className="inp" type="number" min="0" value={form.amount} onChange={e=>setForm(f=>({...f,amount:e.target.value}))} placeholder={form.stat==="fuerza"?"Ej: 320 (4×80kg)":"Ej: 45"}/>
-              {form.amount&&Number(form.amount)>0&&(()=>{
-                const xpG=Math.max(1,Math.round(Number(form.amount)*STAT_CFG[form.stat].xpPerUnit/10*(cls.primary===form.stat?1.5:1)));
-                const stG=Math.min(MAX_STAMINA-stamina,xpG*STAMINA_PER_XP);
-                return <div style={{fontSize:8,color:STAT_CFG[form.stat].color,marginTop:3}}>+{xpG} XP · +{stG} ⚡{cls.primary===form.stat?" (×1.5 BONO)":""}</div>;
-              })()}
-            </div>
-            <div style={{marginBottom:14}}>
-              <label style={{fontSize:7,color:"#4b5563",letterSpacing:2,display:"block",marginBottom:5}}>NOTA</label>
-              <input className="inp" placeholder="PR, sensaciones, sets×reps..." value={form.note} onChange={e=>setForm(f=>({...f,note:e.target.value}))}/>
-            </div>
-            <button onClick={handleLog} style={{width:"100%",padding:12,borderRadius:10,cursor:"pointer",border:"none",background:`linear-gradient(90deg,${STAT_CFG[form.stat].color},${STAT_CFG[form.stat].glow})`,color:"#fff",fontWeight:800,fontSize:12,fontFamily:"'Courier New',monospace",letterSpacing:2}}>
-              ⚡ REGISTRAR
-            </button>
           </div>
         )}
 
