@@ -89,7 +89,7 @@ const ZONES = [
     desc:"Primeras 2 semanas. Aprende el sistema.", stamBase:40,
     monsters:[
       { name:"Elemental joven",    type:"mob1",     hp:80,   atk:10,  def:2,   xpR:10,  goldR:5,   level:1,  stamCost:40  },
-      { name:"Espiritu del bosque",  type:"mob2",     hp:160,   atk:16,  def:4,   xpR:18,  goldR:9,   level:1,  stamCost:50  },
+      { name:"Espiritu del bosque",  type:"mob2",     hp:160,  atk:16,  def:4,   xpR:18,  goldR:9,   level:1,  stamCost:50  },
       { name:"Mantis real",     type:"miniboss", hp:300,  atk:26,  def:8,   xpR:35,  goldR:18,  level:2,  stamCost:70  },
       { name:"Señor del Valle", type:"boss",     hp:500,  atk:38,  def:14,  xpR:70,  goldR:40,  level:3,  stamCost:100, isBoss:true },
     ]
