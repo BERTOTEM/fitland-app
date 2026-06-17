@@ -1311,9 +1311,9 @@ function ShopScreen({ gold, equipment, inventory, stats, shopCat, setShopCat, on
               <div style={{flex:1,minWidth:0}}>
                 <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}>
                   <span style={{fontSize:12,fontWeight:800,color:equipped?"#f39c12":owned&&item.category!=="potion"?"#2ecc71":"#e8e0ff"}}>{item.name}</span>
-                  {equipped&&<span style={{fontSize:7,background:"#f39c1222",color:"#f39c12",borderRadius:4,padding:"1px 5px",letterSpacing:1}>EQUIPADO</span>}
-                  {owned&&!equipped&&item.category!=="perm"&&item.category!=="potion"&&<span style={{fontSize:7,background:"#2ecc7122",color:"#2ecc71",borderRadius:4,padding:"1px 5px",letterSpacing:1}>TIENES</span>}
-                  {item.category==="potion"&&qty>0&&<span style={{fontSize:7,background:"#3498db22",color:"#3498db",borderRadius:4,padding:"1px 5px",letterSpacing:1}>×{qty}/{item.maxStack}</span>}
+                  {equipped&&<span style={{fontSize:7,background:"#f39c1222",color:"#f39c12",borderRadius:4,padding:"1px 5px",letterSpacing:1}}>EQUIPADO</span>}
+                  {owned&&!equipped&&item.category!=="perm"&&item.category!=="potion"&&<span style={{fontSize:7,background:"#2ecc7122",color:"#2ecc71",borderRadius:4,padding:"1px 5px",letterSpacing:1}}>TIENES</span>}
+                  {item.category==="potion"&&qty>0&&<span style={{fontSize:7,background:"#3498db22",color:"#3498db",borderRadius:4,padding:"1px 5px",letterSpacing:1}}>×{qty}/{item.maxStack}</span>}
                 </div>
                 <div style={{fontSize:9,color:"#6b7280"}}>{item.desc}</div>
                 {!unlocked&&<div style={{fontSize:8,color:"#e74c3c",marginTop:2}}>🔒 Requiere {ZONES[item.reqZone].name}</div>}
