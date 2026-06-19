@@ -370,6 +370,26 @@ function EnemyImg({ zone, monsterType, size=120, shake=false, flash="", defeated
   return <Sprite src={src} size={size} flip={true} shake={shake} flash={flash} defeated={defeated} alt={monsterType}/>;
 }
 
+// Image-based RPG button with graceful fallback to gradient + text
+function ImgButton({ src, onClick, flex=1, fallbackBg, fallbackBorder, fallbackText, fallbackColor }) {
+  const [failed, setFailed] = useState(false);
+  return (
+    <button onClick={onClick} style={{
+      flex, position:"relative", border: failed ? (fallbackBorder||"none") : "none",
+      background: failed ? fallbackBg : "none",
+      cursor:"pointer", padding:0, height:64, borderRadius:12, overflow:"hidden",
+      display:"flex", alignItems:"center", justifyContent:"center",
+    }}>
+      {!failed && (
+        <img src={src} crossOrigin="anonymous" alt="" style={{width:"100%",height:"100%",objectFit:"fill",display:"block"}} onError={()=>setFailed(true)}/>
+      )}
+      {failed && (
+        <span style={{color:fallbackColor,fontWeight:800,fontSize:12,fontFamily:"'Courier New',monospace",letterSpacing:2}}>{fallbackText}</span>
+      )}
+    </button>
+  );
+}
+
 // ═══════════════════════════════════════════════════
 //  CHARACTER CREATOR
 // ═══════════════════════════════════════════════════
@@ -1553,8 +1573,8 @@ export default function App() {
   return (
     <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:"'Courier New',monospace",paddingBottom:80,position:"relative"}}>
       {/* BG image */}
-      <img src={UI_IMG.bgPrincipal} crossOrigin="anonymous" alt="" style={{position:"fixed",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.25,zIndex:0}} onError={e=>{e.target.style.display="none";}}/>
-      <div style={{position:"fixed",inset:0,background:"linear-gradient(180deg,#060612dd,#060612f5)",zIndex:0}}/>
+      <img src={UI_IMG.bgPrincipal} crossOrigin="anonymous" alt="" style={{position:"fixed",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.55,zIndex:0}} onError={e=>{e.target.style.display="none";}}/>
+      <div style={{position:"fixed",inset:0,background:"linear-gradient(180deg,#060612aa,#060612d8)",zIndex:0}}/>
       <div style={{position:"relative",zIndex:1}}>
       <style>{`
         @keyframes floatHero{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
@@ -1620,14 +1640,8 @@ export default function App() {
 
       {/* COMBAT + SHOP CTAs — RPG image buttons */}
       <div style={{maxWidth:480,margin:"12px auto 0",padding:"0 16px",display:"flex",gap:8}}>
-        <button onClick={()=>setScreen("map")} style={{flex:3,position:"relative",border:"none",background:"none",cursor:"pointer",padding:0,height:56,borderRadius:12,overflow:"hidden"}}>
-          <img src={UI_IMG.btnCombate} crossOrigin="anonymous" alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"fill"}} onError={e=>{e.target.style.display="none";e.target.parentElement.style.background=`linear-gradient(90deg,${cls.color}cc,${cls.accent}cc)`;}}/>
-          <span style={{position:"relative",zIndex:1,color:"#fff",fontWeight:800,fontSize:12,fontFamily:"'Courier New',monospace",letterSpacing:2,textShadow:"0 2px 4px rgba(0,0,0,0.8)"}}>⚔️ COMBATE</span>
-        </button>
-        <button onClick={()=>setScreen("shop")} style={{flex:2,position:"relative",border:"none",background:"none",cursor:"pointer",padding:0,height:56,borderRadius:12,overflow:"hidden"}}>
-          <img src={UI_IMG.btnTienda} crossOrigin="anonymous" alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"fill"}} onError={e=>{e.target.style.display="none";e.target.parentElement.style.background="#0e0820";e.target.parentElement.style.border="1px solid #f39c1244";}}/>
-          <span style={{position:"relative",zIndex:1,color:"#fff",fontWeight:800,fontSize:12,fontFamily:"'Courier New',monospace",letterSpacing:1,textShadow:"0 2px 4px rgba(0,0,0,0.8)"}}>🏪 TIENDA</span>
-        </button>
+        <ImgButton src={UI_IMG.btnCombate} onClick={()=>setScreen("map")} flex={3} fallbackBg={`linear-gradient(90deg,${cls.color}cc,${cls.accent}cc)`} fallbackText="⚔️ COMBATE" fallbackColor="#fff"/>
+        <ImgButton src={UI_IMG.btnTienda} onClick={()=>setScreen("shop")} flex={2} fallbackBg="#0e0820" fallbackBorder="1px solid #f39c1244" fallbackText="🏪 TIENDA" fallbackColor="#f39c12"/>
       </div>
 
       {/* TABS */}
