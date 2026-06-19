@@ -332,8 +332,72 @@ function heroImgSrc(hero, mode="base") {
 }
 
 // ═══════════════════════════════════════════════════
-//  SPRITE — simple img with crossOrigin (assets already have transparent bg)
+//  PIXEL DESIGN SYSTEM — fonts + stepped-corner panels
 // ═══════════════════════════════════════════════════
+const FONT_PIXEL = "'Press Start 2P', monospace";  // titles, buttons, short labels
+const FONT_BODY  = "'VT323', monospace";            // body text, longer strings
+
+// Stepped clip-path corners — the core "pixel art" trick (no border-radius)
+function pixelClip(step) {
+  return `polygon(0 ${step}px, ${step}px ${step}px, ${step}px 0, calc(100% - ${step}px) 0, calc(100% - ${step}px) ${step}px, 100% ${step}px, 100% calc(100% - ${step}px), calc(100% - ${step}px) calc(100% - ${step}px), calc(100% - ${step}px) 100%, ${step}px 100%, ${step}px calc(100% - ${step}px), 0 calc(100% - ${step}px))`;
+}
+
+// PixelPanel — the ONE reusable frame used for every card/panel in the app.
+// Two-layer stepped border: outer frame color + inner surface color.
+function PixelPanel({ children, accent="#3a3050", surface="#15121e", step=8, innerStep=5, style={}, glow }) {
+  return (
+    <div style={{
+      position:"relative", background:accent, padding:3,
+      clipPath:pixelClip(step),
+      boxShadow: glow ? `0 0 16px ${glow}33` : "0 3px 8px rgba(0,0,0,0.4)",
+      ...style,
+    }}>
+      <div style={{
+        background:surface, clipPath:pixelClip(innerStep),
+        backgroundImage: glow ? `radial-gradient(ellipse at 50% 10%, ${glow}18, transparent 65%)` : undefined,
+      }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// PixelButton — stepped-corner button matching the panel system
+function PixelButton({ children, onClick, disabled, accent="#7a1f15", fill="#c0392b", textColor="#fce8d8", style={}, fontSize=11 }) {
+  return (
+    <button onClick={onClick} disabled={disabled} style={{
+      position:"relative", background: disabled ? "#1a1a2e" : accent, padding:3, border:"none",
+      clipPath:pixelClip(7), cursor: disabled ? "not-allowed" : "pointer",
+      transition:"filter 0.15s", ...style,
+    }}>
+      <div style={{
+        background: disabled ? "#0e0e1c" : fill, clipPath:pixelClip(5),
+        padding:"12px 10px", textAlign:"center",
+        fontSize, letterSpacing:1, color: disabled ? "#4b5563" : textColor,
+        fontFamily:FONT_PIXEL, textShadow: disabled ? "none" : "0 1px 2px rgba(0,0,0,0.6)",
+        lineHeight:1.6,
+      }}>
+        {children}
+      </div>
+    </button>
+  );
+}
+
+// PixelBar — stepped-corner progress bar (stats, HP, XP, gauge)
+function PixelBar({ pct, color="#e2552f", height=10, striped=false }) {
+  return (
+    <div style={{background:"#0a0810", height, padding:2, clipPath:pixelClip(Math.max(2,Math.round(height*0.22)))}}>
+      <div style={{
+        width:`${Math.max(0,Math.min(100,pct))}%`, height:"100%",
+        background: striped ? `repeating-linear-gradient(90deg,${color} 0 8px,${color}cc 8px 9px)` : color,
+        clipPath:pixelClip(Math.max(1,Math.round(height*0.15))),
+        transition:"width 0.4s",
+      }}/>
+    </div>
+  );
+}
+
+
 function Sprite({ src, size=120, flip=false, shake=false, flash="", defeated=false, alt="" }) {
   const f = [
     flash   ? `drop-shadow(0 0 10px ${flash}) brightness(1.5)` : "",
@@ -371,25 +435,6 @@ function EnemyImg({ zone, monsterType, size=120, shake=false, flash="", defeated
 }
 
 // Image-based RPG button with graceful fallback to gradient + text
-function ImgButton({ src, onClick, flex=1, fallbackBg, fallbackBorder, fallbackText, fallbackColor }) {
-  const [failed, setFailed] = useState(false);
-  return (
-    <button onClick={onClick} style={{
-      flex, position:"relative", border: failed ? (fallbackBorder||"none") : "none",
-      background: failed ? fallbackBg : "none",
-      cursor:"pointer", padding:0, height:64, borderRadius:12, overflow:"hidden",
-      display:"flex", alignItems:"center", justifyContent:"center",
-    }}>
-      {!failed && (
-        <img src={src} crossOrigin="anonymous" alt="" style={{width:"100%",height:"100%",objectFit:"fill",display:"block"}} onError={()=>setFailed(true)}/>
-      )}
-      {failed && (
-        <span style={{color:fallbackColor,fontWeight:800,fontSize:12,fontFamily:"'Courier New',monospace",letterSpacing:2}}>{fallbackText}</span>
-      )}
-    </button>
-  );
-}
-
 // ═══════════════════════════════════════════════════
 //  CHARACTER CREATOR
 // ═══════════════════════════════════════════════════
@@ -399,7 +444,7 @@ function CharacterCreator({ onDone, initial }) {
   const cls = CLASSES.find(c=>c.id===hero.class) || CLASSES[0];
 
   return (
-    <div style={{minHeight:"100vh",background:"#060612",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20,fontFamily:"'Courier New',monospace",position:"relative",overflow:"hidden"}}>
+    <div style={{minHeight:"100vh",background:"#060612",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20,fontFamily:FONT_BODY,position:"relative",overflow:"hidden"}}>
       {/* BG image */}
       <img src={UI_IMG.bgCreador} crossOrigin="anonymous" alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.45,zIndex:0}} onError={e=>{e.target.style.display="none";}}/>
       <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,#060612cc,#060612ee)",zIndex:0}}/>
@@ -413,13 +458,13 @@ function CharacterCreator({ onDone, initial }) {
         @keyframes tw{0%,100%{opacity:0.1}50%{opacity:0.7}}
         @keyframes floatHero{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
         @keyframes imgShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-        .ci{background:#0e0e1c;border:2px solid #2d2060;color:#e8e0ff;border-radius:8px;padding:12px 16px;font-size:16px;font-family:'Courier New',monospace;width:100%;box-sizing:border-box;outline:none;text-align:center;letter-spacing:3px;transition:border-color 0.2s;}
+        .ci{background:#0e0e1c;border:2px solid #2d2060;color:#e8e0ff;border-radius:0;clip-path:polygon(0 6px,6px 6px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 6px) calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 6px),0 calc(100% - 6px));padding:12px 16px;font-size:20px;font-family:'VT323',monospace;width:100%;box-sizing:border-box;outline:none;text-align:center;letter-spacing:3px;transition:border-color 0.2s;}
         .ci:focus{border-color:#7c3aed;}
-        .cb{width:100%;padding:13px;border:none;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:'Courier New',monospace;letter-spacing:2px;transition:all 0.15s;}
+        .cb{width:100%;padding:13px;border:none;border-radius:0;clip-path:polygon(0 6px,6px 6px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 6px,100% 6px,100% calc(100% - 6px),calc(100% - 6px) calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,6px calc(100% - 6px),0 calc(100% - 6px));font-size:9px;cursor:pointer;font-family:'Press Start 2P',monospace;letter-spacing:1px;line-height:1.8;transition:all 0.15s;}
         .cb:hover{transform:translateY(-2px);}
-        .inp{background:#0e0e1c;border:1px solid #1e1e3a;color:#e8e0ff;border-radius:8px;padding:10px 14px;font-size:12px;font-family:'Courier New',monospace;width:100%;box-sizing:border-box;outline:none;transition:border-color 0.2s;}
+        .inp{background:#0e0e1c;border:1px solid #1e1e3a;color:#e8e0ff;border-radius:0;clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,4px 100%,4px calc(100% - 4px),0 calc(100% - 4px));padding:10px 14px;font-size:18px;font-family:'VT323',monospace;width:100%;box-sizing:border-box;outline:none;transition:border-color 0.2s;}
         .inp:focus{border-color:#7c3aed;}
-        .tab{background:none;border:none;cursor:pointer;padding:8px 0;font-family:'Courier New',monospace;font-size:9px;letter-spacing:1.5px;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap;}
+        .tab{background:none;border:none;cursor:pointer;padding:8px 0;font-family:'Press Start 2P',monospace;font-size:7px;letter-spacing:0.5px;line-height:1.8;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap;}
         .tab.on{color:#a78bfa;border-bottom-color:#a78bfa;}
         .tab:not(.on){color:#4b5563;}
         .tab:hover:not(.on){color:#7c3aed;}
@@ -464,7 +509,7 @@ function CharacterCreator({ onDone, initial }) {
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:12}}>
               {CLASSES.map(c=>(
                 <button key={c.id} onClick={()=>setHero({...hero,class:c.id,specialization:null})}
-                  style={{padding:"10px 4px",borderRadius:10,cursor:"pointer",border:`2px solid ${hero.class===c.id?c.color:"#1e1e3a"}`,background:hero.class===c.id?`${c.color}22`:"#0e0e1c",color:hero.class===c.id?c.color:"#6b7280",fontFamily:"'Courier New',monospace",fontSize:9,fontWeight:800,display:"flex",flexDirection:"column",alignItems:"center",gap:3,boxShadow:hero.class===c.id?`0 0 12px ${c.color}44`:"none",transition:"all 0.15s"}}>
+                  style={{padding:"10px 4px",borderRadius:10,cursor:"pointer",border:`2px solid ${hero.class===c.id?c.color:"#1e1e3a"}`,background:hero.class===c.id?`${c.color}22`:"#0e0e1c",color:hero.class===c.id?c.color:"#6b7280",fontFamily:FONT_BODY,fontSize:9,fontWeight:800,display:"flex",flexDirection:"column",alignItems:"center",gap:3,boxShadow:hero.class===c.id?`0 0 12px ${c.color}44`:"none",transition:"all 0.15s"}}>
                   <span style={{fontSize:16}}>{c.icon}</span>{c.label.toUpperCase()}
                 </button>
               ))}
@@ -494,13 +539,13 @@ function SpecModal({ hero, onChoose, onClose }) {
       <div style={{maxWidth:400,width:"100%",background:"#0e0820",border:`2px solid ${cls.color}`,borderRadius:20,padding:24,textAlign:"center",boxShadow:`0 0 60px ${cls.color}44`}}>
         <div style={{fontSize:28,marginBottom:8}}>🌟</div>
         <div style={{fontSize:11,color:cls.color,letterSpacing:3,marginBottom:6}}>ESPECIALIZACIÓN DISPONIBLE</div>
-        <div style={{fontSize:18,color:"#e8e0ff",fontWeight:800,marginBottom:4}}>¡Elige tu camino, {hero.name}!</div>
+        <div style={{fontSize:18,color:"#e8e0ff",fontWeight:800,fontFamily:FONT_BODY,marginBottom:4}}>¡Elige tu camino, {hero.name}!</div>
         <div style={{fontSize:11,color:"#6b7280",marginBottom:20}}>Esta decisión es permanente.</div>
         {/* show hero image changing */}
         <div style={{display:"flex",justifyContent:"center",gap:16,marginBottom:20}}>
           {cls.specs.map((sp,i)=>(
             <button key={sp.id} onClick={()=>onChoose(sp.id)}
-              style={{flex:1,padding:"14px 8px",borderRadius:12,cursor:"pointer",border:`2px solid ${cls.color}44`,background:`${cls.color}11`,color:"#e8e0ff",fontFamily:"'Courier New',monospace",textAlign:"center",transition:"all 0.2s"}}
+              style={{flex:1,padding:"14px 8px",borderRadius:12,cursor:"pointer",border:`2px solid ${cls.color}44`,background:`${cls.color}11`,color:"#e8e0ff",fontFamily:FONT_BODY,textAlign:"center",transition:"all 0.2s"}}
               onMouseEnter={e=>{e.currentTarget.style.border=`2px solid ${cls.color}`;e.currentTarget.style.background=`${cls.color}22`;}}
               onMouseLeave={e=>{e.currentTarget.style.border=`2px solid ${cls.color}44`;e.currentTarget.style.background=`${cls.color}11`;}}>
               <div style={{fontSize:24,marginBottom:6}}>{sp.icon}</div>
@@ -509,7 +554,7 @@ function SpecModal({ hero, onChoose, onClose }) {
             </button>
           ))}
         </div>
-        <button onClick={onClose} style={{background:"none",border:"1px solid #2d2060",color:"#6b7280",borderRadius:8,padding:"8px 20px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:10}}>MÁS TARDE</button>
+        <button onClick={onClose} style={{background:"none",border:"1px solid #2d2060",color:"#6b7280",borderRadius:8,padding:"8px 20px",cursor:"pointer",fontFamily:FONT_BODY,fontSize:10}}>MÁS TARDE</button>
       </div>
     </div>
   );
@@ -616,7 +661,7 @@ function BattleScreen({ hero, hStats, zone, stamina, inventory={}, onBack, onRew
   const bgImg  = ZONE_IMG[zone.id]?.map;
 
   return (
-    <div style={{height:"100vh",maxHeight:"100vh",color:"#e8e0ff",fontFamily:"'Courier New',monospace",display:"flex",flexDirection:"column",position:"relative",overflow:"hidden"}}>
+    <div style={{height:"100vh",maxHeight:"100vh",color:"#e8e0ff",fontFamily:FONT_BODY,display:"flex",flexDirection:"column",position:"relative",overflow:"hidden"}}>
       <style>{`
         @keyframes floatDmg{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-70px) scale(1.5)}}
         @keyframes skillPulse{0%,100%{box-shadow:0 0 8px #f39c1244}50%{box-shadow:0 0 28px #f39c1299}}
@@ -632,11 +677,11 @@ function BattleScreen({ hero, hStats, zone, stamina, inventory={}, onBack, onRew
 
       {/* ── TOP HUD — zone name + enemy info ── */}
       <div style={{position:"relative",zIndex:3,padding:"10px 16px 0",display:"flex",alignItems:"flex-start",justifyContent:"space-between"}}>
-        <button onClick={onBack} style={{background:"rgba(0,0,0,0.5)",backdropFilter:"blur(4px)",border:"1px solid #ffffff22",color:"#e8e0ff",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:9,letterSpacing:1}}>← SALIR</button>
+        <button onClick={onBack} style={{background:"rgba(0,0,0,0.5)",backdropFilter:"blur(4px)",border:"1px solid #ffffff22",color:"#e8e0ff",borderRadius:8,padding:"6px 12px",cursor:"pointer",fontFamily:FONT_BODY,fontSize:9,letterSpacing:1}}>← SALIR</button>
         {/* Enemy HP floating top-center */}
         <div style={{flex:1,textAlign:"center",padding:"0 12px"}}>
           <div style={{fontSize:9,color:monster.isBoss?"#f39c12":"rgba(255,255,255,0.6)",letterSpacing:2,marginBottom:2}}>{monster.isBoss?"👑 JEFE":"ENEMIGO"} · LV.{monster.level}</div>
-          <div style={{fontSize:15,fontWeight:800,color:monster.isBoss?"#f39c12":"#fff",marginBottom:6,textShadow:"0 2px 8px rgba(0,0,0,0.8)"}}>{monster.name}</div>
+          <div style={{fontSize:15,fontWeight:800,fontFamily:FONT_BODY,color:monster.isBoss?"#f39c12":"#fff",marginBottom:6,textShadow:"0 2px 8px rgba(0,0,0,0.8)"}}>{monster.name}</div>
           <div style={{background:"rgba(0,0,0,0.5)",borderRadius:999,height:8,overflow:"hidden",border:`1px solid ${monster.isBoss?"#f39c1266":"#e74c3c44"}`,maxWidth:220,margin:"0 auto"}}>
             <div style={{width:`${mHpPct}%`,height:"100%",background:mHpPct>50?"linear-gradient(90deg,#c0392b,#e74c3c)":mHpPct>25?"linear-gradient(90deg,#e67e22,#f39c12)":"linear-gradient(90deg,#8B0000,#e74c3c)",borderRadius:999,transition:"width 0.35s",boxShadow:`0 0 6px ${mHpPct>50?"#e74c3c":"#f39c12"}88`}}/>
           </div>
@@ -678,8 +723,8 @@ function BattleScreen({ hero, hStats, zone, stamina, inventory={}, onBack, onRew
           <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.7)",zIndex:10}}>
             <div style={{textAlign:"center",padding:24,background:"rgba(0,0,0,0.6)",borderRadius:16,border:"1px solid #f39c1244",backdropFilter:"blur(8px)"}}>
               <div style={{fontSize:40,marginBottom:10}}>🏆</div>
-              <div style={{color:"#f39c12",fontSize:14,fontWeight:800,letterSpacing:2,marginBottom:16}}>¡ZONA COMPLETADA!</div>
-              <button onClick={onBack} style={{background:"linear-gradient(90deg,#f39c12,#ffeaa7)",border:"none",color:"#000",borderRadius:10,padding:"10px 24px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:12,fontWeight:800,letterSpacing:1}}>VOLVER AL MAPA</button>
+              <div style={{color:"#f39c12",fontSize:14,fontWeight:800,fontFamily:FONT_BODY,letterSpacing:2,marginBottom:16}}>¡ZONA COMPLETADA!</div>
+              <button onClick={onBack} style={{background:"linear-gradient(90deg,#f39c12,#ffeaa7)",border:"none",color:"#000",borderRadius:10,padding:"10px 24px",cursor:"pointer",fontFamily:FONT_BODY,fontSize:12,fontWeight:800,letterSpacing:1}}>VOLVER AL MAPA</button>
             </div>
           </div>
         )}
@@ -687,9 +732,9 @@ function BattleScreen({ hero, hStats, zone, stamina, inventory={}, onBack, onRew
           <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.8)",zIndex:10}}>
             <div style={{textAlign:"center",padding:24,background:"rgba(0,0,0,0.6)",borderRadius:16,border:"1px solid #e74c3c44",backdropFilter:"blur(8px)"}}>
               <div style={{fontSize:40,marginBottom:10}}>💀</div>
-              <div style={{color:"#e74c3c",fontSize:14,fontWeight:800,marginBottom:6}}>HAS CAÍDO</div>
+              <div style={{color:"#e74c3c",fontSize:14,fontWeight:800,fontFamily:FONT_BODY,marginBottom:6}}>HAS CAÍDO</div>
               <div style={{color:"rgba(255,255,255,0.5)",fontSize:10,marginBottom:16}}>Entrena más y vuelve más fuerte</div>
-              <button onClick={onBack} style={{background:"#e74c3c",border:"none",color:"#fff",borderRadius:10,padding:"10px 24px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:12,fontWeight:800}}>RETIRARSE</button>
+              <button onClick={onBack} style={{background:"#e74c3c",border:"none",color:"#fff",borderRadius:10,padding:"10px 24px",cursor:"pointer",fontFamily:FONT_BODY,fontSize:12,fontWeight:800}}>RETIRARSE</button>
             </div>
           </div>
         )}
@@ -731,7 +776,7 @@ function BattleScreen({ hero, hStats, zone, stamina, inventory={}, onBack, onRew
                 border:`2px solid ${ready?"#f39c12":"rgba(255,255,255,0.06)"}`,
                 background:ready?"rgba(240,140,0,0.12)":"rgba(255,255,255,0.03)",
                 color:ready?"#f39c12":"rgba(255,255,255,0.2)",
-                fontFamily:"'Courier New',monospace", fontSize:9, fontWeight:800,
+                fontFamily:FONT_BODY, fontSize:9, fontWeight:800,
                 animation:ready?"skillPulse 1.5s ease-in-out infinite":undefined,
                 transition:"all 0.2s", display:"flex", flexDirection:"column", alignItems:"center", gap:2,
               }}>
@@ -751,7 +796,7 @@ function BattleScreen({ hero, hStats, zone, stamina, inventory={}, onBack, onRew
             }} style={{
               width:56, padding:"8px 4px", borderRadius:10, cursor:phase==="idle"&&!outcome?"pointer":"not-allowed",
               border:"2px solid #2ecc7166", background:"rgba(46,204,113,0.1)",
-              color:"#2ecc71", fontFamily:"'Courier New',monospace", fontSize:9, fontWeight:800,
+              color:"#2ecc71", fontFamily:FONT_BODY, fontSize:9, fontWeight:800,
               display:"flex", flexDirection:"column", alignItems:"center", gap:2, flexShrink:0,
             }}>
               <span style={{fontSize:18}}>{potion.icon}</span>
@@ -775,10 +820,10 @@ function BattleScreen({ hero, hStats, zone, stamina, inventory={}, onBack, onRew
 function WorldMap({ stats, stamina, onSelectZone, onBack }) {
   const txp = totalXP(stats);
   return (
-    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:"'Courier New',monospace",padding:16}}>
+    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:FONT_BODY,padding:16}}>
       <div style={{maxWidth:480,margin:"0 auto"}}>
         <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
-          <button onClick={onBack} style={{background:"none",border:"1px solid #2d2060",color:"#6b7280",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:9}}>← VOLVER</button>
+          <button onClick={onBack} style={{background:"none",border:"1px solid #2d2060",color:"#6b7280",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontFamily:FONT_BODY,fontSize:9}}>← VOLVER</button>
           <div style={{fontSize:11,color:"#a78bfa",letterSpacing:2}}>🗺️ MAPA DEL MUNDO</div>
           <div style={{marginLeft:"auto",fontSize:9,color:"#6b7280"}}>⚡{stamina}/{MAX_STAMINA}</div>
         </div>
@@ -811,7 +856,7 @@ function WorldMap({ stats, stamina, onSelectZone, onBack }) {
                   </div>
                   {unlocked&&(
                     <button onClick={()=>onSelectZone(i)}
-                      style={{background:stamina>=zone.stamBase?`linear-gradient(135deg,${zone.accent},${zone.accent}88)`:"#1a1a2e",border:"none",color:stamina>=zone.stamBase?"#fff":"#4b5563",borderRadius:8,padding:"10px 16px",cursor:stamina>=zone.stamBase?"pointer":"not-allowed",fontFamily:"'Courier New',monospace",fontSize:10,fontWeight:800,letterSpacing:1,whiteSpace:"nowrap"}}>
+                      style={{background:stamina>=zone.stamBase?`linear-gradient(135deg,${zone.accent},${zone.accent}88)`:"#1a1a2e",border:"none",color:stamina>=zone.stamBase?"#fff":"#4b5563",borderRadius:8,padding:"10px 16px",cursor:stamina>=zone.stamBase?"pointer":"not-allowed",fontFamily:FONT_BODY,fontSize:10,fontWeight:800,letterSpacing:1,whiteSpace:"nowrap"}}>
                       {stamina>=zone.stamBase?"ENTRAR →":"SIN ⚡"}
                     </button>
                   )}
@@ -999,10 +1044,10 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
 
   // ── SELECT TEMPLATE ──
   if(phase==="select") return (
-    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:"'Courier New',monospace",paddingBottom:40}}>
+    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:FONT_BODY,paddingBottom:40}}>
       <div style={{background:"linear-gradient(160deg,#0e0820,#0a1228)",borderBottom:`1px solid ${cls.color}22`,padding:"14px 16px"}}>
         <div style={{maxWidth:480,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-          <button onClick={onBack} style={{background:"none",border:"1px solid #2d2060",color:"#6b7280",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:9}}>← VOLVER</button>
+          <button onClick={onBack} style={{background:"none",border:"1px solid #2d2060",color:"#6b7280",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontFamily:FONT_BODY,fontSize:9}}>← VOLVER</button>
           <div style={{fontSize:12,color:cls.color,letterSpacing:2,fontWeight:800}}>💪 INICIAR ENTRENO</div>
           <div style={{width:60}}/>
         </div>
@@ -1012,7 +1057,7 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:20}}>
           {WORKOUT_TEMPLATES.map(tmpl=>(
             <button key={tmpl.id} onClick={()=>startFromTemplate(tmpl)}
-              style={{background:`${tmpl.color}11`,border:`1px solid ${tmpl.color}44`,borderRadius:12,padding:"16px 12px",cursor:"pointer",textAlign:"left",transition:"all 0.15s",fontFamily:"'Courier New',monospace"}}
+              style={{background:`${tmpl.color}11`,border:`1px solid ${tmpl.color}44`,borderRadius:12,padding:"16px 12px",cursor:"pointer",textAlign:"left",transition:"all 0.15s",fontFamily:FONT_BODY}}
               onMouseEnter={e=>{e.currentTarget.style.background=`${tmpl.color}22`;e.currentTarget.style.border=`1px solid ${tmpl.color}88`;}}
               onMouseLeave={e=>{e.currentTarget.style.background=`${tmpl.color}11`;e.currentTarget.style.border=`1px solid ${tmpl.color}44`;}}>
               <div style={{fontSize:24,marginBottom:6}}>{tmpl.icon}</div>
@@ -1025,7 +1070,7 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
           ))}
         </div>
         <button onClick={startCustom}
-          style={{width:"100%",padding:14,borderRadius:12,cursor:"pointer",border:`2px dashed ${cls.color}44`,background:"transparent",color:cls.color,fontFamily:"'Courier New',monospace",fontSize:12,fontWeight:800,letterSpacing:2}}>
+          style={{width:"100%",padding:14,borderRadius:12,cursor:"pointer",border:`2px dashed ${cls.color}44`,background:"transparent",color:cls.color,fontFamily:FONT_BODY,fontSize:12,fontWeight:800,letterSpacing:2}}>
           ✏️ CREAR RUTINA PERSONALIZADA
         </button>
       </div>
@@ -1034,11 +1079,11 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
 
   // ── SUMMARY ──
   if(phase==="summary"&&summary) return (
-    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:"'Courier New',monospace",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
+    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:FONT_BODY,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20}}>
       <div style={{maxWidth:440,width:"100%",textAlign:"center"}}>
         <div style={{fontSize:48,marginBottom:16}}>⚔️</div>
         <div style={{fontSize:10,color:cls.color,letterSpacing:4,marginBottom:8}}>ENTRENAMIENTO COMPLETADO</div>
-        <div style={{fontSize:22,fontWeight:800,color:"#fff",marginBottom:4}}>{template?.name}</div>
+        <div style={{fontSize:22,fontWeight:800,fontFamily:FONT_BODY,color:"#fff",marginBottom:4}}>{template?.name}</div>
         <div style={{fontSize:11,color:"#6b7280",marginBottom:24}}>Duración: {fmt(summary.duration)} · {summary.totalSets} sets completados</div>
 
         {/* XP earned per stat */}
@@ -1050,17 +1095,17 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
               <div key={stat} style={{display:"flex",alignItems:"center",gap:10,marginBottom:8}}>
                 <span style={{fontSize:18}}>{cfg.icon}</span>
                 <span style={{flex:1,fontSize:12,color:cfg.color,fontWeight:800}}>{cfg.label}</span>
-                <span style={{fontSize:16,fontWeight:800,color:cfg.color}}>+{xp} XP</span>
+                <span style={{fontSize:16,fontWeight:800,fontFamily:FONT_BODY,color:cfg.color}}>+{xp} XP</span>
               </div>
             );
           })}
           <div style={{borderTop:"1px solid #1e1e3a",marginTop:10,paddingTop:10,display:"flex",justifyContent:"space-between"}}>
             <span style={{fontSize:11,color:"#9ca3af"}}>TOTAL</span>
-            <span style={{fontSize:18,fontWeight:800,color:"#f39c12"}}>+{summary.totalXp} XP ⚡+{summary.totalXp} STAMINA</span>
+            <span style={{fontSize:18,fontWeight:800,fontFamily:FONT_BODY,color:"#f39c12"}}>+{summary.totalXp} XP ⚡+{summary.totalXp} STAMINA</span>
           </div>
         </div>
 
-        <button onClick={onBack} style={{width:"100%",padding:14,borderRadius:12,cursor:"pointer",border:"none",background:`linear-gradient(90deg,${cls.color},${cls.accent})`,color:"#fff",fontWeight:800,fontSize:14,fontFamily:"'Courier New',monospace",letterSpacing:2,boxShadow:`0 4px 20px ${cls.color}55`}}>
+        <button onClick={onBack} style={{width:"100%",padding:14,borderRadius:12,cursor:"pointer",border:"none",background:`linear-gradient(90deg,${cls.color},${cls.accent})`,color:"#fff",fontWeight:800,fontSize:14,fontFamily:FONT_BODY,letterSpacing:2,boxShadow:`0 4px 20px ${cls.color}55`}}>
           ¡ÉPICO! VOLVER AL MAPA →
         </button>
       </div>
@@ -1072,11 +1117,11 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
   const currentLib = currentEx ? ALL_EXERCISES.find(e=>e.id===currentEx.id) : null;
 
   return (
-    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:"'Courier New',monospace",paddingBottom:100}}>
+    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:FONT_BODY,paddingBottom:100}}>
       <style>{`
         @keyframes restPulse{0%,100%{opacity:1}50%{opacity:0.6}}
         @keyframes xpFloat{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
-        @keyframes heroWorkout{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.04)}}
+        @keyframes heroWorkout{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
         .set-row:hover{background:#0e0e1c!important;}
       `}</style>
 
@@ -1084,7 +1129,7 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
       <div style={{background:"#0a0818",borderBottom:`1px solid ${cls.color}22`,padding:"10px 16px",position:"sticky",top:0,zIndex:10}}>
         <div style={{maxWidth:480,margin:"0 auto"}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
-            <button onClick={()=>{if(window.confirm("¿Terminar entrenamiento?"))finishWorkout();}} style={{background:"none",border:"1px solid #2d2060",color:"#6b7280",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:9}}>TERMINAR</button>
+            <button onClick={()=>{if(window.confirm("¿Terminar entrenamiento?"))finishWorkout();}} style={{background:"none",border:"1px solid #2d2060",color:"#6b7280",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontFamily:FONT_BODY,fontSize:9}}>TERMINAR</button>
             <div style={{textAlign:"center"}}>
               <div style={{fontSize:11,color:cls.color,fontWeight:800}}>{template?.icon} {template?.name}</div>
               <div style={{fontSize:10,color:"#6b7280"}}>⏱ {fmt(elapsed)}</div>
@@ -1119,14 +1164,14 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
             <div style={{fontSize:9,color:"#6b7280"}}>Próximo set en {restLeft}s</div>
           </div>
           <button onClick={()=>{clearInterval(restRef.current);setRestActive(false);}}
-            style={{background:"#3498db22",border:"1px solid #3498db44",color:"#3498db",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:9,fontFamily:"'Courier New',monospace"}}>
+            style={{background:"#3498db22",border:"1px solid #3498db44",color:"#3498db",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontSize:9,fontFamily:FONT_BODY}}>
             SALTAR
           </button>
           {/* Rest time selector */}
           <div style={{display:"flex",gap:4}}>
             {[60,90,120].map(t=>(
               <button key={t} onClick={()=>{setRestTotal(t);setRestLeft(t);}}
-                style={{background:restTotal===t?"#3498db22":"none",border:`1px solid ${restTotal===t?"#3498db":"#2d2060"}`,color:restTotal===t?"#3498db":"#4b5563",borderRadius:4,padding:"2px 6px",cursor:"pointer",fontSize:8,fontFamily:"'Courier New',monospace"}}>
+                style={{background:restTotal===t?"#3498db22":"none",border:`1px solid ${restTotal===t?"#3498db":"#2d2060"}`,color:restTotal===t?"#3498db":"#4b5563",borderRadius:4,padding:"2px 6px",cursor:"pointer",fontSize:8,fontFamily:FONT_BODY}}>
                 {t}s
               </button>
             ))}
@@ -1143,33 +1188,46 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
             const partial=ex.sets.some(s=>s.done)&&!done;
             return(
               <button key={ex.id} onClick={()=>setActiveEx(i)}
-                style={{flexShrink:0,padding:"6px 12px",borderRadius:8,cursor:"pointer",border:`2px solid ${activeEx===i?cls.color:done?"#2ecc7166":"#1e1e3a"}`,background:activeEx===i?`${cls.color}22`:done?"#0a1a0a":"#0e0e1c",color:activeEx===i?cls.color:done?"#2ecc71":"#6b7280",fontSize:9,fontWeight:800,fontFamily:"'Courier New',monospace",whiteSpace:"nowrap"}}>
+                style={{flexShrink:0,padding:"6px 12px",borderRadius:8,cursor:"pointer",border:`2px solid ${activeEx===i?cls.color:done?"#2ecc7166":"#1e1e3a"}`,background:activeEx===i?`${cls.color}22`:done?"#0a1a0a":"#0e0e1c",color:activeEx===i?cls.color:done?"#2ecc71":"#6b7280",fontSize:9,fontWeight:800,fontFamily:FONT_BODY,whiteSpace:"nowrap"}}>
                 {done?"✅":partial?"🔄":lib?.icon||"💪"} {lib?.name||ex.id}
               </button>
             );
           })}
           <button onClick={()=>setShowPicker(true)}
-            style={{flexShrink:0,padding:"6px 12px",borderRadius:8,cursor:"pointer",border:"2px dashed #2d2060",background:"transparent",color:"#4b5563",fontSize:9,fontWeight:800,fontFamily:"'Courier New',monospace",whiteSpace:"nowrap"}}>
+            style={{flexShrink:0,padding:"6px 12px",borderRadius:8,cursor:"pointer",border:"2px dashed #2d2060",background:"transparent",color:"#4b5563",fontSize:9,fontWeight:800,fontFamily:FONT_BODY,whiteSpace:"nowrap"}}>
             + ADD
           </button>
         </div>
 
-        {/* Hero workout image — changes by current exercise stat */}
+        {/* Hero workout image — changes by current exercise stat, now using PixelPanel */}
         {currentEx&&(()=>{
           const stat = getStatForExercise(currentEx.id);
+          const exLib = ALL_EXERCISES.find(e=>e.id===currentEx.id);
+          const doneCount = currentEx.sets.filter(s=>s.done).length;
           return (
-            <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:20,marginBottom:16,padding:"12px 0",background:"#0a0818",borderRadius:14,border:`1px solid ${STAT_CFG[stat].color}22`,position:"relative",overflow:"hidden"}}>
-              {/* bg glow */}
-              <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse at center,${STAT_CFG[stat].color}18 0%,transparent 70%)`,pointerEvents:"none"}}/>
-              <div style={{animation:"heroWorkout 1.8s ease-in-out infinite",position:"relative",zIndex:1}}>
-                <HeroImg hero={hero} size={110} mode={stat}/>
-              </div>
-              <div style={{position:"relative",zIndex:1}}>
-                <div style={{fontSize:9,color:STAT_CFG[stat].color,letterSpacing:2,fontWeight:800,marginBottom:4}}>{STAT_CFG[stat].icon} {STAT_CFG[stat].label.toUpperCase()}</div>
-                <div style={{fontSize:13,fontWeight:800,color:"#e8e0ff",marginBottom:4}}>{ALL_EXERCISES.find(e=>e.id===currentEx.id)?.name}</div>
-                <div style={{fontSize:11,color:"#f39c12",fontWeight:800}}>+{calcExerciseXP(currentEx,currentEx.sets)} XP</div>
-                <div style={{fontSize:9,color:"#6b7280",marginTop:2}}>{currentEx.sets.filter(s=>s.done).length}/{currentEx.sets.length} sets ✅</div>
-              </div>
+            <div style={{marginBottom:14}}>
+              <PixelPanel accent="#5a3a2a" surface="#15100c" glow={STAT_CFG[stat].color}>
+                <div style={{padding:"18px 16px",textAlign:"center"}}>
+                  <div style={{display:"flex",justifyContent:"center",marginBottom:10}}>
+                    <div style={{animation:"heroWorkout 1.8s ease-in-out infinite"}}>
+                      <HeroImg hero={hero} size={100} mode={stat}/>
+                    </div>
+                  </div>
+                  <div style={{fontSize:8,color:STAT_CFG[stat].color,letterSpacing:2,fontFamily:FONT_PIXEL,marginBottom:6,lineHeight:1.8}}>{STAT_CFG[stat].icon} {STAT_CFG[stat].label.toUpperCase()}</div>
+                  <div style={{fontSize:14,fontFamily:FONT_BODY,color:"#f0e6d2",marginBottom:10}}>{exLib?.name}</div>
+                  <div style={{display:"flex",justifyContent:"center",gap:18}}>
+                    <div style={{textAlign:"center"}}>
+                      <div style={{fontSize:16,fontFamily:FONT_BODY,color:"#d4a843"}}>+{calcExerciseXP(currentEx,currentEx.sets)}</div>
+                      <div style={{fontSize:6,color:"#6b6378",letterSpacing:1,fontFamily:FONT_PIXEL,marginTop:2}}>XP</div>
+                    </div>
+                    <div style={{width:1,background:"rgba(255,255,255,0.08)"}}/>
+                    <div style={{textAlign:"center"}}>
+                      <div style={{fontSize:16,fontFamily:FONT_BODY,color:doneCount===currentEx.sets.length&&currentEx.sets.length>0?"#5dcaa5":"#f0e6d2"}}>{doneCount}/{currentEx.sets.length}</div>
+                      <div style={{fontSize:6,color:"#6b6378",letterSpacing:1,fontFamily:FONT_PIXEL,marginTop:2}}>SETS ✓</div>
+                    </div>
+                  </div>
+                </div>
+              </PixelPanel>
             </div>
           );
         })()}
@@ -1185,7 +1243,7 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
               <div style={{display:"flex",gap:8,marginBottom:12}}>
                 {["fuerza","velocidad","vitalidad"].map(s=>(
                   <button key={s} onClick={()=>setPickerStat(s)}
-                    style={{flex:1,padding:"8px 4px",borderRadius:8,cursor:"pointer",border:`2px solid ${pickerStat===s?STAT_CFG[s].color:"#1e1e3a"}`,background:pickerStat===s?`${STAT_CFG[s].color}22`:"#0e0e1c",color:pickerStat===s?STAT_CFG[s].color:"#6b7280",fontSize:9,fontWeight:800,fontFamily:"'Courier New',monospace"}}>
+                    style={{flex:1,padding:"8px 4px",borderRadius:8,cursor:"pointer",border:`2px solid ${pickerStat===s?STAT_CFG[s].color:"#1e1e3a"}`,background:pickerStat===s?`${STAT_CFG[s].color}22`:"#0e0e1c",color:pickerStat===s?STAT_CFG[s].color:"#6b7280",fontSize:9,fontWeight:800,fontFamily:FONT_BODY}}>
                     {STAT_CFG[s].icon} {STAT_CFG[s].label.toUpperCase()}
                   </button>
                 ))}
@@ -1195,7 +1253,7 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
                   const alreadyAdded=exercises.find(e=>e.id===ex.id);
                   return(
                     <button key={ex.id} onClick={()=>!alreadyAdded&&addExercise(ex.id)}
-                      style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"12px 14px",borderRadius:10,marginBottom:6,background:alreadyAdded?"#0a0a0a":"#0e0e1c",border:`1px solid ${alreadyAdded?"#1e1e3a":STAT_CFG[pickerStat].color+"33"}`,cursor:alreadyAdded?"not-allowed":"pointer",textAlign:"left",fontFamily:"'Courier New',monospace",opacity:alreadyAdded?0.4:1}}>
+                      style={{width:"100%",display:"flex",alignItems:"center",gap:12,padding:"12px 14px",borderRadius:10,marginBottom:6,background:alreadyAdded?"#0a0a0a":"#0e0e1c",border:`1px solid ${alreadyAdded?"#1e1e3a":STAT_CFG[pickerStat].color+"33"}`,cursor:alreadyAdded?"not-allowed":"pointer",textAlign:"left",fontFamily:FONT_BODY,opacity:alreadyAdded?0.4:1}}>
                       <span style={{fontSize:24}}>{ex.icon}</span>
                       <div style={{flex:1}}>
                         <div style={{fontSize:12,fontWeight:800,color:"#e8e0ff"}}>{ex.name}</div>
@@ -1216,7 +1274,7 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
             <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
               <span style={{fontSize:28}}>{currentLib.icon}</span>
               <div>
-                <div style={{fontSize:14,fontWeight:800,color:"#e8e0ff"}}>{currentLib.name}</div>
+                <div style={{fontSize:14,fontWeight:800,fontFamily:FONT_BODY,color:"#e8e0ff"}}>{currentLib.name}</div>
                 <div style={{fontSize:9,color:"#6b7280"}}>{getStatForExercise(currentEx.id)==="fuerza"?"⚔️ Fuerza":getStatForExercise(currentEx.id)==="velocidad"?"💨 Velocidad":"💚 Vitalidad"}</div>
               </div>
               <div style={{marginLeft:"auto",fontSize:11,color:"#f39c12",fontWeight:800}}>
@@ -1242,14 +1300,14 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
                   type="number" min="0"
                   value={set.reps}
                   onChange={e=>updateSet(activeEx,si,"reps",e.target.value)}
-                  style={{background:"#0a0a18",border:"1px solid #2d2060",color:"#e8e0ff",borderRadius:6,padding:"6px 4px",fontSize:13,fontWeight:800,textAlign:"center",fontFamily:"'Courier New',monospace",width:"100%",boxSizing:"border-box"}}
+                  style={{background:"#0a0a18",border:"1px solid #2d2060",color:"#e8e0ff",borderRadius:6,padding:"6px 4px",fontSize:13,fontWeight:800,textAlign:"center",fontFamily:FONT_BODY,width:"100%",boxSizing:"border-box"}}
                 />
                 {!currentLib.isCardio?(
                   <input
                     type="number" min="0" step="2.5"
                     value={set.kg}
                     onChange={e=>updateSet(activeEx,si,"kg",e.target.value)}
-                    style={{background:"#0a0a18",border:"1px solid #2d2060",color:"#e8e0ff",borderRadius:6,padding:"6px 4px",fontSize:13,fontWeight:800,textAlign:"center",fontFamily:"'Courier New',monospace",width:"100%",boxSizing:"border-box"}}
+                    style={{background:"#0a0a18",border:"1px solid #2d2060",color:"#e8e0ff",borderRadius:6,padding:"6px 4px",fontSize:13,fontWeight:800,textAlign:"center",fontFamily:FONT_BODY,width:"100%",boxSizing:"border-box"}}
                   />
                 ):<div/>}
                 <button onClick={()=>toggleSet(activeEx,si)}
@@ -1264,7 +1322,7 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
             ))}
 
             <button onClick={()=>addSet(activeEx)}
-              style={{width:"100%",padding:"8px",borderRadius:8,cursor:"pointer",border:`1px dashed ${cls.color}44`,background:"transparent",color:cls.color,fontFamily:"'Courier New',monospace",fontSize:10,fontWeight:800,marginTop:4}}>
+              style={{width:"100%",padding:"8px",borderRadius:8,cursor:"pointer",border:`1px dashed ${cls.color}44`,background:"transparent",color:cls.color,fontFamily:FONT_BODY,fontSize:10,fontWeight:800,marginTop:4}}>
               + AGREGAR SET
             </button>
           </div>
@@ -1278,10 +1336,11 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
 
         {/* Finish button */}
         {exercises.length>0&&(
-          <button onClick={finishWorkout}
-            style={{width:"100%",padding:14,borderRadius:12,cursor:"pointer",border:"none",background:`linear-gradient(90deg,${cls.color},${cls.accent})`,color:"#fff",fontWeight:800,fontSize:13,fontFamily:"'Courier New',monospace",letterSpacing:2,marginTop:16,boxShadow:`0 4px 20px ${cls.color}44`}}>
-            ⚔️ FINALIZAR ENTRENO (+{liveXP} XP)
-          </button>
+          <div style={{marginTop:16}}>
+            <PixelButton onClick={finishWorkout} accent="#7a1f15" fill="#c0392b" fontSize={10}>
+              ⚔ FINALIZAR ENTRENO (+{liveXP} XP)
+            </PixelButton>
+          </div>
         )}
       </div>
     </div>
@@ -1307,7 +1366,7 @@ function ShopScreen({ gold, equipment, inventory, stats, shopCat, setShopCat, on
   }
 
   return (
-    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:"'Courier New',monospace",paddingBottom:40,position:"relative"}}>
+    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:FONT_BODY,paddingBottom:40,position:"relative"}}>
       {/* BG image */}
       <img src={UI_IMG.bgTienda} crossOrigin="anonymous" alt="" style={{position:"fixed",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.3,zIndex:0}} onError={e=>{e.target.style.display="none";}}/>
       <div style={{position:"fixed",inset:0,background:"linear-gradient(180deg,#060612cc,#060612f0)",zIndex:0}}/>
@@ -1315,50 +1374,54 @@ function ShopScreen({ gold, equipment, inventory, stats, shopCat, setShopCat, on
       {/* Header */}
       <div style={{background:"linear-gradient(160deg,#0e0820,#0a1228)",borderBottom:"1px solid #f39c1222",padding:"14px 16px"}}>
         <div style={{maxWidth:480,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-          <button onClick={onBack} style={{background:"none",border:"1px solid #2d2060",color:"#6b7280",borderRadius:6,padding:"4px 10px",cursor:"pointer",fontFamily:"'Courier New',monospace",fontSize:9}}>← VOLVER</button>
-          <div style={{fontSize:12,color:"#f39c12",letterSpacing:2,fontWeight:800}}>🏪 TIENDA</div>
-          <div style={{fontSize:12,color:"#f39c12",fontWeight:800}}>🪙 {gold}</div>
+          <button onClick={onBack} style={{background:"none",border:"1px solid #2d2060",color:"#6b7280",padding:"6px 10px",cursor:"pointer",fontFamily:FONT_PIXEL,fontSize:7,clipPath:pixelClip(3)}}>← VOLVER</button>
+          <div style={{fontSize:11,color:"#f39c12",letterSpacing:1,fontFamily:FONT_PIXEL}}>🏪 TIENDA</div>
+          <div style={{fontSize:13,color:"#f39c12",fontFamily:FONT_BODY}}>🪙 {gold}</div>
         </div>
       </div>
 
       <div style={{maxWidth:480,margin:"0 auto",padding:16}}>
         {/* Equipped panel */}
-        <div style={{background:"#0e0e1c",border:"1px solid #f39c1222",borderRadius:12,padding:14,marginBottom:14}}>
-          <div style={{fontSize:8,color:"#f39c12",letterSpacing:3,marginBottom:10}}>TU EQUIPAMIENTO ACTUAL</div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
-            {["weapon","armor","access"].map(cat=>{
-              const catLabel={"weapon":"⚔️ Arma","armor":"🛡️ Armadura","access":"💍 Accesorio"}[cat];
-              const equipped=SHOP_ITEMS.find(i=>i.category===cat&&equipment.includes(i.id));
-              return(
-                <div key={cat} style={{background:"#060612",borderRadius:8,padding:"8px 10px",border:`1px solid ${equipped?"#f39c1244":"#1e1e3a"}`}}>
-                  <div style={{fontSize:7,color:"#4b5563",letterSpacing:2,marginBottom:3}}>{catLabel}</div>
-                  {equipped?(
-                    <div>
-                      <div style={{fontSize:11,color:"#f39c12",fontWeight:800}}>{equipped.icon} {equipped.name}</div>
-                      <div style={{fontSize:8,color:"#6b7280",marginTop:2}}>{equipped.desc}</div>
+        <div style={{marginBottom:14}}>
+          <PixelPanel accent="#5a3a12" surface="#0e0e1c" glow="#f39c12">
+            <div style={{padding:14}}>
+              <div style={{fontSize:7,color:"#f39c12",letterSpacing:1,fontFamily:FONT_PIXEL,marginBottom:10,lineHeight:1.8}}>TU EQUIPAMIENTO ACTUAL</div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
+                {["weapon","armor","access"].map(cat=>{
+                  const catLabel={"weapon":"⚔️ Arma","armor":"🛡️ Armadura","access":"💍 Accesorio"}[cat];
+                  const equipped=SHOP_ITEMS.find(i=>i.category===cat&&equipment.includes(i.id));
+                  return(
+                    <div key={cat} style={{background:"rgba(0,0,0,0.35)",padding:"8px 10px",clipPath:pixelClip(4),border:`1px solid ${equipped?"#f39c1244":"rgba(255,255,255,0.06)"}`}}>
+                      <div style={{fontSize:6,color:"#6b6378",letterSpacing:1,fontFamily:FONT_PIXEL,marginBottom:5,lineHeight:1.6}}>{catLabel}</div>
+                      {equipped?(
+                        <div>
+                          <div style={{fontSize:12,color:"#f39c12",fontFamily:FONT_BODY}}>{equipped.icon} {equipped.name}</div>
+                          <div style={{fontSize:11,color:"#6b7280",marginTop:2,fontFamily:FONT_BODY}}>{equipped.desc}</div>
+                        </div>
+                      ):<div style={{fontSize:11,color:"#2d2d4e",fontFamily:FONT_BODY}}>— Sin equipo —</div>}
                     </div>
-                  ):<div style={{fontSize:10,color:"#2d2d4e"}}>— Sin equipo —</div>}
+                  );
+                })}
+                {/* Potions in inventory */}
+                <div style={{background:"rgba(0,0,0,0.35)",padding:"8px 10px",clipPath:pixelClip(4),border:"1px solid rgba(255,255,255,0.06)"}}>
+                  <div style={{fontSize:6,color:"#6b6378",letterSpacing:1,fontFamily:FONT_PIXEL,marginBottom:5,lineHeight:1.6}}>🧪 POCIONES</div>
+                  {SHOP_ITEMS.filter(i=>i.category==="potion"&&(inventory[i.id]||0)>0).length===0
+                    ?<div style={{fontSize:11,color:"#2d2d4e",fontFamily:FONT_BODY}}>— Sin pociones —</div>
+                    :SHOP_ITEMS.filter(i=>i.category==="potion"&&(inventory[i.id]||0)>0).map(i=>(
+                      <div key={i.id} style={{fontSize:11,color:"#5dcaa5",fontFamily:FONT_BODY}}>{i.icon} {i.name} ×{inventory[i.id]}</div>
+                    ))
+                  }
                 </div>
-              );
-            })}
-            {/* Potions in inventory */}
-            <div style={{background:"#060612",borderRadius:8,padding:"8px 10px",border:"1px solid #1e1e3a"}}>
-              <div style={{fontSize:7,color:"#4b5563",letterSpacing:2,marginBottom:3}}>🧪 POCIONES</div>
-              {SHOP_ITEMS.filter(i=>i.category==="potion"&&(inventory[i.id]||0)>0).length===0
-                ?<div style={{fontSize:10,color:"#2d2d4e"}}>— Sin pociones —</div>
-                :SHOP_ITEMS.filter(i=>i.category==="potion"&&(inventory[i.id]||0)>0).map(i=>(
-                  <div key={i.id} style={{fontSize:10,color:"#2ecc71"}}>{i.icon} {i.name} ×{inventory[i.id]}</div>
-                ))
-              }
+              </div>
             </div>
-          </div>
+          </PixelPanel>
         </div>
 
         {/* Category tabs */}
         <div style={{display:"flex",gap:6,marginBottom:14,flexWrap:"wrap"}}>
           {ITEM_CATEGORIES.map(cat=>(
             <button key={cat.id} onClick={()=>setShopCat(cat.id)}
-              style={{padding:"6px 10px",borderRadius:8,cursor:"pointer",border:`1px solid ${shopCat===cat.id?"#f39c12":"#1e1e3a"}`,background:shopCat===cat.id?"#1a0f00":"#0e0e1c",color:shopCat===cat.id?"#f39c12":"#6b7280",fontFamily:"'Courier New',monospace",fontSize:9,fontWeight:800,transition:"all 0.15s"}}>
+              style={{padding:"7px 10px",clipPath:pixelClip(4),cursor:"pointer",border:"none",background:shopCat===cat.id?"#5a3a12":"#0e0e1c",color:shopCat===cat.id?"#f39c12":"#6b7280",fontFamily:FONT_PIXEL,fontSize:7,transition:"all 0.15s",lineHeight:1.6}}>
               {cat.label}
             </button>
           ))}
@@ -1372,32 +1435,36 @@ function ShopScreen({ gold, equipment, inventory, stats, shopCat, setShopCat, on
           const qty=inventory[item.id]||0;
           const canBuy=unlocked&&!owned&&gold>=item.price;
           return(
-            <div key={item.id} style={{background:"#0e0e1c",border:`1px solid ${equipped?"#f39c1266":owned&&item.category!=="potion"?"#2ecc7133":"#1e1e3a"}`,borderRadius:10,padding:"12px 14px",marginBottom:8,display:"flex",alignItems:"center",gap:12,opacity:unlocked?1:0.5}}>
-              <div style={{width:44,height:44,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",position:"relative"}}>
-                {item.img ? (
-                  <img src={item.img} crossOrigin="anonymous" alt={item.name} style={{width:"100%",height:"100%",objectFit:"contain"}}
-                    onError={e=>{e.target.style.display="none";e.target.nextSibling.style.display="flex";}}/>
-                ) : null}
-                <div style={{display:item.img?"none":"flex",fontSize:28,alignItems:"center",justifyContent:"center",width:"100%",height:"100%"}}>{item.icon}</div>
-              </div>
-              <div style={{flex:1,minWidth:0}}>
-                <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}>
-                  <span style={{fontSize:12,fontWeight:800,color:equipped?"#f39c12":owned&&item.category!=="potion"?"#2ecc71":"#e8e0ff"}}>{item.name}</span>
-                  {equipped&&<span style={{fontSize:7,background:"#f39c1222",color:"#f39c12",borderRadius:4,padding:"1px 5px",letterSpacing:1}}>EQUIPADO</span>}
-                  {owned&&!equipped&&item.category!=="perm"&&item.category!=="potion"&&<span style={{fontSize:7,background:"#2ecc7122",color:"#2ecc71",borderRadius:4,padding:"1px 5px",letterSpacing:1}}>TIENES</span>}
-                  {item.category==="potion"&&qty>0&&<span style={{fontSize:7,background:"#3498db22",color:"#3498db",borderRadius:4,padding:"1px 5px",letterSpacing:1}}>×{qty}/{item.maxStack}</span>}
+            <div key={item.id} style={{marginBottom:8,opacity:unlocked?1:0.5}}>
+              <PixelPanel accent={equipped?"#5a3a12":owned&&item.category!=="potion"?"#1a3a2a":"#2a2438"} surface="#0e0e1c" innerStep={4}>
+                <div style={{padding:"10px 12px",display:"flex",alignItems:"center",gap:12}}>
+                  <div style={{width:44,height:44,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",position:"relative"}}>
+                    {item.img ? (
+                      <img src={item.img} crossOrigin="anonymous" alt={item.name} style={{width:"100%",height:"100%",objectFit:"contain"}}
+                        onError={e=>{e.target.style.display="none";e.target.nextSibling.style.display="flex";}}/>
+                    ) : null}
+                    <div style={{display:item.img?"none":"flex",fontSize:28,alignItems:"center",justifyContent:"center",width:"100%",height:"100%"}}>{item.icon}</div>
+                  </div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:3,flexWrap:"wrap"}}>
+                      <span style={{fontSize:13,color:equipped?"#f39c12":owned&&item.category!=="potion"?"#5dcaa5":"#e8e0ff",fontFamily:FONT_BODY}}>{item.name}</span>
+                      {equipped&&<span style={{fontSize:6,background:"#f39c1222",color:"#f39c12",padding:"2px 5px",letterSpacing:1,fontFamily:FONT_PIXEL}}>EQUIPADO</span>}
+                      {owned&&!equipped&&item.category!=="perm"&&item.category!=="potion"&&<span style={{fontSize:6,background:"#5dcaa522",color:"#5dcaa5",padding:"2px 5px",letterSpacing:1,fontFamily:FONT_PIXEL}}>TIENES</span>}
+                      {item.category==="potion"&&qty>0&&<span style={{fontSize:6,background:"#378add22",color:"#378add",padding:"2px 5px",letterSpacing:1,fontFamily:FONT_PIXEL}}>×{qty}/{item.maxStack}</span>}
+                    </div>
+                    <div style={{fontSize:11,color:"#6b7280",fontFamily:FONT_BODY}}>{item.desc}</div>
+                    {!unlocked&&<div style={{fontSize:10,color:"#e24b4a",marginTop:2,fontFamily:FONT_BODY}}>🔒 Requiere {ZONES[item.reqZone].name}</div>}
+                    {item.maxBuy&&<div style={{fontSize:10,color:"#9ca3af",marginTop:1,fontFamily:FONT_BODY}}>Comprable {equipment.filter(id=>id===item.id).length}/{item.maxBuy} veces</div>}
+                  </div>
+                  <div style={{textAlign:"center",flexShrink:0}}>
+                    <div style={{fontSize:13,color:"#f39c12",fontFamily:FONT_BODY,marginBottom:5}}>🪙{item.price}</div>
+                    <button onClick={()=>onBuy(item)} disabled={!canBuy}
+                      style={{padding:"7px 11px",clipPath:pixelClip(3),cursor:canBuy?"pointer":"not-allowed",border:"none",background:canBuy?"#f39c12":owned&&item.category!=="potion"?"#0e1f16":"#1a1a2e",color:canBuy?"#1a0a08":owned&&item.category!=="potion"?"#5dcaa5":"#4b5563",fontFamily:FONT_PIXEL,fontSize:6,letterSpacing:0.5,whiteSpace:"nowrap",lineHeight:1.6}}>
+                      {!unlocked?"🔒":owned&&item.category!=="potion"?"✓ LISTO":"COMPRAR"}
+                    </button>
+                  </div>
                 </div>
-                <div style={{fontSize:9,color:"#6b7280"}}>{item.desc}</div>
-                {!unlocked&&<div style={{fontSize:8,color:"#e74c3c",marginTop:2}}>🔒 Requiere {ZONES[item.reqZone].name}</div>}
-                {item.maxBuy&&<div style={{fontSize:8,color:"#9ca3af",marginTop:1}}>Comprable {equipment.filter(id=>id===item.id).length}/{item.maxBuy} veces</div>}
-              </div>
-              <div style={{textAlign:"center",flexShrink:0}}>
-                <div style={{fontSize:11,color:"#f39c12",fontWeight:800,marginBottom:4}}>🪙{item.price}</div>
-                <button onClick={()=>onBuy(item)} disabled={!canBuy}
-                  style={{padding:"6px 12px",borderRadius:8,cursor:canBuy?"pointer":"not-allowed",border:"none",background:canBuy?"linear-gradient(90deg,#f39c12,#ffeaa7)":owned&&item.category!=="potion"?"#1a2a1a":"#1a1a2e",color:canBuy?"#000":owned&&item.category!=="potion"?"#2ecc71":"#4b5563",fontFamily:"'Courier New',monospace",fontSize:9,fontWeight:800,letterSpacing:1,whiteSpace:"nowrap"}}>
-                  {!unlocked?"🔒":owned&&item.category!=="potion"?"✓ LISTO":"COMPRAR"}
-                </button>
-              </div>
+              </PixelPanel>
             </div>
           );
         })}
@@ -1530,7 +1597,7 @@ export default function App() {
     toast(`¡Especialización: ${spec?.label}!`,"#f39c12","🌟");
   }
 
-  if(screen==="loading") return <div style={{minHeight:"100vh",background:"#060612",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:"'Courier New',monospace",color:"#7c3aed",fontSize:12,letterSpacing:3}}>CARGANDO...</div>;
+  if(screen==="loading") return <div style={{minHeight:"100vh",background:"#060612",display:"flex",alignItems:"center",justifyContent:"center",fontFamily:FONT_BODY,color:"#7c3aed",fontSize:12,letterSpacing:3}}>CARGANDO...</div>;
   if(screen==="create"||editMode) return <CharacterCreator onDone={handleCreateDone} initial={editMode?hero:null}/>;
   if(screen==="map") return <WorldMap stats={stats} stamina={stamina} onSelectZone={i=>{setBattleZI(i);setStamina(s=>Math.max(0,s-ZONES[i].monsters[0].stamCost));setScreen("battle");}} onBack={()=>setScreen("main")}/>;
   if(screen==="battle"){
@@ -1571,7 +1638,7 @@ export default function App() {
   const specUnlocked=getLevel(stats[cls.primary].xp)>=SPEC_LEVEL;
 
   return (
-    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:"'Courier New',monospace",paddingBottom:80,position:"relative"}}>
+    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:FONT_BODY,paddingBottom:80,position:"relative"}}>
       {/* BG image */}
       <img src={UI_IMG.bgPrincipal} crossOrigin="anonymous" alt="" style={{position:"fixed",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.55,zIndex:0}} onError={e=>{e.target.style.display="none";}}/>
       <div style={{position:"fixed",inset:0,background:"linear-gradient(180deg,#060612aa,#060612d8)",zIndex:0}}/>
@@ -1583,7 +1650,7 @@ export default function App() {
       `}</style>
 
       {showSpec&&<SpecModal hero={hero} onChoose={handleSpecChoose} onClose={()=>setShowSpec(false)}/>}
-      {notif&&<div style={{position:"fixed",top:14,left:"50%",transform:"translateX(-50%)",background:notif.color,color:"#fff",padding:"9px 18px",borderRadius:999,fontWeight:800,fontSize:11,zIndex:999,whiteSpace:"nowrap",boxShadow:`0 4px 20px ${notif.color}88`,animation:"fadeDown 0.3s ease",letterSpacing:0.5,fontFamily:"'Courier New',monospace"}}>{notif.icon} {notif.msg}</div>}
+      {notif&&<div style={{position:"fixed",top:14,left:"50%",transform:"translateX(-50%)",background:notif.color,color:"#fff",padding:"9px 18px",borderRadius:999,fontWeight:800,fontSize:11,zIndex:999,whiteSpace:"nowrap",boxShadow:`0 4px 20px ${notif.color}88`,animation:"fadeDown 0.3s ease",letterSpacing:0.5,fontFamily:FONT_BODY}}>{notif.icon} {notif.msg}</div>}
 
       {/* HERO HEADER */}
       <div style={{background:`linear-gradient(160deg,#0e0820 0%,#0a1228 50%,${cls.color}18 100%)`,borderBottom:`1px solid ${cls.color}22`,padding:"16px"}}>
@@ -1594,18 +1661,18 @@ export default function App() {
               <div style={{animation:"floatHero 3s ease-in-out infinite"}}>
                 <HeroImg hero={hero} size={100}/>
               </div>
-              <button onClick={()=>setEditMode(true)} style={{background:"none",border:`1px solid ${cls.color}33`,color:cls.color,borderRadius:6,padding:"2px 8px",fontSize:7,cursor:"pointer",letterSpacing:1,fontFamily:"'Courier New',monospace"}}>EDITAR</button>
+              <button onClick={()=>setEditMode(true)} style={{background:"none",border:`1px solid ${cls.color}33`,color:cls.color,borderRadius:6,padding:"2px 8px",fontSize:7,cursor:"pointer",letterSpacing:1,fontFamily:FONT_BODY}}>EDITAR</button>
             </div>
             <div style={{flex:1,minWidth:0}}>
               <div style={{fontSize:8,color:cls.color,letterSpacing:3,marginBottom:2}}>{cls.icon} {cls.label.toUpperCase()}{spec?` · ${spec.icon} ${spec.label.toUpperCase()}`:""}</div>
-              <div style={{fontSize:20,fontWeight:800,color:"#fff",letterSpacing:1,lineHeight:1.1}}>{hero.name}</div>
+              <div style={{fontSize:20,fontWeight:800,fontFamily:FONT_BODY,color:"#fff",letterSpacing:1,lineHeight:1.1}}>{hero.name}</div>
               <div style={{fontSize:8,color:"#9ca3af",marginTop:1}}>NV.{heroLv} · {getLvTitle(heroLv)}</div>
               <div style={{fontSize:8,color:"#6b7280",marginTop:1}}>🪙{gold} · ⚡{stamina}/{MAX_STAMINA}</div>
               <div style={{background:"#0a0a18",borderRadius:999,height:4,overflow:"hidden",border:"1px solid #f39c1222",marginTop:5}}>
                 <div style={{width:`${(stamina/MAX_STAMINA)*100}%`,height:"100%",background:"linear-gradient(90deg,#e67e22,#f39c12)",borderRadius:999,transition:"width 0.5s"}}/>
               </div>
               {specUnlocked&&!hero.specialization&&(
-                <button onClick={()=>setShowSpec(true)} style={{marginTop:6,background:"linear-gradient(90deg,#f39c12,#ffeaa7)",border:"none",borderRadius:8,padding:"4px 12px",fontSize:9,fontWeight:800,cursor:"pointer",fontFamily:"'Courier New',monospace",letterSpacing:1,animation:"specPulse 2s ease-in-out infinite",color:"#000"}}>
+                <button onClick={()=>setShowSpec(true)} style={{marginTop:6,background:"linear-gradient(90deg,#f39c12,#ffeaa7)",border:"none",borderRadius:8,padding:"4px 12px",fontSize:9,fontWeight:800,cursor:"pointer",fontFamily:FONT_BODY,letterSpacing:1,animation:"specPulse 2s ease-in-out infinite",color:"#000"}}>
                   🌟 ¡ESPECIALIZACIÓN!
                 </button>
               )}
@@ -1620,28 +1687,30 @@ export default function App() {
             </div>
           </div>
 
-          {/* Stat bars */}
+          {/* Stat bars — pixel style */}
           {Object.entries(STAT_CFG).map(([key,cfg])=>{
             const xp=stats[key].xp,lv=getLevel(xp),pct=getXpPct(xp),isPrimary=cls.primary===key;
             return(
-              <div key={key} style={{marginBottom:7}}>
-                <div style={{display:"flex",justifyContent:"space-between",marginBottom:2}}>
-                  <span style={{fontSize:8,fontWeight:800,color:isPrimary?cfg.color:"#4b5563"}}>{isPrimary?"★":""}{cfg.icon} {cfg.label.toUpperCase()}</span>
-                  <span style={{fontSize:7,color:"#4b5563"}}>LV.{lv} · {Math.round(xp%XP_PER_LEVEL)}/{XP_PER_LEVEL}</span>
+              <div key={key} style={{marginBottom:8}}>
+                <div style={{display:"flex",justifyContent:"space-between",marginBottom:3}}>
+                  <span style={{fontSize:7,color:isPrimary?cfg.color:"#4b5563",fontFamily:FONT_PIXEL,lineHeight:1.6}}>{isPrimary?"★":""}{cfg.icon} {cfg.label.toUpperCase()}</span>
+                  <span style={{fontSize:10,color:"#6b6378",fontFamily:FONT_BODY}}>LV.{lv} · {Math.round(xp%XP_PER_LEVEL)}/{XP_PER_LEVEL}</span>
                 </div>
-                <div style={{background:"#0a0a18",borderRadius:999,height:isPrimary?8:5,overflow:"hidden",border:`1px solid ${cfg.color}18`}}>
-                  <div style={{width:`${pct}%`,height:"100%",borderRadius:999,background:`linear-gradient(90deg,${cfg.color},${cfg.glow})`,transition:"width 0.7s cubic-bezier(.4,0,.2,1)",boxShadow:`0 0 ${isPrimary?8:4}px ${cfg.color}55`}}/>
-                </div>
+                <PixelBar pct={pct} color={cfg.color} height={isPrimary?9:6} striped={isPrimary}/>
               </div>
             );
           })}
         </div>
       </div>
 
-      {/* COMBAT + SHOP CTAs — RPG image buttons */}
+      {/* COMBAT + SHOP CTAs — pixel art buttons */}
       <div style={{maxWidth:480,margin:"12px auto 0",padding:"0 16px",display:"flex",gap:8}}>
-        <ImgButton src={UI_IMG.btnCombate} onClick={()=>setScreen("map")} flex={3} fallbackBg={`linear-gradient(90deg,${cls.color}cc,${cls.accent}cc)`} fallbackText="⚔️ COMBATE" fallbackColor="#fff"/>
-        <ImgButton src={UI_IMG.btnTienda} onClick={()=>setScreen("shop")} flex={2} fallbackBg="#0e0820" fallbackBorder="1px solid #f39c1244" fallbackText="🏪 TIENDA" fallbackColor="#f39c12"/>
+        <div style={{flex:3}}>
+          <PixelButton onClick={()=>setScreen("map")} accent="#7a1f15" fill="#c0392b">⚔ COMBATE</PixelButton>
+        </div>
+        <div style={{flex:2}}>
+          <PixelButton onClick={()=>setScreen("shop")} accent="#4a2e12" fill="#8a5a2a" fontSize={9}>🏪 TIENDA</PixelButton>
+        </div>
       </div>
 
       {/* TABS */}
@@ -1658,41 +1727,47 @@ export default function App() {
         {/* TAB HERO */}
         {tab==="hero"&&(
           <div>
-            <div style={{background:"#0e0e1c",border:`1px solid ${cls.color}22`,borderRadius:12,padding:14,marginBottom:12}}>
-              <div style={{fontSize:8,color:cls.color,letterSpacing:3,marginBottom:10}}>STATS DE COMBATE</div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
-                {[["⚔ ATAQUE",hs.atk],["🛡 DEFENSA",hs.def],["💨 VELOCIDAD",hs.spd.toFixed(2)+"x"],["❤️ HP MÁX",hs.hp],["🪙 ORO",gold],["⚡ STAMINA",`${stamina}/${MAX_STAMINA}`]].map(([k,v])=>(
-                  <div key={k} style={{background:"#060612",borderRadius:8,padding:"8px 10px"}}>
-                    <div style={{fontSize:7,color:"#4b5563",letterSpacing:2,marginBottom:2}}>{k}</div>
-                    <div style={{fontSize:14,color:"#e8e0ff",fontWeight:800}}>{v}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div style={{background:"#0e0e1c",border:"1px solid #2d2060",borderRadius:12,padding:14}}>
-              <div style={{fontSize:8,color:"#7c3aed",letterSpacing:3,marginBottom:10}}>PROGRESIÓN DE ZONAS</div>
-              {ZONES.map(z=>{
-                const unlocked=txp>=z.unlockXP;
-                const pct=z.unlockXP===0?100:Math.min(100,(txp/z.unlockXP)*100);
-                return(
-                  <div key={z.id} style={{marginBottom:10,opacity:unlocked?1:0.6}}>
-                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:3}}>
-                      <span style={{fontSize:14}}>{unlocked?"✅":txp>0&&txp<z.unlockXP?"🔄":"🔒"}</span>
-                      <div style={{flex:1}}>
-                        <div style={{fontSize:10,color:unlocked?"#e8e0ff":"#4b5563",fontWeight:700}}>{z.emoji} {z.name}</div>
-                        <div style={{fontSize:7,color:"#4b5563"}}>{z.desc}</div>
+            <div style={{marginBottom:12}}>
+              <PixelPanel accent="#3a3050" surface="#15121e">
+                <div style={{padding:14}}>
+                  <div style={{fontSize:8,color:cls.color,letterSpacing:2,fontFamily:FONT_PIXEL,marginBottom:12,lineHeight:1.8}}>⚔ STATS DE COMBATE</div>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+                    {[["ATAQUE",hs.atk],["DEFENSA",hs.def],["VELOCIDAD",hs.spd.toFixed(2)+"x"],["HP MÁX",hs.hp],["ORO",gold],["STAMINA",`${stamina}/${MAX_STAMINA}`]].map(([k,v])=>(
+                      <div key={k} style={{background:"rgba(0,0,0,0.35)",padding:"8px 10px",clipPath:pixelClip(4),border:"1px solid rgba(212,168,67,0.12)"}}>
+                        <div style={{fontSize:6,color:"#6b6378",letterSpacing:1,fontFamily:FONT_PIXEL,marginBottom:5,lineHeight:1.6}}>{k}</div>
+                        <div style={{fontSize:16,color:"#f0e6d2",fontFamily:FONT_BODY}}>{v}</div>
                       </div>
-                      <div style={{fontSize:8,color:unlocked?cls.color:"#4b5563",fontWeight:800,whiteSpace:"nowrap"}}>{unlocked?"✓":`${txp}/${z.unlockXP}`}</div>
+                    ))}
+                  </div>
+                </div>
+              </PixelPanel>
+            </div>
+            <PixelPanel accent="#3a2a50" surface="#13111e">
+              <div style={{padding:14}}>
+                <div style={{fontSize:8,color:"#a78bfa",letterSpacing:2,fontFamily:FONT_PIXEL,marginBottom:12,lineHeight:1.8}}>🗺 PROGRESIÓN DE ZONAS</div>
+                {ZONES.map(z=>{
+                  const unlocked=txp>=z.unlockXP;
+                  const pct=z.unlockXP===0?100:Math.min(100,(txp/z.unlockXP)*100);
+                  return(
+                    <div key={z.id} style={{marginBottom:12,opacity:unlocked?1:0.6}}>
+                      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:5}}>
+                        <span style={{fontSize:14}}>{unlocked?"✅":txp>0&&txp<z.unlockXP?"🔄":"🔒"}</span>
+                        <div style={{flex:1}}>
+                          <div style={{fontSize:11,color:unlocked?"#e8e0ff":"#4b5563",fontFamily:FONT_BODY}}>{z.emoji} {z.name}</div>
+                          <div style={{fontSize:10,color:"#4b5563",fontFamily:FONT_BODY}}>{z.desc}</div>
+                        </div>
+                        <div style={{fontSize:7,color:unlocked?cls.color:"#4b5563",fontFamily:FONT_PIXEL,whiteSpace:"nowrap"}}>{unlocked?"✓":`${txp}/${z.unlockXP}`}</div>
+                      </div>
+                      {!unlocked&&z.unlockXP>0&&(
+                        <div style={{marginLeft:22}}>
+                          <PixelBar pct={pct} color="#7c3aed" height={6}/>
+                        </div>
+                      )}
                     </div>
-                    {!unlocked&&z.unlockXP>0&&(
-                      <div style={{background:"#0a0a18",borderRadius:999,height:3,overflow:"hidden",marginLeft:22}}>
-                        <div style={{width:`${pct}%`,height:"100%",background:`linear-gradient(90deg,#4834d4,#7c3aed)`,borderRadius:999}}/>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            </PixelPanel>
           </div>
         )}
 
@@ -1700,24 +1775,27 @@ export default function App() {
         {tab==="train"&&(
           <div>
             {/* Big workout CTA */}
-            <button onClick={()=>setScreen("workout")}
-              style={{width:"100%",padding:20,borderRadius:14,cursor:"pointer",border:`2px solid ${cls.color}44`,background:`linear-gradient(135deg,${cls.color}18,#0e0820)`,color:"#fff",fontFamily:"'Courier New',monospace",marginBottom:14,textAlign:"left",transition:"all 0.2s",boxShadow:`0 4px 24px ${cls.color}22`}}>
-              <div style={{display:"flex",alignItems:"center",gap:14}}>
-                <div style={{fontSize:40}}>💪</div>
-                <div>
-                  <div style={{fontSize:16,fontWeight:800,color:cls.color,letterSpacing:1,marginBottom:4}}>INICIAR ENTRENAMIENTO</div>
-                  <div style={{fontSize:10,color:"#9ca3af"}}>Sets × Reps × Peso · Timer de descanso · XP en tiempo real</div>
-                  <div style={{fontSize:9,color:"#6b7280",marginTop:4}}>6 plantillas + rutina personalizada</div>
-                </div>
-              </div>
-            </button>
+            <div style={{marginBottom:14}}>
+              <PixelPanel accent={cls.color} surface="#0e0820" glow={cls.color}>
+                <button onClick={()=>setScreen("workout")} style={{width:"100%",background:"none",border:"none",cursor:"pointer",padding:18,textAlign:"left",fontFamily:FONT_BODY}}>
+                  <div style={{display:"flex",alignItems:"center",gap:14}}>
+                    <div style={{fontSize:40}}>💪</div>
+                    <div>
+                      <div style={{fontSize:13,color:cls.color,fontFamily:FONT_PIXEL,letterSpacing:1,marginBottom:8,lineHeight:1.6}}>INICIAR ENTRENAMIENTO</div>
+                      <div style={{fontSize:13,color:"#9ca3af"}}>Sets × Reps × Peso · Timer de descanso · XP en tiempo real</div>
+                      <div style={{fontSize:12,color:"#6b7280",marginTop:3}}>6 plantillas + rutina personalizada</div>
+                    </div>
+                  </div>
+                </button>
+              </PixelPanel>
+            </div>
 
             {/* Quick templates preview */}
-            <div style={{fontSize:8,color:"#4b5563",letterSpacing:2,marginBottom:10}}>PLANTILLAS RÁPIDAS</div>
+            <div style={{fontSize:7,color:"#4b5563",letterSpacing:2,fontFamily:FONT_PIXEL,marginBottom:10,lineHeight:1.8}}>PLANTILLAS RÁPIDAS</div>
             <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:8,marginBottom:14}}>
               {WORKOUT_TEMPLATES.map(tmpl=>(
                 <button key={tmpl.id} onClick={()=>setScreen("workout")}
-                  style={{padding:"12px 8px",borderRadius:10,cursor:"pointer",border:`1px solid ${tmpl.color}33`,background:`${tmpl.color}0a`,color:tmpl.color,fontFamily:"'Courier New',monospace",fontSize:9,fontWeight:800,textAlign:"center",transition:"all 0.15s",display:"flex",flexDirection:"column",alignItems:"center",gap:4}}>
+                  style={{padding:"12px 8px",clipPath:pixelClip(5),cursor:"pointer",border:"none",background:`${tmpl.color}14`,color:tmpl.color,fontFamily:FONT_PIXEL,fontSize:7,textAlign:"center",transition:"all 0.15s",display:"flex",flexDirection:"column",alignItems:"center",gap:6,lineHeight:1.6}}>
                   <span style={{fontSize:20}}>{tmpl.icon}</span>
                   <span>{tmpl.name}</span>
                 </button>
@@ -1725,12 +1803,13 @@ export default function App() {
             </div>
 
             {/* Quick log — for manual entry */}
-            <div style={{background:"#0e0e1c",border:"1px solid #1e1e3a",borderRadius:12,padding:14}}>
-              <div style={{fontSize:8,color:"#4b5563",letterSpacing:2,marginBottom:10}}>REGISTRO RÁPIDO MANUAL</div>
+            <PixelPanel accent="#3a3050" surface="#0e0e1c">
+              <div style={{padding:14}}>
+              <div style={{fontSize:7,color:"#4b5563",letterSpacing:2,fontFamily:FONT_PIXEL,marginBottom:10,lineHeight:1.8}}>REGISTRO RÁPIDO MANUAL</div>
               <div style={{display:"flex",gap:8,marginBottom:10}}>
                 {Object.entries(STAT_CFG).map(([key,cfg])=>(
                   <button key={key} onClick={()=>setForm(f=>({...f,stat:key,exercise:""}))}
-                    style={{flex:1,padding:"8px 4px",borderRadius:8,cursor:"pointer",border:`2px solid ${form.stat===key?cfg.color:"#1e1e3a"}`,background:form.stat===key?`${cfg.color}22`:"#060612",color:form.stat===key?cfg.color:"#4b5563",fontFamily:"'Courier New',monospace",fontSize:8,fontWeight:800,display:"flex",flexDirection:"column",alignItems:"center",gap:2,transition:"all 0.15s"}}>
+                    style={{flex:1,padding:"8px 4px",borderRadius:8,cursor:"pointer",border:`2px solid ${form.stat===key?cfg.color:"#1e1e3a"}`,background:form.stat===key?`${cfg.color}22`:"#060612",color:form.stat===key?cfg.color:"#4b5563",fontFamily:FONT_BODY,fontSize:8,fontWeight:800,display:"flex",flexDirection:"column",alignItems:"center",gap:2,transition:"all 0.15s"}}>
                     <span style={{fontSize:14}}>{cfg.icon}</span>{cfg.label.toUpperCase()}
                   </button>
                 ))}
@@ -1742,10 +1821,11 @@ export default function App() {
               </select>
               {form.exercise==="__otro"&&<input className="inp" style={{marginBottom:8}} placeholder="Ejercicio..." onChange={e=>setForm(f=>({...f,exercise:e.target.value}))}/>}
               <input className="inp" type="number" min="0" value={form.amount} onChange={e=>setForm(f=>({...f,amount:e.target.value}))} placeholder={`Cantidad (${STAT_CFG[form.stat].unit})`} style={{marginBottom:8}}/>
-              <button onClick={handleLog} style={{width:"100%",padding:10,borderRadius:8,cursor:"pointer",border:"none",background:`linear-gradient(90deg,${STAT_CFG[form.stat].color},${STAT_CFG[form.stat].glow})`,color:"#fff",fontWeight:800,fontSize:11,fontFamily:"'Courier New',monospace",letterSpacing:1}}>
+              <PixelButton onClick={handleLog} accent={STAT_CFG[form.stat].color} fill={STAT_CFG[form.stat].glow} textColor="#1a0a08" fontSize={9}>
                 ⚡ REGISTRAR
-              </button>
-            </div>
+              </PixelButton>
+              </div>
+            </PixelPanel>
           </div>
         )}
 
@@ -1789,7 +1869,7 @@ export default function App() {
                 ].map(c=>(
                   <div key={c.label} style={{background:"#0e0e1c",border:`1px solid ${c.color}33`,borderRadius:10,padding:"10px 8px",textAlign:"center"}}>
                     <div style={{fontSize:20,marginBottom:4}}>{c.icon}</div>
-                    <div style={{fontSize:18,fontWeight:800,color:c.color}}>{c.value}</div>
+                    <div style={{fontSize:18,fontWeight:800,fontFamily:FONT_BODY,color:c.color}}>{c.value}</div>
                     <div style={{fontSize:7,color:"#4b5563",letterSpacing:1,marginTop:2}}>{c.label}</div>
                   </div>
                 ))}
@@ -1800,19 +1880,19 @@ export default function App() {
                 <div style={{fontSize:8,color:"#7c3aed",letterSpacing:3,marginBottom:10}}>ESTA SEMANA</div>
                 <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}>
                   <div style={{textAlign:"center"}}>
-                    <div style={{fontSize:18,fontWeight:800,color:"#e8e0ff"}}>{weekXP}</div>
+                    <div style={{fontSize:18,fontWeight:800,fontFamily:FONT_BODY,color:"#e8e0ff"}}>{weekXP}</div>
                     <div style={{fontSize:7,color:"#4b5563"}}>XP GANADOS</div>
                   </div>
                   <div style={{textAlign:"center"}}>
-                    <div style={{fontSize:18,fontWeight:800,color:"#e8e0ff"}}>{weekDays}</div>
+                    <div style={{fontSize:18,fontWeight:800,fontFamily:FONT_BODY,color:"#e8e0ff"}}>{weekDays}</div>
                     <div style={{fontSize:7,color:"#4b5563"}}>DÍAS ENTRENADOS</div>
                   </div>
                   <div style={{textAlign:"center"}}>
-                    <div style={{fontSize:18,fontWeight:800,color:"#e8e0ff"}}>{thisWeek.length}</div>
+                    <div style={{fontSize:18,fontWeight:800,fontFamily:FONT_BODY,color:"#e8e0ff"}}>{thisWeek.length}</div>
                     <div style={{fontSize:7,color:"#4b5563"}}>SESIONES</div>
                   </div>
                   <div style={{textAlign:"center"}}>
-                    <div style={{fontSize:18,fontWeight:800,color:weekDays>=5?"#2ecc71":"#e74c3c"}}>{weekDays>=5?"✅":"⚠️"}</div>
+                    <div style={{fontSize:18,fontWeight:800,fontFamily:FONT_BODY,color:weekDays>=5?"#2ecc71":"#e74c3c"}}>{weekDays>=5?"✅":"⚠️"}</div>
                     <div style={{fontSize:7,color:"#4b5563"}}>META 5/7</div>
                   </div>
                 </div>
