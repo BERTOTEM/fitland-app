@@ -1121,7 +1121,7 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
       <style>{`
         @keyframes restPulse{0%,100%{opacity:1}50%{opacity:0.6}}
         @keyframes xpFloat{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
-        @keyframes heroWorkout{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+        @keyframes heroWorkoutZoom{0%,100%{transform:scale(1.0)}50%{transform:scale(1.06)}}
         .set-row:hover{background:#0e0e1c!important;}
       `}</style>
 
@@ -1199,31 +1199,43 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
           </button>
         </div>
 
-        {/* Hero workout image — changes by current exercise stat, now using PixelPanel */}
+        {/* Hero workout image — full-bleed background, text overlaid */}
         {currentEx&&(()=>{
           const stat = getStatForExercise(currentEx.id);
           const exLib = ALL_EXERCISES.find(e=>e.id===currentEx.id);
           const doneCount = currentEx.sets.filter(s=>s.done).length;
+          const imgSrc = heroImgSrc(hero, stat);
           return (
             <div style={{marginBottom:14}}>
               <PixelPanel accent="#5a3a2a" surface="#15100c" glow={STAT_CFG[stat].color}>
-                <div style={{padding:"18px 16px",textAlign:"center"}}>
-                  <div style={{display:"flex",justifyContent:"center",marginBottom:10}}>
-                    <div style={{animation:"heroWorkout 1.8s ease-in-out infinite"}}>
-                      <HeroImg hero={hero} size={100} mode={stat}/>
-                    </div>
-                  </div>
-                  <div style={{fontSize:8,color:STAT_CFG[stat].color,letterSpacing:2,fontFamily:FONT_PIXEL,marginBottom:6,lineHeight:1.8}}>{STAT_CFG[stat].icon} {STAT_CFG[stat].label.toUpperCase()}</div>
-                  <div style={{fontSize:14,fontFamily:FONT_BODY,color:"#f0e6d2",marginBottom:10}}>{exLib?.name}</div>
-                  <div style={{display:"flex",justifyContent:"center",gap:18}}>
-                    <div style={{textAlign:"center"}}>
-                      <div style={{fontSize:16,fontFamily:FONT_BODY,color:"#d4a843"}}>+{calcExerciseXP(currentEx,currentEx.sets)}</div>
-                      <div style={{fontSize:6,color:"#6b6378",letterSpacing:1,fontFamily:FONT_PIXEL,marginTop:2}}>XP</div>
-                    </div>
-                    <div style={{width:1,background:"rgba(255,255,255,0.08)"}}/>
-                    <div style={{textAlign:"center"}}>
-                      <div style={{fontSize:16,fontFamily:FONT_BODY,color:doneCount===currentEx.sets.length&&currentEx.sets.length>0?"#5dcaa5":"#f0e6d2"}}>{doneCount}/{currentEx.sets.length}</div>
-                      <div style={{fontSize:6,color:"#6b6378",letterSpacing:1,fontFamily:FONT_PIXEL,marginTop:2}}>SETS ✓</div>
+                <div style={{position:"relative",minHeight:200,overflow:"hidden"}}>
+                  {/* Full-bleed background image */}
+                  <img src={imgSrc} crossOrigin="anonymous" alt="" style={{
+                    position:"absolute", inset:0, width:"100%", height:"100%",
+                    objectFit:"cover", objectPosition:"center 30%",
+                    animation:"heroWorkoutZoom 6s ease-in-out infinite",
+                  }} onError={e=>{e.target.style.display="none";}}/>
+
+                  {/* Top fade for readability if needed */}
+                  <div style={{position:"absolute",top:0,left:0,right:0,height:"35%",background:"linear-gradient(180deg,rgba(10,8,12,0.55),transparent)"}}/>
+
+                  {/* Bottom dark gradient — text sits here */}
+                  <div style={{position:"absolute",bottom:0,left:0,right:0,height:"62%",background:"linear-gradient(180deg,transparent,rgba(10,8,12,0.75) 35%,rgba(10,8,12,0.96) 100%)"}}/>
+
+                  {/* Overlaid text content */}
+                  <div style={{position:"relative",zIndex:1,minHeight:200,display:"flex",flexDirection:"column",justifyContent:"flex-end",padding:"16px 18px"}}>
+                    <div style={{fontSize:8,color:STAT_CFG[stat].color,letterSpacing:2,fontFamily:FONT_PIXEL,marginBottom:6,lineHeight:1.8,textShadow:"0 2px 6px rgba(0,0,0,0.9)"}}>{STAT_CFG[stat].icon} {STAT_CFG[stat].label.toUpperCase()}</div>
+                    <div style={{fontSize:20,fontFamily:FONT_BODY,color:"#f8f0e0",marginBottom:10,textShadow:"0 2px 8px rgba(0,0,0,0.9)"}}>{exLib?.name}</div>
+                    <div style={{display:"flex",gap:20}}>
+                      <div>
+                        <div style={{fontSize:18,fontFamily:FONT_BODY,color:"#e8c060",textShadow:"0 2px 6px rgba(0,0,0,0.9)"}}>+{calcExerciseXP(currentEx,currentEx.sets)}</div>
+                        <div style={{fontSize:6,color:"#a89890",letterSpacing:1,fontFamily:FONT_PIXEL,marginTop:2}}>XP</div>
+                      </div>
+                      <div style={{width:1,background:"rgba(255,255,255,0.15)"}}/>
+                      <div>
+                        <div style={{fontSize:18,fontFamily:FONT_BODY,color:doneCount===currentEx.sets.length&&currentEx.sets.length>0?"#6dd9b0":"#f8f0e0",textShadow:"0 2px 6px rgba(0,0,0,0.9)"}}>{doneCount}/{currentEx.sets.length}</div>
+                        <div style={{fontSize:6,color:"#a89890",letterSpacing:1,fontFamily:FONT_PIXEL,marginTop:2}}>SETS ✓</div>
+                      </div>
                     </div>
                   </div>
                 </div>
