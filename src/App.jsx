@@ -6,12 +6,25 @@ import { useState, useEffect, useRef, useCallback } from "react";
 const RAW = "https://cdn.jsdelivr.net/gh/BERTOTEM/fitland-assets@main";
 
 const HERO_IMG = {
-  warrior:  { base: `${RAW}/Personajes/Guerrero/Base.PNG`,   spec1: `${RAW}/Personajes/Guerrero/Especializacion_1_Berserker.PNG`,           spec2: `${RAW}/Personajes/Guerrero/Especializacion_2_Caballero_Negro.PNG` },
-  ranger:   { base: `${RAW}/Personajes/Explorador/Base.PNG`, spec1: `${RAW}/Personajes/Explorador/Especializacion_1_Cazador.PNG`,            spec2: `${RAW}/Personajes/Explorador/Especializacion_2_Saqueador.PNG` },
-  monk:     { base: `${RAW}/Personajes/Monje/Base.PNG`,      spec1: `${RAW}/Personajes/Monje/Especializacion_1_Maestro_espiritual.PNG`,      spec2: `${RAW}/Personajes/Monje/Especializacion_2_Puño_fuego.PNG` },
-  paladin:  { base: `${RAW}/Personajes/Paladin/Base.PNG`,    spec1: `${RAW}/Personajes/Paladin/Especializacion_1_Paladin_Luz.PNG`,           spec2: `${RAW}/Personajes/Paladin/Especializacion_2_Caballero_Crepuscular.PNG` },
-  assassin: { base: `${RAW}/Personajes/Asesino/Base.PNG`,    spec1: `${RAW}/Personajes/Asesino/Especializacion_1_Sombra_letal.PNG`,         spec2: `${RAW}/Personajes/Asesino/Especializacion_2_Dualista_veloz.PNG` },
-  druid:    { base: `${RAW}/Personajes/Druida/Base.PNG`,     spec1: `${RAW}/Personajes/Druida/Especializacion_1_Forma_feral.PNG`,           spec2: `${RAW}/Personajes/Druida/Especializacion_2_Maestro_elementos.PNG` },
+  warrior:  { base: `${RAW}/Personajes/Guerrero/Base.PNG`,   spec1: `${RAW}/Personajes/Guerrero/Especializacion_1_Berserker.PNG`,           spec2: `${RAW}/Personajes/Guerrero/Especializacion_2_Caballero_Negro.PNG`,   fuerza: `${RAW}/Personajes/Guerrero/Entrenamiento_fuerza.png`,    velocidad: `${RAW}/Personajes/Guerrero/Entrenamiento_velocidad.png`,    vitalidad: `${RAW}/Personajes/Guerrero/Entrenamiento_vitalidad.png` },
+  ranger:   { base: `${RAW}/Personajes/Explorador/Base.PNG`, spec1: `${RAW}/Personajes/Explorador/Especializacion_1_Cazador.PNG`,            spec2: `${RAW}/Personajes/Explorador/Especializacion_2_Saqueador.PNG`,       fuerza: `${RAW}/Personajes/Explorador/Entrenamiento_fuerza.png`,  velocidad: `${RAW}/Personajes/Explorador/Entrenamiento_velocidad.png`,  vitalidad: `${RAW}/Personajes/Explorador/Entrenamiento_vitalidad.png` },
+  monk:     { base: `${RAW}/Personajes/Monje/Base.PNG`,      spec1: `${RAW}/Personajes/Monje/Especializacion_1_Maestro_espiritual.PNG`,      spec2: `${RAW}/Personajes/Monje/Especializacion_2_Puño_fuego.PNG`,          fuerza: `${RAW}/Personajes/Monje/Entrenamiento_fuerza.png`,       velocidad: `${RAW}/Personajes/Monje/Entrenamiento_velocidad.png`,       vitalidad: `${RAW}/Personajes/Monje/Entrenamiento_vitalidad.png` },
+  paladin:  { base: `${RAW}/Personajes/Paladin/Base.PNG`,    spec1: `${RAW}/Personajes/Paladin/Especializacion_1_Paladin_Luz.PNG`,           spec2: `${RAW}/Personajes/Paladin/Especializacion_2_Caballero_Crepuscular.PNG`, fuerza: `${RAW}/Personajes/Paladin/Entrenamiento_fuerza.png`,  velocidad: `${RAW}/Personajes/Paladin/Entrenamiento_velocidad.png`,  vitalidad: `${RAW}/Personajes/Paladin/Entrenamiento_vitalidad.png` },
+  assassin: { base: `${RAW}/Personajes/Asesino/Base.PNG`,    spec1: `${RAW}/Personajes/Asesino/Especializacion_1_Sombra_letal.PNG`,         spec2: `${RAW}/Personajes/Asesino/Especializacion_2_Dualista_veloz.PNG`,    fuerza: `${RAW}/Personajes/Asesino/Entrenamiento_fuerza.png`,     velocidad: `${RAW}/Personajes/Asesino/Entrenamiento_velocidad.png`,     vitalidad: `${RAW}/Personajes/Asesino/Entrenamiento_vitalidad.png` },
+  druid:    { base: `${RAW}/Personajes/Druida/Base.PNG`,     spec1: `${RAW}/Personajes/Druida/Especializacion_1_Forma_feral.PNG`,           spec2: `${RAW}/Personajes/Druida/Especializacion_2_Maestro_elementos.PNG`,  fuerza: `${RAW}/Personajes/Druida/Entrenamiento_fuerza.png`,      velocidad: `${RAW}/Personajes/Druida/Entrenamiento_velocidad.jpg`,      vitalidad: `${RAW}/Personajes/Druida/Entrenamiento_vitalidad.png` },
+};
+
+// ── UI ASSETS ──
+const UI_IMG = {
+  bgPrincipal: `${RAW}/UI/Fondos/fondo_principal.PNG`,
+  bgCreador:   `${RAW}/UI/Fondos/fondo_creador.PNG`,
+  bgTienda:    `${RAW}/UI/Fondos/fondo_tienda.PNG`,
+  btnCombate:    `${RAW}/UI/Botones/boton_combate.PNG`,
+  btnTienda:     `${RAW}/UI/Botones/boton_tienda.PNG`,
+  btnSecundario: `${RAW}/UI/Botones/boton_secundario.PNG`,
+  cardPanel: `${RAW}/UI/Cards/card_panel.PNG`,
+  cardStat:  `${RAW}/UI/Cards/card_stat.PNG`,
+  cardItem:  `${RAW}/UI/Cards/card_item.PNG`,
 };
 
 const ZONE_IMG = {
@@ -28,7 +41,7 @@ const ZONE_IMG = {
 //  Daily avg: 120 XP → 2400 XP/month at 5x/week
 //  Zone unlocks: 0 / 4800 / 9600 / 16800 / 26400 XP
 // ═══════════════════════════════════════════════════
-const XP_PER_LEVEL   = 300;   // harder to level up
+const XP_PER_LEVEL   = 200;   // harder to level up
 const STAMINA_PER_XP = 1;     // less stamina per XP (was 2)
 const MAX_STAMINA    = 300;   // lower cap
 const SPEC_LEVEL     = 15;    // need more training to specialize
@@ -85,49 +98,49 @@ const CLASSES = [
 // Month 8-11: Castillo (16800 → 26400 XP)
 // Month 12+: Abismo (26400 XP)
 const ZONES = [
-  { id:"valley",  name:"Valle del Inicio",   emoji:"🌄", unlockXP:1000,     bg:"#0a1a08", accent:"#3a7a20",
+  { id:"valley",  name:"Valle del Inicio",   emoji:"🌄", unlockXP:1000,  bg:"#0a1a08", accent:"#3a7a20",
     desc:"Primeras 2 semanas. Aprende el sistema.", stamBase:40,
     monsters:[
-      { name:"Elemental joven",    type:"mob1",     hp:80,   atk:10,  def:2,   xpR:10,  goldR:5,   level:1,  stamCost:40  },
-      { name:"Espiritu del bosque",  type:"mob2",     hp:160,  atk:16,  def:4,   xpR:18,  goldR:9,   level:1,  stamCost:50  },
-      { name:"Mantis real",     type:"miniboss", hp:300,  atk:26,  def:8,   xpR:35,  goldR:18,  level:2,  stamCost:70  },
-      { name:"Señor del Valle", type:"boss",     hp:500,  atk:38,  def:14,  xpR:70,  goldR:40,  level:3,  stamCost:100, isBoss:true },
+      { name:"Elemental Joven",      type:"mob1",     hp:80,   atk:10,  def:2,   xpR:10,  goldR:5,   level:1,  stamCost:40  },
+      { name:"Espíritu del Bosque",  type:"mob2",     hp:160,  atk:16,  def:4,   xpR:18,  goldR:9,   level:1,  stamCost:50  },
+      { name:"Mantis Real",          type:"miniboss", hp:300,  atk:26,  def:8,   xpR:35,  goldR:18,  level:2,  stamCost:70  },
+      { name:"Señor del Valle",      type:"boss",     hp:500,  atk:38,  def:14,  xpR:70,  goldR:40,  level:3,  stamCost:100, isBoss:true },
     ]
   },
   { id:"forest",  name:"Bosque Sombrío",     emoji:"🌲", unlockXP:6800,  bg:"#080f08", accent:"#1a5a10",
     desc:"2 meses de entreno constante requeridos.", stamBase:70,
     monsters:[
-      { name:"Araña Sombría",    type:"mob1",     hp:520,  atk:52,  def:18,  xpR:40,  goldR:20,  level:4,  stamCost:70  },
-      { name:"Monstruo de espinas",  type:"mob2",     hp:620,  atk:66,  def:24,  xpR:58,  goldR:30,  level:5,  stamCost:85  },
-      { name:"Troll arboleo",     type:"miniboss", hp:740,  atk:82,  def:34,  xpR:90,  goldR:50,  level:6,  stamCost:120 },
-      { name:"Reina de espinas",type:"boss",     hp:1200, atk:108, def:48,  xpR:180, goldR:100, level:7,  stamCost:180, isBoss:true },
+      { name:"Araña Sombría",        type:"mob1",     hp:520,  atk:52,  def:18,  xpR:40,  goldR:20,  level:4,  stamCost:70  },
+      { name:"Monstruo de Espinas",  type:"mob2",     hp:620,  atk:66,  def:24,  xpR:58,  goldR:30,  level:5,  stamCost:85  },
+      { name:"Troll Arbóreo",        type:"miniboss", hp:740,  atk:82,  def:34,  xpR:90,  goldR:50,  level:6,  stamCost:120 },
+      { name:"Reina de Espinas",     type:"boss",     hp:1200, atk:108, def:48,  xpR:180, goldR:100, level:7,  stamCost:180, isBoss:true },
     ]
   },
-  { id:"cave",    name:"Cueva de Cristal",   emoji:"💎", unlockXP:12600,  bg:"#080814", accent:"#2a2a8a",
+  { id:"cave",    name:"Cueva de Cristal",   emoji:"💎", unlockXP:12600, bg:"#080814", accent:"#2a2a8a",
     desc:"4 meses acumulados. Solo los dedicados.", stamBase:110,
     monsters:[
-      { name:"Medusa",      type:"mob1",     hp:760,  atk:90,  def:36,  xpR:70,  goldR:38,  level:8,  stamCost:110 },
-      { name:"Ojo de cristal",  type:"mob2",     hp:880,  atk:112, def:46,  xpR:90,  goldR:50,  level:9,  stamCost:130 },
-      { name:"Troll fungico",      type:"miniboss", hp:1200, atk:135, def:62,  xpR:140, goldR:80,  level:10, stamCost:170 },
-      { name:"Armadillo de Cristal",type:"boss",     hp:2060, atk:170, def:85,  xpR:280, goldR:160, level:12, stamCost:250, isBoss:true },
+      { name:"Medusa",               type:"mob1",     hp:760,  atk:90,  def:36,  xpR:70,  goldR:38,  level:8,  stamCost:110 },
+      { name:"Ojo de Cristal",       type:"mob2",     hp:880,  atk:112, def:46,  xpR:90,  goldR:50,  level:9,  stamCost:130 },
+      { name:"Troll Fúngico",        type:"miniboss", hp:1200, atk:135, def:62,  xpR:140, goldR:80,  level:10, stamCost:170 },
+      { name:"Armadillo de Cristal", type:"boss",     hp:2060, atk:170, def:85,  xpR:280, goldR:160, level:12, stamCost:250, isBoss:true },
     ]
   },
   { id:"castle",  name:"Castillo Maldito",   emoji:"🏰", unlockXP:26800, bg:"#100810", accent:"#5a1a6a",
     desc:"7 meses acumulados. Las fuerzas oscuras reinan.", stamBase:160,
     monsters:[
-      { name:"Caballero Oscuro",type:"mob1",     hp:2000, atk:162, def:80,  xpR:120, goldR:70,  level:13, stamCost:160 },
-      { name:"Caballero Jefe",    type:"mob2",     hp:1080,  atk:198, def:62,  xpR:145, goldR:85,  level:14, stamCost:180 },
-      { name:"Golem Jefe",  type:"miniboss", hp:1740, atk:225, def:102, xpR:220, goldR:130, level:15, stamCost:230 },
-      { name:"Golem tocado por el abismo",   type:"boss",     hp:2800, atk:266, def:128, xpR:400, goldR:240, level:17, stamCost:300, isBoss:true },
+      { name:"Caballero Oscuro",           type:"mob1",     hp:2000, atk:162, def:80,  xpR:120, goldR:70,  level:13, stamCost:160 },
+      { name:"Caballero Jefe",             type:"mob2",     hp:1080, atk:198, def:62,  xpR:145, goldR:85,  level:14, stamCost:180 },
+      { name:"Gólem Jefe",                 type:"miniboss", hp:1740, atk:225, def:102, xpR:220, goldR:130, level:15, stamCost:230 },
+      { name:"Gólem Tocado por el Abismo", type:"boss",     hp:2800, atk:266, def:128, xpR:400, goldR:240, level:17, stamCost:300, isBoss:true },
     ]
   },
   { id:"abyss",   name:"El Abismo",          emoji:"🌑", unlockXP:36400, bg:"#050508", accent:"#3a0a5a",
     desc:"11 meses+ Solo los legendarios llegan aquí.", stamBase:220,
     monsters:[
-      { name:"Demonio Guardián",type:"mob1",     hp:2000, atk:270, def:135, xpR:200, goldR:120, level:18, stamCost:220 },
+      { name:"Demonio Guardián", type:"mob1",     hp:2000, atk:270, def:135, xpR:200, goldR:120, level:18, stamCost:220 },
       { name:"Ángel Caído",     type:"mob2",     hp:2500, atk:306, def:148, xpR:230, goldR:140, level:19, stamCost:250 },
       { name:"Señor Demoníaco", type:"miniboss", hp:3200, atk:342, def:170, xpR:340, goldR:200, level:20, stamCost:300 },
-      { name:"Rey Eterno",   type:"boss",     hp:8000, atk:496, def:298, xpR:600, goldR:400, level:22, stamCost:400, isBoss:true, isFinal:true },
+      { name:"Rey Eterno",      type:"boss",     hp:8000, atk:496, def:298, xpR:600, goldR:400, level:22, stamCost:400, isBoss:true, isFinal:true },
     ]
   },
 ];
@@ -233,30 +246,30 @@ function getStatForExercise(exId) {
 // ═══════════════════════════════════════════════════
 const SHOP_ITEMS = [
   // ── WEAPONS (boost ATK) ──
-  { id:"sword_iron",    category:"weapon", name:"Espada de Hierro",    icon:"⚔️",  price:80,   bonus:{atk:8},              desc:"+8 ATK",                    reqZone:0 },
-  { id:"sword_steel",   category:"weapon", name:"Espada de Acero",     icon:"🗡️",  price:250,  bonus:{atk:20},             desc:"+20 ATK",                   reqZone:1 },
-  { id:"sword_magic",   category:"weapon", name:"Espada Mágica",       icon:"✨",   price:600,  bonus:{atk:45},             desc:"+45 ATK",                   reqZone:2 },
-  { id:"sword_dragon",  category:"weapon", name:"Espadón del Dragón",  icon:"🐉",  price:1400, bonus:{atk:100},            desc:"+100 ATK",                  reqZone:3 },
+  { id:"sword_iron",    category:"weapon", name:"Espada de Hierro",    icon:"⚔️",  img:`${RAW}/UI/Items/Armas/Espada de Hierro.PNG`,    price:80,   bonus:{atk:8},              desc:"+8 ATK",                    reqZone:0 },
+  { id:"sword_steel",   category:"weapon", name:"Espada de Acero",     icon:"🗡️",  img:`${RAW}/UI/Items/Armas/Espada de Acero.PNG`,     price:250,  bonus:{atk:20},             desc:"+20 ATK",                   reqZone:1 },
+  { id:"sword_magic",   category:"weapon", name:"Espada Mágica",       icon:"✨",   img:`${RAW}/UI/Items/Armas/Espada Mágica.PNG`,       price:600,  bonus:{atk:45},             desc:"+45 ATK",                   reqZone:2 },
+  { id:"sword_dragon",  category:"weapon", name:"Espadón del Dragón",  icon:"🐉",  img:`${RAW}/UI/Items/Armas/Espadón del Dragón.PNG`,  price:1400, bonus:{atk:100},            desc:"+100 ATK",                  reqZone:3 },
   // ── ARMOR (boost DEF + HP) ──
-  { id:"armor_leather", category:"armor",  name:"Armadura de Cuero",   icon:"🥋",  price:60,   bonus:{def:6,hp:30},        desc:"+6 DEF +30 HP",             reqZone:0 },
-  { id:"armor_chain",   category:"armor",  name:"Cota de Malla",       icon:"🛡️",  price:200,  bonus:{def:18,hp:80},       desc:"+18 DEF +80 HP",            reqZone:1 },
-  { id:"armor_plate",   category:"armor",  name:"Armadura de Placas",  icon:"⚙️",  price:500,  bonus:{def:40,hp:180},      desc:"+40 DEF +180 HP",           reqZone:2 },
-  { id:"armor_divine",  category:"armor",  name:"Armadura Divina",     icon:"👼",  price:1200, bonus:{def:90,hp:400},      desc:"+90 DEF +400 HP",           reqZone:3 },
+  { id:"armor_leather", category:"armor",  name:"Armadura de Cuero",   icon:"🥋",  img:`${RAW}/UI/Items/Armaduras/Armadura_de_Cuero.PNG`,  price:60,   bonus:{def:6,hp:30},        desc:"+6 DEF +30 HP",             reqZone:0 },
+  { id:"armor_chain",   category:"armor",  name:"Cota de Malla",       icon:"🛡️",  img:`${RAW}/UI/Items/Armaduras/Cota_de_Malla.PNG`,      price:200,  bonus:{def:18,hp:80},       desc:"+18 DEF +80 HP",            reqZone:1 },
+  { id:"armor_plate",   category:"armor",  name:"Armadura de Placas",  icon:"⚙️",  img:`${RAW}/UI/Items/Armaduras/Armadura_de_Placas.PNG`, price:500,  bonus:{def:40,hp:180},      desc:"+40 DEF +180 HP",           reqZone:2 },
+  { id:"armor_divine",  category:"armor",  name:"Armadura Divina",     icon:"👼",  img:`${RAW}/UI/Items/Armaduras/Armadura_Divina.PNG`,    price:1200, bonus:{def:90,hp:400},      desc:"+90 DEF +400 HP",           reqZone:3 },
   // ── ACCESSORIES (mixed) ──
-  { id:"ring_speed",    category:"access", name:"Anillo de Velocidad",  icon:"💍",  price:150,  bonus:{spd:0.1},            desc:"+0.1 velocidad combate",    reqZone:0 },
-  { id:"amulet_life",   category:"access", name:"Amuleto de Vida",      icon:"📿",  price:300,  bonus:{hp:120},             desc:"+120 HP máx",               reqZone:1 },
-  { id:"boots_swift",   category:"access", name:"Botas Veloces",        icon:"👟",  price:450,  bonus:{spd:0.2,def:10},     desc:"+0.2 velocidad +10 DEF",    reqZone:2 },
-  { id:"crown_power",   category:"access", name:"Corona del Poder",     icon:"👑",  price:1000, bonus:{atk:30,def:30,hp:150},desc:"+30ATK +30DEF +150HP",     reqZone:3 },
+  { id:"ring_speed",    category:"access", name:"Anillo de Velocidad",  icon:"💍",  img:`${RAW}/UI/Items/Accesorios/Anillo_de_velocidad.PNG`, price:150,  bonus:{spd:0.1},            desc:"+0.1 velocidad combate",    reqZone:0 },
+  { id:"amulet_life",   category:"access", name:"Amuleto de Vida",      icon:"📿",  img:`${RAW}/UI/Items/Accesorios/Amuleto_de_vida.PNG`,     price:300,  bonus:{hp:120},             desc:"+120 HP máx",               reqZone:1 },
+  { id:"boots_swift",   category:"access", name:"Botas Veloces",        icon:"👟",  img:`${RAW}/UI/Items/Accesorios/Botas_veloces.PNG`,       price:450,  bonus:{spd:0.2,def:10},     desc:"+0.2 velocidad +10 DEF",    reqZone:2 },
+  { id:"crown_power",   category:"access", name:"Corona del Poder",     icon:"👑",  img:`${RAW}/UI/Items/Accesorios/Corona_del_poder.PNG`,    price:1000, bonus:{atk:30,def:30,hp:150},desc:"+30ATK +30DEF +150HP",     reqZone:3 },
   // ── POTIONS (consumables, used in battle) ──
-  { id:"potion_small",  category:"potion", name:"Poción Pequeña",       icon:"🧪",  price:25,   heal:80,  maxStack:5,       desc:"Restaura 80 HP en combate", reqZone:0 },
-  { id:"potion_medium", category:"potion", name:"Poción Media",         icon:"⚗️",  price:70,   heal:200, maxStack:5,       desc:"Restaura 200 HP en combate",reqZone:1 },
-  { id:"potion_large",  category:"potion", name:"Poción Grande",        icon:"🔮",  price:180,  heal:500, maxStack:3,       desc:"Restaura 500 HP en combate",reqZone:2 },
+  { id:"potion_small",  category:"potion", name:"Poción Pequeña",       icon:"🧪",  img:`${RAW}/UI/Items/Pociones/Pocion_pequeña.PNG`, price:25,   heal:80,  maxStack:5,       desc:"Restaura 80 HP en combate", reqZone:0 },
+  { id:"potion_medium", category:"potion", name:"Poción Media",         icon:"⚗️",  img:`${RAW}/UI/Items/Pociones/Pocion_media.PNG`,   price:70,   heal:200, maxStack:5,       desc:"Restaura 200 HP en combate",reqZone:1 },
+  { id:"potion_large",  category:"potion", name:"Poción Grande",        icon:"🔮",  img:`${RAW}/UI/Items/Pociones/Poción_grande.PNG`,  price:180,  heal:500, maxStack:3,       desc:"Restaura 500 HP en combate",reqZone:2 },
   // ── PERMANENT UPGRADES ──
-  { id:"perm_atk1",  category:"perm", name:"Entrenamiento Ofensivo I",  icon:"💪",  price:400,  bonus:{atk:15},  desc:"+15 ATK permanente",  reqZone:0, maxBuy:3 },
-  { id:"perm_def1",  category:"perm", name:"Temple de Acero I",         icon:"🏋️",  price:400,  bonus:{def:12},  desc:"+12 DEF permanente",  reqZone:0, maxBuy:3 },
-  { id:"perm_hp1",   category:"perm", name:"Vitalidad Extrema I",       icon:"❤️",  price:400,  bonus:{hp:100},  desc:"+100 HP permanente",  reqZone:0, maxBuy:3 },
-  { id:"perm_atk2",  category:"perm", name:"Entrenamiento Ofensivo II", icon:"⚡",  price:900,  bonus:{atk:35},  desc:"+35 ATK permanente",  reqZone:2, maxBuy:2 },
-  { id:"perm_def2",  category:"perm", name:"Temple de Acero II",        icon:"🔰",  price:900,  bonus:{def:28},  desc:"+28 DEF permanente",  reqZone:2, maxBuy:2 },
+  { id:"perm_atk1",  category:"perm", name:"Entrenamiento Ofensivo I",  icon:"💪",  img:`${RAW}/UI/Items/Mejoras/Entrenamiento_ofensivo_I.PNG`,  price:400,  bonus:{atk:15},  desc:"+15 ATK permanente",  reqZone:0, maxBuy:3 },
+  { id:"perm_def1",  category:"perm", name:"Temple de Acero I",         icon:"🏋️",  img:`${RAW}/UI/Items/Mejoras/Temple_de_Acero_I.PNG`,         price:400,  bonus:{def:12},  desc:"+12 DEF permanente",  reqZone:0, maxBuy:3 },
+  { id:"perm_hp1",   category:"perm", name:"Vitalidad Extrema I",       icon:"❤️",  img:`${RAW}/UI/Items/Mejoras/Vitalidad_Extrema_I.PNG`,       price:400,  bonus:{hp:100},  desc:"+100 HP permanente",  reqZone:0, maxBuy:3 },
+  { id:"perm_atk2",  category:"perm", name:"Entrenamiento Ofensivo II", icon:"⚡",  img:`${RAW}/UI/Items/Mejoras/Entrenamiento_Ofensivo_II.PNG`, price:900,  bonus:{atk:35},  desc:"+35 ATK permanente",  reqZone:2, maxBuy:2 },
+  { id:"perm_def2",  category:"perm", name:"Temple de Acero II",        icon:"🔰",  img:`${RAW}/UI/Items/Mejoras/Temple_de_acero_II.PNG`,        price:900,  bonus:{def:28},  desc:"+28 DEF permanente",  reqZone:2, maxBuy:2 },
 ];
 
 const ITEM_CATEGORIES = [
@@ -301,14 +314,19 @@ function heroStats(hero, stats, equipment=[]) {
   return base;
 }
 
-function heroImgSrc(hero) {
+function heroImgSrc(hero, mode="base") {
   const imgs = HERO_IMG[hero.class];
   if (!imgs) return "";
+  // Workout mode — show training image by stat
+  if (mode==="fuerza")    return imgs.fuerza    || imgs.base;
+  if (mode==="velocidad") return imgs.velocidad || imgs.base;
+  if (mode==="vitalidad") return imgs.vitalidad || imgs.base;
+  // Specialization
   if (hero.specialization) {
     const cls = CLASSES.find(c=>c.id===hero.class);
     const specIdx = cls?.specs.findIndex(s=>s.id===hero.specialization);
-    if (specIdx===0) return imgs.spec1;
-    if (specIdx===1) return imgs.spec2;
+    if (specIdx===0) return imgs.spec1 || imgs.base;
+    if (specIdx===1) return imgs.spec2 || imgs.base;
   }
   return imgs.base;
 }
@@ -343,8 +361,8 @@ function Sprite({ src, size=120, flip=false, shake=false, flash="", defeated=fal
   );
 }
 
-function HeroImg({ hero, size=120, flip=false, shake=false, flash="" }) {
-  return <Sprite src={heroImgSrc(hero)} size={size} flip={flip} shake={shake} flash={flash} alt={hero.class}/>;
+function HeroImg({ hero, size=120, flip=false, shake=false, flash="", mode="base" }) {
+  return <Sprite src={heroImgSrc(hero, mode)} size={size} flip={flip} shake={shake} flash={flash} alt={hero.class}/>;
 }
 
 function EnemyImg({ zone, monsterType, size=120, shake=false, flash="", defeated=false }) {
@@ -361,9 +379,12 @@ function CharacterCreator({ onDone, initial }) {
   const cls = CLASSES.find(c=>c.id===hero.class) || CLASSES[0];
 
   return (
-    <div style={{minHeight:"100vh",background:"#060612",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20,fontFamily:"'Courier New',monospace"}}>
+    <div style={{minHeight:"100vh",background:"#060612",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20,fontFamily:"'Courier New',monospace",position:"relative",overflow:"hidden"}}>
+      {/* BG image */}
+      <img src={UI_IMG.bgCreador} crossOrigin="anonymous" alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.45,zIndex:0}} onError={e=>{e.target.style.display="none";}}/>
+      <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,#060612cc,#060612ee)",zIndex:0}}/>
       {/* Stars */}
-      <div style={{position:"fixed",inset:0,overflow:"hidden",pointerEvents:"none"}}>
+      <div style={{position:"fixed",inset:0,overflow:"hidden",pointerEvents:"none",zIndex:1}}>
         {[...Array(50)].map((_,i)=>(
           <div key={i} style={{position:"absolute",left:`${Math.random()*100}%`,top:`${Math.random()*100}%`,width:Math.random()<0.6?1:2,height:Math.random()<0.6?1:2,borderRadius:"50%",background:"#fff",opacity:0.1+Math.random()*0.4,animation:`tw ${2+Math.random()*4}s ease-in-out infinite`,animationDelay:`${Math.random()*4}s`}}/>
         ))}
@@ -384,7 +405,7 @@ function CharacterCreator({ onDone, initial }) {
         .tab:hover:not(.on){color:#7c3aed;}
       `}</style>
 
-      <div style={{maxWidth:440,width:"100%",position:"relative",zIndex:1}}>
+      <div style={{maxWidth:440,width:"100%",position:"relative",zIndex:2}}>
         {/* Steps */}
         <div style={{display:"flex",justifyContent:"center",gap:8,marginBottom:20}}>
           {["Nombre","Clase"].map((s,i)=>(
@@ -1035,6 +1056,7 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
       <style>{`
         @keyframes restPulse{0%,100%{opacity:1}50%{opacity:0.6}}
         @keyframes xpFloat{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
+        @keyframes heroWorkout{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-8px) scale(1.04)}}
         .set-row:hover{background:#0e0e1c!important;}
       `}</style>
 
@@ -1111,6 +1133,26 @@ function WorkoutScreen({ hero, stats, onFinish, onBack }) {
             + ADD
           </button>
         </div>
+
+        {/* Hero workout image — changes by current exercise stat */}
+        {currentEx&&(()=>{
+          const stat = getStatForExercise(currentEx.id);
+          return (
+            <div style={{display:"flex",justifyContent:"center",alignItems:"center",gap:20,marginBottom:16,padding:"12px 0",background:"#0a0818",borderRadius:14,border:`1px solid ${STAT_CFG[stat].color}22`,position:"relative",overflow:"hidden"}}>
+              {/* bg glow */}
+              <div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse at center,${STAT_CFG[stat].color}18 0%,transparent 70%)`,pointerEvents:"none"}}/>
+              <div style={{animation:"heroWorkout 1.8s ease-in-out infinite",position:"relative",zIndex:1}}>
+                <HeroImg hero={hero} size={110} mode={stat}/>
+              </div>
+              <div style={{position:"relative",zIndex:1}}>
+                <div style={{fontSize:9,color:STAT_CFG[stat].color,letterSpacing:2,fontWeight:800,marginBottom:4}}>{STAT_CFG[stat].icon} {STAT_CFG[stat].label.toUpperCase()}</div>
+                <div style={{fontSize:13,fontWeight:800,color:"#e8e0ff",marginBottom:4}}>{ALL_EXERCISES.find(e=>e.id===currentEx.id)?.name}</div>
+                <div style={{fontSize:11,color:"#f39c12",fontWeight:800}}>+{calcExerciseXP(currentEx,currentEx.sets)} XP</div>
+                <div style={{fontSize:9,color:"#6b7280",marginTop:2}}>{currentEx.sets.filter(s=>s.done).length}/{currentEx.sets.length} sets ✅</div>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Exercise picker modal */}
         {showPicker&&(
@@ -1245,7 +1287,11 @@ function ShopScreen({ gold, equipment, inventory, stats, shopCat, setShopCat, on
   }
 
   return (
-    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:"'Courier New',monospace",paddingBottom:40}}>
+    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:"'Courier New',monospace",paddingBottom:40,position:"relative"}}>
+      {/* BG image */}
+      <img src={UI_IMG.bgTienda} crossOrigin="anonymous" alt="" style={{position:"fixed",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.3,zIndex:0}} onError={e=>{e.target.style.display="none";}}/>
+      <div style={{position:"fixed",inset:0,background:"linear-gradient(180deg,#060612cc,#060612f0)",zIndex:0}}/>
+      <div style={{position:"relative",zIndex:1}}>
       {/* Header */}
       <div style={{background:"linear-gradient(160deg,#0e0820,#0a1228)",borderBottom:"1px solid #f39c1222",padding:"14px 16px"}}>
         <div style={{maxWidth:480,margin:"0 auto",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
@@ -1307,7 +1353,13 @@ function ShopScreen({ gold, equipment, inventory, stats, shopCat, setShopCat, on
           const canBuy=unlocked&&!owned&&gold>=item.price;
           return(
             <div key={item.id} style={{background:"#0e0e1c",border:`1px solid ${equipped?"#f39c1266":owned&&item.category!=="potion"?"#2ecc7133":"#1e1e3a"}`,borderRadius:10,padding:"12px 14px",marginBottom:8,display:"flex",alignItems:"center",gap:12,opacity:unlocked?1:0.5}}>
-              <div style={{fontSize:28,flexShrink:0}}>{item.icon}</div>
+              <div style={{width:44,height:44,flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",position:"relative"}}>
+                {item.img ? (
+                  <img src={item.img} crossOrigin="anonymous" alt={item.name} style={{width:"100%",height:"100%",objectFit:"contain"}}
+                    onError={e=>{e.target.style.display="none";e.target.nextSibling.style.display="flex";}}/>
+                ) : null}
+                <div style={{display:item.img?"none":"flex",fontSize:28,alignItems:"center",justifyContent:"center",width:"100%",height:"100%"}}>{item.icon}</div>
+              </div>
               <div style={{flex:1,minWidth:0}}>
                 <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:2}}>
                   <span style={{fontSize:12,fontWeight:800,color:equipped?"#f39c12":owned&&item.category!=="potion"?"#2ecc71":"#e8e0ff"}}>{item.name}</span>
@@ -1329,6 +1381,7 @@ function ShopScreen({ gold, equipment, inventory, stats, shopCat, setShopCat, on
             </div>
           );
         })}
+      </div>
       </div>
     </div>
   );
@@ -1498,7 +1551,11 @@ export default function App() {
   const specUnlocked=getLevel(stats[cls.primary].xp)>=SPEC_LEVEL;
 
   return (
-    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:"'Courier New',monospace",paddingBottom:80}}>
+    <div style={{minHeight:"100vh",background:"#060612",color:"#e8e0ff",fontFamily:"'Courier New',monospace",paddingBottom:80,position:"relative"}}>
+      {/* BG image */}
+      <img src={UI_IMG.bgPrincipal} crossOrigin="anonymous" alt="" style={{position:"fixed",inset:0,width:"100%",height:"100%",objectFit:"cover",opacity:0.25,zIndex:0}} onError={e=>{e.target.style.display="none";}}/>
+      <div style={{position:"fixed",inset:0,background:"linear-gradient(180deg,#060612dd,#060612f5)",zIndex:0}}/>
+      <div style={{position:"relative",zIndex:1}}>
       <style>{`
         @keyframes floatHero{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
         @keyframes fadeDown{from{opacity:0;transform:translateX(-50%) translateY(-16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
@@ -1561,13 +1618,15 @@ export default function App() {
         </div>
       </div>
 
-      {/* COMBAT + SHOP CTAs */}
+      {/* COMBAT + SHOP CTAs — RPG image buttons */}
       <div style={{maxWidth:480,margin:"12px auto 0",padding:"0 16px",display:"flex",gap:8}}>
-        <button onClick={()=>setScreen("map")} style={{flex:3,padding:13,borderRadius:12,cursor:"pointer",border:"none",background:`linear-gradient(90deg,${cls.color}cc,${cls.accent}cc)`,color:"#fff",fontWeight:800,fontSize:12,fontFamily:"'Courier New',monospace",letterSpacing:2,boxShadow:`0 4px 20px ${cls.color}44`,transition:"all 0.2s"}}>
-          ⚔️ COMBATE
+        <button onClick={()=>setScreen("map")} style={{flex:3,position:"relative",border:"none",background:"none",cursor:"pointer",padding:0,height:56,borderRadius:12,overflow:"hidden"}}>
+          <img src={UI_IMG.btnCombate} crossOrigin="anonymous" alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"fill"}} onError={e=>{e.target.style.display="none";e.target.parentElement.style.background=`linear-gradient(90deg,${cls.color}cc,${cls.accent}cc)`;}}/>
+          <span style={{position:"relative",zIndex:1,color:"#fff",fontWeight:800,fontSize:12,fontFamily:"'Courier New',monospace",letterSpacing:2,textShadow:"0 2px 4px rgba(0,0,0,0.8)"}}>⚔️ COMBATE</span>
         </button>
-        <button onClick={()=>setScreen("shop")} style={{flex:2,padding:13,borderRadius:12,cursor:"pointer",border:"1px solid #f39c1244",background:"#0e0820",color:"#f39c12",fontWeight:800,fontSize:12,fontFamily:"'Courier New',monospace",letterSpacing:1,transition:"all 0.2s"}}>
-          🏪 TIENDA
+        <button onClick={()=>setScreen("shop")} style={{flex:2,position:"relative",border:"none",background:"none",cursor:"pointer",padding:0,height:56,borderRadius:12,overflow:"hidden"}}>
+          <img src={UI_IMG.btnTienda} crossOrigin="anonymous" alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"fill"}} onError={e=>{e.target.style.display="none";e.target.parentElement.style.background="#0e0820";e.target.parentElement.style.border="1px solid #f39c1244";}}/>
+          <span style={{position:"relative",zIndex:1,color:"#fff",fontWeight:800,fontSize:12,fontFamily:"'Courier New',monospace",letterSpacing:1,textShadow:"0 2px 4px rgba(0,0,0,0.8)"}}>🏪 TIENDA</span>
         </button>
       </div>
 
@@ -1822,6 +1881,7 @@ export default function App() {
               })}
           </div>
         )}
+      </div>
       </div>
     </div>
   );
